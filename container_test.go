@@ -3,7 +3,7 @@ package libyaml
 import (
 	"testing"
 
-	yaml "gopkg.in/yaml.v2"
+	"github.com/andreychernih/yaml"
 )
 
 func TestContainerUnmarshalYAML(t *testing.T) {
@@ -102,6 +102,7 @@ hostname: ""
 cmd: ""
 ephemeral: false
 cluster: false
+restart: null
 publish_events: []
 config_files: []
 customer_files: []
@@ -110,6 +111,7 @@ ports: []
 volumes: []
 support_files: []
 support_commands: []
+when: ""
 `
 
 	c := Container{
@@ -138,6 +140,7 @@ hostname: ""
 cmd: ""
 ephemeral: false
 cluster: true
+restart: null
 cluster_instance_count:
   initial: 1
   threshold_healthy: 0
@@ -149,6 +152,7 @@ ports: []
 volumes: []
 support_files: []
 support_commands: []
+when: ""
 `
 
 	c := Container{

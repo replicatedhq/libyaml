@@ -3,7 +3,7 @@ package libyaml
 import (
 	"testing"
 
-	"gopkg.in/yaml.v2"
+	"github.com/andreychernih/yaml"
 )
 
 func TestComponentUnmarshalYAML(t *testing.T) {
