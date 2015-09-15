@@ -2,9 +2,9 @@ package libyaml
 
 type Container struct {
 	Source               string                        `yaml:"source" json:"source"`
-	ImageName            string                        `yaml:"image_name" json:"image_name"`
+	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
 	DisplayName          string                        `yaml:"display_name" json:"display_name"`
-	Version              string                        `yaml:"version" json:"version"`
+	Version              string                        `yaml:"version" json:"version" validate:"required"`
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
 	Hostname             string                        `yaml:"hostname" json:"hostname"`
 	Cmd                  string                        `yaml:"cmd" json:"cmd"`
@@ -12,15 +12,15 @@ type Container struct {
 	Cluster              bool                          `yaml:"cluster" json:"cluster"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
 	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
-	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events"`
+	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive"`
 	SubscribedEvents     []map[string]interface{}      `yaml:"-" json:"-"`
-	ConfigFiles          []*ContainerConfigFile        `yaml:"config_files" json:"config_files"`
-	CustomerFiles        []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files"`
-	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars"`
-	Ports                []*ContainerPort              `yaml:"ports" json:"ports"`
-	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes"`
-	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files"`
-	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands"`
+	ConfigFiles          []*ContainerConfigFile        `yaml:"config_files" json:"config_files" validate:"dive"`
+	CustomerFiles        []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files" validate:"dive"`
+	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive"`
+	Ports                []*ContainerPort              `yaml:"ports" json:"ports" validate:"dive"`
+	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive"`
+	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive"`
+	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive"`
 	When                 string                        `yaml:"when" json:"when"`
 }
 
@@ -125,15 +125,15 @@ type nonclusterableContainer struct {
 	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
 	Cluster          bool                       `yaml:"cluster" json:"cluster"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
-	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events"`
+	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive"`
 	SubscribedEvents []map[string]interface{}   `yaml:"-" json:"-"`
-	ConfigFiles      []*ContainerConfigFile     `yaml:"config_files" json:"config_files"`
-	CustomerFiles    []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files"`
-	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars"`
-	Ports            []*ContainerPort           `yaml:"ports" json:"ports"`
-	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes"`
-	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files"`
-	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands"`
+	ConfigFiles      []*ContainerConfigFile     `yaml:"config_files" json:"config_files" validate:"dive"`
+	CustomerFiles    []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files" validate:"dive"`
+	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive"`
+	Ports            []*ContainerPort           `yaml:"ports" json:"ports" validate:"dive"`
+	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive"`
+	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive"`
+	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive"`
 	When             string                     `yaml:"when" json:"when"`
 }
 

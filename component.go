@@ -11,7 +11,7 @@ type Component struct {
 	Conflicts        []string                  `yaml:"conflicts" json:"conflicts"`
 	Cluster          bool                      `yaml:"cluster" json:"cluster"`
 	ClusterHostCount ComponentClusterHostCount `yaml:"cluster_host_count" json:"cluster_host_count"`
-	Containers       []*Container              `yaml:"containers" json:"containers"`
+	Containers       []*Container              `yaml:"containers" json:"containers" validate:"dive"`
 }
 
 type ComponentClusterHostCount struct {
@@ -77,7 +77,7 @@ type nonclusterableComponent struct {
 	Tags       []string     `yaml:"tags" json:"tags"`
 	Conflicts  []string     `yaml:"conflicts" json:"conflicts"`
 	Cluster    bool         `yaml:"cluster" json:"cluster"`
-	Containers []*Container `yaml:"containers" json:"containers"`
+	Containers []*Container `yaml:"containers" json:"containers" validate:"dive"`
 }
 
 func (m *nonclusterableComponent) encode(c Component) {
