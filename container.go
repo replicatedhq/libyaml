@@ -116,9 +116,9 @@ func (m marshallerContainer) decode(c *Container) {
 
 type nonclusterableContainer struct {
 	Source           string                     `yaml:"source" json:"source"`
-	ImageName        string                     `yaml:"image_name" json:"image_name"`
+	ImageName        string                     `yaml:"image_name" json:"image_name" validate:"required"`
 	DisplayName      string                     `yaml:"display_name" json:"display_name"`
-	Version          string                     `yaml:"version" json:"version"`
+	Version          string                     `yaml:"version" json:"version" validate:"required"`
 	Privileged       bool                       `yaml:"privileged" json:"privileged"`
 	Hostname         string                     `yaml:"hostname" json:"hostname"`
 	Cmd              string                     `yaml:"cmd" json:"cmd"`
