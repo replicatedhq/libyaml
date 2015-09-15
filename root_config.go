@@ -11,7 +11,7 @@ type RootConfig struct {
 	State                  State            `yaml:"state" json:"state"`
 	Backup                 Backup           `yaml:"backup" json:"backup"`
 	Monitors               Monitors         `yaml:"monitors" json:"monitors"`
-	Components             []*Component     `yaml:"components" json:"components"`
+	Components             []*Component     `yaml:"components" json:"components" validate:"dive"`
 	ConfigCommands         []*ConfigCommand `yaml:"cmds" json:"cmds"`
 	ConfigGroups           []*ConfigGroup   `yaml:"config" json:"config"`
 	AdminCommands          []*AdminCommand  `yaml:"admin_commands" json:"admin_commands"`
