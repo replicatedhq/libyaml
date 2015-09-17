@@ -14,7 +14,7 @@ type RootConfig struct {
 	Components             []*Component     `yaml:"components" json:"components" validate:"dive"`
 	ConfigCommands         []*ConfigCommand `yaml:"cmds" json:"cmds"`
 	ConfigGroups           []*ConfigGroup   `yaml:"config" json:"config"`
-	AdminCommands          []*AdminCommand  `yaml:"admin_commands" json:"admin_commands"`
+	AdminCommands          []*AdminCommand  `yaml:"admin_commands" json:"admin_commands" validate:"dive"`
 }
 
 const DEFAULT_APP_CONFIG = `
