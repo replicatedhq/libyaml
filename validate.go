@@ -27,6 +27,16 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	// will handle this in vendor web. this prevents panic from validator.v8 library
+	if err := v.RegisterValidation("integrationexists", NoopValidation); err != nil {
+		return err
+	}
+
+	// will handle this in vendor web. this prevents panic from validator.v8 library
+	if err := v.RegisterValidation("externalregistryexists", NoopValidation); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -38,19 +48,25 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	switch fieldErr.Tag {
 	case "componentexists":
-		return fmt.Errorf("Component \"%s\" does not exist, key \"%s\"", fieldErr.Value, formatted)
+		return fmt.Errorf("Component \"%s\" does not exist at key \"%s\"", fieldErr.Value, formatted)
 
 	case "containerexists":
-		return fmt.Errorf("Container \"%s\" does not exist, key \"%s\"", fieldErr.Value, formatted)
+		return fmt.Errorf("Container \"%s\" does not exist at key \"%s\"", fieldErr.Value, formatted)
 
 	case "componentcontainer":
-		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\", key \"%s\"", formatted)
+		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\" at key \"%s\"", formatted)
+
+	case "integrationexists":
+		return fmt.Errorf("Missing integration \"%s\" at key \"%s\"", fieldErr.Value, formatted)
+
+	case "externalregistryexists":
+		return fmt.Errorf("Missing external registry integration \"%s\" at key \"%s\"", fieldErr.Value, formatted)
 
 	case "required":
-		return fmt.Errorf("Value required, key \"%s\"", formatted)
+		return fmt.Errorf("Value required at key \"%s\"", formatted)
 
 	default:
-		return fmt.Errorf("Key: \"%s\" Error:Field validation for \"%s\" failed on the \"%s\" tag", formatted, fieldErr.Field, fieldErr.Tag)
+		return fmt.Errorf("Validation failed on the \"%s\" tag at key \"%s\"", fieldErr.Tag, formatted)
 	}
 }
 
@@ -159,7 +175,7 @@ func ComponentExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 		return true
 	}
 
-	if field.Kind() != reflect.String {
+	if fieldKind != reflect.String {
 		// this is an issue with the code and really should be a panic
 		return true
 	}
@@ -188,7 +204,7 @@ func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 
 	var componentName, containerName string
 
-	if field.Kind() != reflect.String {
+	if fieldKind != reflect.String {
 		// this is an issue with the code and really should be a panic
 		return true
 	}
@@ -208,7 +224,7 @@ func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 		parts := strings.SplitN(containerName, ",", 2)
 
 		if len(parts) < 2 {
-			// let "componentcontainer" validation handle this
+			// let "componentcontainer" validation handle this case
 			return true
 		}
 
@@ -217,7 +233,7 @@ func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 	}
 
 	if !ComponentExists(componentName, root) {
-		// let "componentexists" validation handle this
+		// let "componentexists" validation handle this case
 		return true
 	}
 
@@ -227,7 +243,7 @@ func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	// validates the format of the string field conforms to "<component name>,<container image name>"
 
-	if field.Kind() != reflect.String {
+	if fieldKind != reflect.String {
 		// this is an issue with the code and really should be a panic
 		return true
 	}
@@ -238,5 +254,9 @@ func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect
 		return false
 	}
 
+	return true
+}
+
+func NoopValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	return true
 }

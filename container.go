@@ -1,7 +1,7 @@
 package libyaml
 
 type Container struct {
-	Source               string                        `yaml:"source" json:"source"`
+	Source               string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
 	DisplayName          string                        `yaml:"display_name" json:"display_name"`
 	Version              string                        `yaml:"version" json:"version" validate:"required"`
@@ -115,7 +115,7 @@ func (m marshallerContainer) decode(c *Container) {
 }
 
 type nonclusterableContainer struct {
-	Source           string                     `yaml:"source" json:"source"`
+	Source           string                     `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName        string                     `yaml:"image_name" json:"image_name" validate:"required"`
 	DisplayName      string                     `yaml:"display_name" json:"display_name"`
 	Version          string                     `yaml:"version" json:"version" validate:"required"`
