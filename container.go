@@ -8,7 +8,7 @@ type Container struct {
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
 	Hostname             string                        `yaml:"hostname" json:"hostname"`
 	Cmd                  string                        `yaml:"cmd" json:"cmd"`
-	Ephemeral            bool                          `yaml:"ephemeral" json:"ephemeral"`
+	Ephemeral            string                        `yaml:"ephemeral" json:"ephemeral"`
 	Cluster              bool                          `yaml:"cluster" json:"cluster"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
 	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
@@ -122,7 +122,7 @@ type nonclusterableContainer struct {
 	Privileged       bool                       `yaml:"privileged" json:"privileged"`
 	Hostname         string                     `yaml:"hostname" json:"hostname"`
 	Cmd              string                     `yaml:"cmd" json:"cmd"`
-	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
+	Ephemeral        string                     `yaml:"ephemeral" json:"ephemeral"`
 	Cluster          bool                       `yaml:"cluster" json:"cluster"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
 	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive"`
