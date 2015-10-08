@@ -8,4 +8,5 @@ type ContainerConfigFile struct {
 	Repo     string `yaml:"repo" json:"repo"`
 	Path     string `yaml:"path" json:"path"`
 	Ref      string `yaml:"ref" json:"ref"`
+	Mode     string `yaml:"mode" json:"mode"`
 }
