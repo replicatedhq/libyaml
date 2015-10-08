@@ -100,7 +100,7 @@ version: ""
 privileged: false
 hostname: ""
 cmd: ""
-ephemeral: false
+ephemeral: ""
 cluster: false
 restart: null
 publish_events: []
@@ -138,7 +138,7 @@ version: ""
 privileged: false
 hostname: ""
 cmd: ""
-ephemeral: false
+ephemeral: ""
 cluster: true
 restart: null
 cluster_instance_count:
