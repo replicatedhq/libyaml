@@ -1,9 +1,9 @@
 package libyaml
 
 type ContainerCustomerFile struct {
-	Id       string `yaml:"name" json:"name"`
-	Filename string `yaml:"filename" json:"filename"`
-	When     string `yaml:"when" json:"when"`
-	Mode     string `yaml:"mode" json:"mode"`
-	Owner    string `yaml:"owner" json:"owner"`
+	Id        string `yaml:"name" json:"name"`
+	Filename  string `yaml:"filename" json:"filename"`
+	When      string `yaml:"when" json:"when"`
+	FileMode  string `yaml:"file_mode" json:"file_mode"`
+	FileOwner string `yaml:"file_owner" json:"file_owner"`
 }
