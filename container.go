@@ -19,9 +19,9 @@ type Container struct {
 	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive"`
 	Ports                []*ContainerPort              `yaml:"ports" json:"ports" validate:"dive"`
 	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive"`
+	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive"`
 	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive"`
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive"`
-	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive"`
 	When                 string                        `yaml:"when" json:"when"`
 }
 
