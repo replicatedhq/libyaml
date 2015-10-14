@@ -86,6 +86,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.EnvVars = c.EnvVars
 	m.Ports = c.Ports
 	m.Volumes = c.Volumes
+	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles
 	m.SupportCommands = c.SupportCommands
 	m.When = c.When
@@ -110,6 +111,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.EnvVars = m.EnvVars
 	c.Ports = m.Ports
 	c.Volumes = m.Volumes
+	c.ExtraHosts = m.ExtraHosts
 	c.SupportFiles = m.SupportFiles
 	c.SupportCommands = m.SupportCommands
 	c.When = m.When
@@ -133,6 +135,7 @@ type nonclusterableContainer struct {
 	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive"`
 	Ports            []*ContainerPort           `yaml:"ports" json:"ports" validate:"dive"`
 	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive"`
+	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"hosts" validate:"dive"`
 	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive"`
 	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive"`
 	When             string                     `yaml:"when" json:"when"`
@@ -156,6 +159,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.EnvVars = c.EnvVars
 	m.Ports = c.Ports
 	m.Volumes = c.Volumes
+	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles
 	m.SupportCommands = c.SupportCommands
 	m.When = c.When
