@@ -21,6 +21,7 @@ type Container struct {
 	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive"`
 	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive"`
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive"`
+	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive"`
 	When                 string                        `yaml:"when" json:"when"`
 }
 
