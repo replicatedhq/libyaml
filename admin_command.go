@@ -7,6 +7,7 @@ type AdminCommand struct {
 	RunType   string       `yaml:"run_type" json:"run_type"`
 	Component string       `yaml:"component" json:"component" validate:"componentexists"`
 	Image     CommandImage `yaml:"image" json:"image"` // TODO: validate exists
+	When      string       `yaml:"when" json:"when"`
 }
 
 type CommandImage struct {
