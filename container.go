@@ -9,6 +9,7 @@ type Container struct {
 	Hostname             string                        `yaml:"hostname" json:"hostname"`
 	Cmd                  string                        `yaml:"cmd" json:"cmd"`
 	Ephemeral            string                        `yaml:"ephemeral" json:"ephemeral"`
+	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
 	Cluster              bool                          `yaml:"cluster" json:"cluster"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
 	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
@@ -76,6 +77,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Hostname = c.Hostname
 	m.Cmd = c.Cmd
 	m.Ephemeral = c.Ephemeral
+	m.SuppressRestart = c.SuppressRestart
 	m.Cluster = c.Cluster
 	m.Restart = c.Restart
 	m.ClusterInstanceCount = c.ClusterInstanceCount
@@ -101,6 +103,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Hostname = m.Hostname
 	c.Cmd = m.Cmd
 	c.Ephemeral = m.Ephemeral
+	c.SuppressRestart = m.SuppressRestart
 	c.Cluster = m.Cluster
 	c.Restart = m.Restart
 	c.ClusterInstanceCount = m.ClusterInstanceCount
@@ -126,6 +129,7 @@ type nonclusterableContainer struct {
 	Hostname         string                     `yaml:"hostname" json:"hostname"`
 	Cmd              string                     `yaml:"cmd" json:"cmd"`
 	Ephemeral        string                     `yaml:"ephemeral" json:"ephemeral"`
+	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
 	Cluster          bool                       `yaml:"cluster" json:"cluster"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
 	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive"`
@@ -150,6 +154,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Hostname = c.Hostname
 	m.Cmd = c.Cmd
 	m.Ephemeral = c.Ephemeral
+	m.SuppressRestart = c.SuppressRestart
 	m.Cluster = false
 	m.Restart = c.Restart
 	m.PublishEvents = c.PublishEvents
