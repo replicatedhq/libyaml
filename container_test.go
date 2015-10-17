@@ -101,6 +101,7 @@ privileged: false
 hostname: ""
 cmd: ""
 ephemeral: ""
+suppress_restart: []
 cluster: false
 restart: null
 publish_events: []
@@ -140,6 +141,7 @@ privileged: false
 hostname: ""
 cmd: ""
 ephemeral: ""
+suppress_restart: []
 cluster: true
 restart: null
 cluster_instance_count:
