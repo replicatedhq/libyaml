@@ -14,6 +14,7 @@ type ConfigItem struct {
 	ReadOnly    bool           `yaml:"readonly" json:"readonly"`
 	When        string         `yaml:"when" json:"when"`
 	Type        string         `yaml:"type" json:"type"`
+	Multiple    bool           `yaml:"multiple" json:"multiple"`
 	Hidden      bool           `yaml:"hidden" json:"hidden"`
 	Position    int            `yaml:"-" json:"-"`
 	Affix       string         `yaml:"affix" json:"affix"`
