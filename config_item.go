@@ -7,7 +7,7 @@ type ConfigItem struct {
 	Recommended bool           `yaml:"recommended" json:"recommended"`
 	Default     string         `yaml:"default" json:"default"`
 	Value       string         `yaml:"value" json:"value"`
-	Values      []string       `yaml:"values" json:"values"`
+	MultiValue  []string       `yaml:"multi_value" json:"multi_value"`
 	DefaultCmd  *ConfigItemCmd `yaml:"default_cmd" json:"default_cmd"`
 	ValueCmd    *ConfigItemCmd `yaml:"value_cmd" json:"value_cmd"`
 	DataCmd     *ConfigItemCmd `yaml:"data_cmd" json:"data_cmd"`
