@@ -6,7 +6,6 @@ type Container struct {
 	DisplayName          string                        `yaml:"display_name" json:"display_name"`
 	Version              string                        `yaml:"version" json:"version" validate:"required"`
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
-	Hostname             string                        `yaml:"hostname" json:"hostname"`
 	NetworkMode          string                        `yaml:"network_mode" json:"network_mode"`
 	CPUShares            string                        `yaml:"cpu_shares" json:"cpu_shares"`
 	MemoryLimit          string                        `yaml:"memory_limit" json:"memory_limit"`
@@ -14,6 +13,7 @@ type Container struct {
 	AllocateTTY          string                        `yaml:"allocate_tty" json:"allocate_tty"`
 	SecurityCapAdd       []string                      `yaml:"security_cap_add" json:"security_cap_add"`
 	SecurityOptions      []string                      `yaml:"security_options" json:"security_options"`
+	Hostname             string                        `yaml:"hostname" json:"hostname"`
 	Cmd                  string                        `yaml:"cmd" json:"cmd"`
 	Ephemeral            string                        `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
