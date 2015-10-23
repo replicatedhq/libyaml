@@ -7,6 +7,13 @@ type Container struct {
 	Version              string                        `yaml:"version" json:"version" validate:"required"`
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
 	Hostname             string                        `yaml:"hostname" json:"hostname"`
+	NetworkMode          string                        `yaml:"network_mode" json:"network_mode"`
+	CPUShares            string                        `yaml:"cpu_shares" json:"cpu_shares"`
+	MemoryLimit          string                        `yaml:"memory_limit" json:"memory_limit"`
+	MemorySwapLimit      string                        `yaml:"memory_swap_limit" json:"memory_swap_limit"`
+	AllocateTTY          string                        `yaml:"allocate_tty" json:"allocate_tty"`
+	SecurityCapAdd       []string                      `yaml:"security_cap_add" json:"security_cap_add"`
+	SecurityOptions      []string                      `yaml:"security_options" json:"security_options"`
 	Cmd                  string                        `yaml:"cmd" json:"cmd"`
 	Ephemeral            string                        `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
@@ -74,6 +81,13 @@ func (m *marshallerContainer) encode(c Container) {
 	m.DisplayName = c.DisplayName
 	m.Version = c.Version
 	m.Privileged = c.Privileged
+	m.NetworkMode = c.NetworkMode
+	m.CPUShares = c.CPUShares
+	m.MemoryLimit = c.MemoryLimit
+	m.MemorySwapLimit = c.MemorySwapLimit
+	m.AllocateTTY = c.AllocateTTY
+	m.SecurityCapAdd = c.SecurityCapAdd
+	m.SecurityOptions = c.SecurityOptions
 	m.Hostname = c.Hostname
 	m.Cmd = c.Cmd
 	m.Ephemeral = c.Ephemeral
@@ -100,6 +114,13 @@ func (m marshallerContainer) decode(c *Container) {
 	c.DisplayName = m.DisplayName
 	c.Version = m.Version
 	c.Privileged = m.Privileged
+	c.NetworkMode = m.NetworkMode
+	c.CPUShares = m.CPUShares
+	c.MemoryLimit = m.MemoryLimit
+	c.MemorySwapLimit = m.MemorySwapLimit
+	c.AllocateTTY = m.AllocateTTY
+	c.SecurityCapAdd = m.SecurityCapAdd
+	c.SecurityOptions = m.SecurityOptions
 	c.Hostname = m.Hostname
 	c.Cmd = m.Cmd
 	c.Ephemeral = m.Ephemeral
@@ -126,6 +147,13 @@ type nonclusterableContainer struct {
 	DisplayName      string                     `yaml:"display_name" json:"display_name"`
 	Version          string                     `yaml:"version" json:"version" validate:"required"`
 	Privileged       bool                       `yaml:"privileged" json:"privileged"`
+	NetworkMode      string                     `yaml:"network_mode" json:"network_mode"`
+	CPUShares        string                     `yaml:"cpu_shares" json:"cpu_shares"`
+	MemoryLimit      string                     `yaml:"memory_limit" json:"memory_limit"`
+	MemorySwapLimit  string                     `yaml:"memory_swap_limit" json:"memory_swap_limit"`
+	AllocateTTY      string                     `yaml:"allocate_tty" json:"allocate_tty"`
+	SecurityCapAdd   []string                   `yaml:"security_cap_add" json:"security_cap_add"`
+	SecurityOptions  []string                   `yaml:"security_options" json:"security_options"`
 	Hostname         string                     `yaml:"hostname" json:"hostname"`
 	Cmd              string                     `yaml:"cmd" json:"cmd"`
 	Ephemeral        string                     `yaml:"ephemeral" json:"ephemeral"`
@@ -151,6 +179,13 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.DisplayName = c.DisplayName
 	m.Version = c.Version
 	m.Privileged = c.Privileged
+	m.NetworkMode = c.NetworkMode
+	m.CPUShares = c.CPUShares
+	m.MemoryLimit = c.MemoryLimit
+	m.MemorySwapLimit = c.MemorySwapLimit
+	m.AllocateTTY = c.AllocateTTY
+	m.SecurityCapAdd = c.SecurityCapAdd
+	m.SecurityOptions = c.SecurityOptions
 	m.Hostname = c.Hostname
 	m.Cmd = c.Cmd
 	m.Ephemeral = c.Ephemeral
