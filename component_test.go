@@ -11,6 +11,9 @@ func TestComponentUnmarshalYAML(t *testing.T) {
 tags: []
 conflicts: []
 cluster: false
+cluster_host_count:
+  min: 0
+  threshold_healthy: 0
 containers: []`
 
 	var c Component
@@ -63,6 +66,9 @@ func TestComponentMarshalYAML(t *testing.T) {
 tags: []
 conflicts: []
 cluster: false
+cluster_host_count:
+  min: 0
+  threshold_healthy: 0
 containers: []
 `
 
@@ -87,7 +93,7 @@ tags: []
 conflicts: []
 cluster: true
 cluster_host_count:
-  min: 1
+  min: 0
   threshold_healthy: 0
 containers: []
 `
