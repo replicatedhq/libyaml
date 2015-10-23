@@ -53,11 +53,11 @@ containers: []`
 	if !c.Cluster {
 		t.Error("expecting \"Component.Cluster\" to be true")
 	}
-	if c.ClusterHostCount.Min != 1 {
-		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == 1, got \"%d\"", c.ClusterHostCount.Min)
+	if c.ClusterHostCount.Min != 0 {
+		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == 0, got \"%d\"", c.ClusterHostCount.Min)
 	}
-	if c.ClusterHostCount.ThresholdHealthy != 1 {
-		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == 1, got \"%d\"", c.ClusterHostCount.ThresholdHealthy)
+	if c.ClusterHostCount.ThresholdHealthy != 0 {
+		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterHostCount.ThresholdHealthy)
 	}
 }
 
