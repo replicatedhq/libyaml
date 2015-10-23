@@ -15,7 +15,7 @@ type Container struct {
 	SecurityOptions      []string                      `yaml:"security_options" json:"security_options"`
 	Hostname             string                        `yaml:"hostname" json:"hostname"`
 	Cmd                  string                        `yaml:"cmd" json:"cmd"`
-	Ephemeral            string                        `yaml:"ephemeral" json:"ephemeral"`
+	Ephemeral            bool                          `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
 	Cluster              bool                          `yaml:"cluster" json:"cluster"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
@@ -156,7 +156,7 @@ type nonclusterableContainer struct {
 	SecurityOptions  []string                   `yaml:"security_options" json:"security_options"`
 	Hostname         string                     `yaml:"hostname" json:"hostname"`
 	Cmd              string                     `yaml:"cmd" json:"cmd"`
-	Ephemeral        string                     `yaml:"ephemeral" json:"ephemeral"`
+	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
 	Cluster          bool                       `yaml:"cluster" json:"cluster"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`

@@ -107,7 +107,7 @@ security_cap_add: []
 security_options: []
 hostname: ""
 cmd: ""
-ephemeral: ""
+ephemeral: false
 suppress_restart: []
 cluster: false
 restart: null
@@ -154,7 +154,7 @@ security_cap_add: []
 security_options: []
 hostname: ""
 cmd: ""
-ephemeral: ""
+ephemeral: false
 suppress_restart: []
 cluster: true
 restart: null
