@@ -103,7 +103,8 @@ cpu_shares: ""
 memory_limit: ""
 memory_swap_limit: ""
 allocate_tty: ""
-security_cap_add: ""
+security_cap_add: []
+security_options: []
 hostname: ""
 cmd: ""
 ephemeral: ""
@@ -149,7 +150,8 @@ cpu_shares: ""
 memory_limit: ""
 memory_swap_limit: ""
 allocate_tty: ""
-security_cap_add: ""
+security_cap_add: []
+security_options: []
 hostname: ""
 cmd: ""
 ephemeral: ""
