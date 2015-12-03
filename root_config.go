@@ -13,7 +13,7 @@ type RootConfig struct {
 	Monitors               Monitors         `yaml:"monitors" json:"monitors"`
 	Components             []*Component     `yaml:"components" json:"components" validate:"dive"`
 	ConfigCommands         []*ConfigCommand `yaml:"cmds" json:"cmds"`
-	ConfigGroups           []*ConfigGroup   `yaml:"config" json:"config"`
+	ConfigGroups           []*ConfigGroup   `yaml:"config" json:"config" validate:"dive"`
 	AdminCommands          []*AdminCommand  `yaml:"admin_commands" json:"admin_commands" validate:"dive"`
 }
 
