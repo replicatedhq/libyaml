@@ -1,7 +1,7 @@
 package libyaml
 
 type ConfigItem struct {
-	Name                  string         `yaml:"name" json:"name"`
+	Name                  string         `yaml:"name" json:"name" validate:"required"`
 	Title                 string         `yaml:"title" json:"title"`
 	HelpText              string         `yaml:"help_text" json:"help_text"`
 	Recommended           bool           `yaml:"recommended" json:"recommended"`

@@ -1,7 +1,7 @@
 package libyaml
 
 type ConfigGroup struct {
-	Name        string        `yaml:"name" json:"name"`
+	Name        string        `yaml:"name" json:"name" validate:"required"`
 	Title       string        `yaml:"title" json:"title"`
 	Description string        `yaml:"description" json:"description"`
 	TestProc    *TestProc     `yaml:"test_proc" json:"test_proc"`
