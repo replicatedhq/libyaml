@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	validator "gopkg.in/bluesuncorp/validator.v8"
+	"github.com/blang/semver"
 )
 
 var (
@@ -15,6 +16,10 @@ var (
 )
 
 func RegisterValidations(v *validator.Validate) error {
+	if err := v.RegisterValidation("apiversion", ApiVersionValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("componentexists", ComponentExistsValidation); err != nil {
 		return err
 	}
@@ -47,6 +52,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 	}
 
 	switch fieldErr.Tag {
+	case "apiversion":
+		return fmt.Errorf("A valid \"replicated_api_version\" is required as a root element")
+
 	case "componentexists":
 		return fmt.Errorf("Component \"%s\" does not exist at key \"%s\"", fieldErr.Value, formatted)
 
@@ -255,6 +263,15 @@ func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect
 	}
 
 	return true
+}
+
+func ApiVersionValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	_, err := semver.Make(field.String())
+	return err == nil
 }
 
 func NoopValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {

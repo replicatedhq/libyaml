@@ -1,7 +1,7 @@
 package libyaml
 
 type RootConfig struct {
-	ApiVersion             string           `yaml:"replicated_api_version" json:"replicated_api_version"`
+	ApiVersion             string           `yaml:"replicated_api_version" json:"replicated_api_version" validate:"required,apiversion"`
 	Name                   string           `yaml:"name" json:"name"`
 	Version                string           `yaml:"version" json:"version"`
 	ReleaseNotes           string           `yaml:"release_notes" json:"release_notes"`
