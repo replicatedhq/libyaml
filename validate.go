@@ -174,7 +174,12 @@ func ConfigItemWhenValidation(v *validator.Validate, topStruct reflect.Value, cu
 		return true
 	}
 
-	parts := strings.SplitN(whenValue, "=", 2)
+	splitString := "="
+	if strings.Contains(whenValue, "!=") {
+		splitString = "!="
+	}
+
+	parts := strings.SplitN(whenValue, splitString, 2)
 	if len(parts) >= 2 {
 		whenValue = parts[0]
 	}
