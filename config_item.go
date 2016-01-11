@@ -12,8 +12,8 @@ type ConfigItem struct {
 	ValueCmd              *ConfigItemCmd `yaml:"value_cmd" json:"value_cmd"`
 	DataCmd               *ConfigItemCmd `yaml:"data_cmd" json:"data_cmd"`
 	ReadOnly              bool           `yaml:"readonly" json:"readonly"`
-	When                  string         `yaml:"when" json:"when"`
-	Type                  string         `yaml:"type" json:"type"`
+	When                  string         `yaml:"when" json:"when" validate:"configitemwhen"`
+	Type                  string         `yaml:"type" json:"type" validate:"required"`
 	Multiple              bool           `yaml:"multiple" json:"multiple"`
 	Hidden                bool           `yaml:"hidden" json:"hidden"`
 	Position              int            `yaml:"-" json:"-"`
