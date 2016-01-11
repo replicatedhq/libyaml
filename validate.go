@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	validator "gopkg.in/bluesuncorp/validator.v8"
 	"github.com/blang/semver"
+	validator "gopkg.in/bluesuncorp/validator.v8"
 )
 
 var (
@@ -16,6 +16,10 @@ var (
 )
 
 func RegisterValidations(v *validator.Validate) error {
+	if err := v.RegisterValidation("configitemwhen", ConfigItemWhenValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("apiversion", ApiVersionValidation); err != nil {
 		return err
 	}
@@ -149,6 +153,57 @@ func formatKey(keys []string, parent reflect.Value) (string, error) {
 	return "", nil
 }
 
+func ConfigItemWhenValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	// validates that the when in config items references a valid item
+
+	root, ok := topStruct.Interface().(*RootConfig)
+	if !ok {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	if fieldKind != reflect.String {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	var whenValue string
+
+	whenValue = field.String()
+	if whenValue == "" {
+		return true
+	}
+
+	splitString := "="
+	if strings.Contains(whenValue, "!=") {
+		splitString = "!="
+	}
+
+	parts := strings.SplitN(whenValue, splitString, 2)
+	if len(parts) >= 2 {
+		whenValue = parts[0]
+	}
+
+	return ConfigItemExists(whenValue, root)
+}
+
+func ConfigItemExists(configItemName string, root *RootConfig) bool {
+	for _, group := range root.ConfigGroups {
+		for _, item := range group.Items {
+			if item.Name == configItemName {
+				return true
+			}
+			for _, childItem := range item.Items {
+				if childItem.Name == configItemName {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
 func ComponentExists(componentName string, root *RootConfig) bool {
 	for _, component := range root.Components {
 		if component.Name == componentName {
@@ -176,7 +231,6 @@ func ContainerExists(componentName, containerName string, root *RootConfig) bool
 
 func ComponentExistsValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	// validates that the component exists in the root.Components slice
-
 	root, ok := topStruct.Interface().(*RootConfig)
 	if !ok {
 		// this is an issue with the code and really should be a panic
