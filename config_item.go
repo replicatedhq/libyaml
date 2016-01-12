@@ -34,4 +34,5 @@ type TestProc struct {
 	Command     string   `yaml:"command" json:"command"`
 	Timeout     uint     `yaml:"timeout" json:"timeout"`
 	ArgFields   []string `yaml:"arg_fields" json:"arg_fields"`
+	Args        []string `yaml:"args" json:"args"`
 }
