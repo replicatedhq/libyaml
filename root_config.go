@@ -19,10 +19,15 @@ type RootConfig struct {
 
 const DEFAULT_APP_CONFIG = `
 ---
-replicated_api_version: "1.0.0"
+replicated_api_version: "1.3.2"
 name: "%s"
-version: ""
-release_notes: ""
+properties:
+  app_url: ""
+  logo_url: "https://your-company/your-logo.png"
+  console_title: Your App Name
+backup:
+  enabled: false
+monitors: []
 components: []
 config: []
 `
