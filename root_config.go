@@ -22,7 +22,7 @@ replicated_api_version: "1.3.2"
 name: "%s"
 properties:
   app_url: ""
-  logo_url: "https://your-company/your-logo.png"
+  logo_url: http://www.replicated.com/images/logo.png
   console_title: Your App Name
 backup:
   enabled: false
