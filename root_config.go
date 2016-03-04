@@ -17,8 +17,7 @@ type RootConfig struct {
 	AdminCommands          []*AdminCommand  `yaml:"admin_commands" json:"admin_commands" validate:"dive"`
 }
 
-const DEFAULT_APP_CONFIG = `
----
+const DEFAULT_APP_CONFIG = `---
 replicated_api_version: "1.3.2"
 name: "%s"
 properties:
@@ -27,7 +26,8 @@ properties:
   console_title: Your App Name
 backup:
   enabled: false
-monitors: []
+monitors:
+  cpuacct: []
+  memory: []
 components: []
-config: []
-`
+config: []`
