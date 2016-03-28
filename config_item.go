@@ -31,9 +31,10 @@ type ConfigItemCmd struct {
 }
 
 type TestProc struct {
-	DisplayName string   `yaml:"display_name" json:"display_name"`
-	Command     string   `yaml:"command" json:"command"`
-	Timeout     uint     `yaml:"timeout" json:"timeout"`
-	ArgFields   []string `yaml:"arg_fields" json:"arg_fields"`
-	Args        []string `yaml:"args" json:"args"`
+	DisplayName    string   `yaml:"display_name" json:"display_name"`
+	Command        string   `yaml:"command" json:"command"`
+	Timeout        uint     `yaml:"timeout" json:"timeout"`
+	ArgFields      []string `yaml:"arg_fields" json:"arg_fields"`
+	Args           []string `yaml:"args" json:"args"`
+	ValidateOnSave string   `yaml:"validate_on_save" json:"validate_on_save"`
 }
