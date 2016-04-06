@@ -73,6 +73,7 @@ host_requirements:
   cpu_cores: 0
   memory: ""
   disk_space: ""
+host_volumes: []
 containers: []
 `
 
@@ -103,6 +104,7 @@ host_requirements:
   cpu_cores: 0
   memory: ""
   disk_space: ""
+host_volumes: []
 containers: []
 `
 
