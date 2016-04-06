@@ -13,7 +13,7 @@ type Component struct {
 	ClusterHostCount ComponentClusterHostCount `yaml:"cluster_host_count" json:"cluster_host_count"`
 	HostRequirements ComponentHostRequirements `yaml:"host_requirements" json:"host_requirements"`
 	HostVolumes      []*HostVolume             `yaml:"host_volumes" json:"host_volumes"`
-	Containers       []*Container              `yaml:"containers" json:"containers" validate:"dive"`
+	Containers       []*Container              `yaml:"containers" json:"containers" validate:"dive,exists"`
 }
 
 type ComponentClusterHostCount struct {
