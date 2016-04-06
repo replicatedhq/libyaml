@@ -69,6 +69,10 @@ cluster: false
 cluster_host_count:
   min: 0
   threshold_healthy: 0
+host_requirements:
+  cpu_cores: 0
+  memory: ""
+  disk_space: ""
 containers: []
 `
 
@@ -95,6 +99,10 @@ cluster: true
 cluster_host_count:
   min: 0
   threshold_healthy: 0
+host_requirements:
+  cpu_cores: 0
+  memory: ""
+  disk_space: ""
 containers: []
 `
 

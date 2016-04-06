@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	keyRe = regexp.MustCompile("^([^\\[]+)(?:\\[(\\d+)\\])?$")
+	keyRe   = regexp.MustCompile("^([^\\[]+)(?:\\[(\\d+)\\])?$")
+	bytesRe = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
 )
 
 func RegisterValidations(v *validator.Validate) error {
@@ -20,7 +21,11 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
-	if err := v.RegisterValidation("apiversion", ApiVersionValidation); err != nil {
+	if err := v.RegisterValidation("apiversion", SemverValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("semver", SemverValidation); err != nil {
 		return err
 	}
 
@@ -43,6 +48,14 @@ func RegisterValidations(v *validator.Validate) error {
 
 	// will handle this in vendor web. this prevents panic from validator.v8 library
 	if err := v.RegisterValidation("externalregistryexists", NoopValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("bytes", IsBytesValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("bool", IsBoolValidation); err != nil {
 		return err
 	}
 
@@ -319,13 +332,58 @@ func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect
 	return true
 }
 
-func ApiVersionValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+func SemverValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
+		return true
+	}
+
+	if field.String() == "" {
 		return true
 	}
 
 	_, err := semver.Make(field.String())
 	return err == nil
+}
+
+func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	if field.String() == "" {
+		return true
+	}
+
+	parts := bytesRe.FindStringSubmatch(strings.TrimSpace(field.String()))
+	if len(parts) < 3 {
+		return false
+	}
+
+	value, err := strconv.ParseUint(parts[1], 10, 0)
+	if err != nil || value < 1 {
+		return false
+	}
+
+	return true
+}
+
+func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	if field.String() == "" {
+		return true
+	}
+
+	_, err := strconv.ParseBool(field.String())
+	if err != nil {
+		return false
+	}
+
+	return true
 }
 
 func NoopValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
