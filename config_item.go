@@ -36,5 +36,5 @@ type TestProc struct {
 	Timeout     uint     `yaml:"timeout" json:"timeout"`
 	ArgFields   []string `yaml:"arg_fields" json:"arg_fields"`
 	Args        []string `yaml:"args" json:"args"`
-	RunOnSave   string `yaml:"run_on_save" json:"run_on_save"`
+	RunOnSave   string   `yaml:"run_on_save" json:"run_on_save"`
 }

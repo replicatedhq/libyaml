@@ -16,6 +16,7 @@ type RootConfig struct {
 	ConfigCommands         []*ConfigCommand `yaml:"cmds" json:"cmds"`
 	ConfigGroups           []*ConfigGroup   `yaml:"config" json:"config" validate:"dive"`
 	AdminCommands          []*AdminCommand  `yaml:"admin_commands" json:"admin_commands" validate:"dive"`
+	CustomMetrics          []*CustomMetric  `yaml:"custom_metrics" json:"custom_metrics" validate:"dive"`
 }
 
 const DEFAULT_APP_CONFIG = `---
