@@ -59,6 +59,18 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("graphiteretention", GraphiteRetentionFormatValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("graphiteaggregation", GraphiteAggregationFormatValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("monitorlabelscale", MonitorLabelScaleValidation); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -89,6 +101,15 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "required":
 		return fmt.Errorf("Value required at key \"%s\"", formatted)
+
+	case "graphiteretention":
+		return fmt.Errorf("Should be in the new style graphite retention policy at key %q", formatted)
+
+	case "graphiteaggregation":
+		return fmt.Errorf("Valid values for graphite aggregation method are 'average', 'sum', 'min', 'max', 'last' at key %q", formatted)
+
+	case "monitorlabelscale":
+		return fmt.Errorf("Please specify 'metric', 'none', or a floating point number for scale at %q", formatted)
 
 	default:
 		return fmt.Errorf("Validation failed on the \"%s\" tag at key \"%s\"", fieldErr.Tag, formatted)
@@ -388,4 +409,87 @@ func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 
 func NoopValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	return true
+}
+
+func GraphiteRetentionFormatValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	valueStr := field.String()
+	if valueStr == "" {
+		return true
+	}
+
+	validate := func(amount, unit string) bool {
+		_, err := strconv.Atoi(amount)
+		if err != nil {
+			return false
+		}
+
+		switch unit {
+		case "s", "m", "h", "d", "y":
+			return true
+		default:
+			return false
+		}
+	}
+
+	// Example: 15s:7d,1m:21d,15m:5y
+	periods := strings.Split(valueStr, ",")
+	for _, period := range periods {
+		periodParts := strings.Split(period, ":")
+		if len(periodParts) != 2 {
+			return false
+		}
+
+		for _, part := range periodParts {
+			partLen := len(part)
+			if partLen < 2 {
+				return false
+			}
+			if !validate(part[:partLen-1], part[partLen-1:]) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+func GraphiteAggregationFormatValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	valueStr := field.String()
+	if valueStr == "" {
+		return true
+	}
+
+	switch valueStr {
+	case "average", "sum", "min", "max", "last":
+		return true
+	default:
+		return false
+	}
+}
+
+func MonitorLabelScaleValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	valueStr := field.String()
+	if valueStr == "" {
+		return true
+	}
+
+	switch valueStr {
+	case "metric", "none":
+		return true
+	default:
+		_, err := strconv.ParseFloat(valueStr, 64)
+		return err == nil
+	}
 }
