@@ -59,6 +59,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("tcpport", IsTcpPortValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("graphiteretention", GraphiteRetentionFormatValidation); err != nil {
 		return err
 	}
@@ -101,6 +105,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "required":
 		return fmt.Errorf("Value required at key \"%s\"", formatted)
+
+	case "tcpport":
+		return fmt.Errorf("A valid port number must be between 0 and 65535: %q", formatted)
 
 	case "graphiteretention":
 		return fmt.Errorf("Should be in the new style graphite retention policy at key %q", formatted)
@@ -405,6 +412,16 @@ func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 	}
 
 	return true
+}
+
+func IsTcpPortValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.Int32 {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	port := field.Int()
+	return 0 <= port && port <= 65535
 }
 
 func NoopValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
