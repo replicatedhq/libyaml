@@ -71,6 +71,7 @@ cluster_host_count:
   threshold_healthy: 0
 host_requirements:
   cpu_cores: 0
+  cpu_mhz: 0
   memory: ""
   disk_space: ""
 host_volumes: []
@@ -102,6 +103,7 @@ cluster_host_count:
   threshold_healthy: 0
 host_requirements:
   cpu_cores: 0
+  cpu_mhz: 0
   memory: ""
   disk_space: ""
 host_volumes: []
