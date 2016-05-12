@@ -41,6 +41,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if er := v.RegisterValidation("absolutepath", IsAbsolutePath); err != nil {
+		return err
+	}
+
 	// will handle this in vendor web. this prevents panic from validator.v8 library
 	if err := v.RegisterValidation("integrationexists", NoopValidation); err != nil {
 		return err
@@ -343,6 +347,16 @@ func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 	}
 
 	return ContainerExists(componentName, containerName, root)
+}
+
+// IsAbsolutePath validates that the format of the field begins with a "/"
+func IsAbsolutePath(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	return strings.HasPrefix(field.String(), "/")
 }
 
 func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
