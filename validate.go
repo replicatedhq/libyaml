@@ -41,7 +41,7 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
-	if er := v.RegisterValidation("absolutepath", IsAbsolutePath); err != nil {
+	if err := v.RegisterValidation("absolutepath", IsAbsolutePath); err != nil {
 		return err
 	}
 
