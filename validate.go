@@ -231,12 +231,14 @@ func ConfigItemWhenValidation(v *validator.Validate, topStruct reflect.Value, cu
 func ConfigItemExists(configItemName string, root *RootConfig) bool {
 	for _, group := range root.ConfigGroups {
 		for _, item := range group.Items {
-			if item.Name == configItemName {
+			if item != nil && item.Name == configItemName {
 				return true
 			}
-			for _, childItem := range item.Items {
-				if childItem.Name == configItemName {
-					return true
+			if item != nil {
+				for _, childItem := range item.Items {
+					if childItem != nil && childItem.Name == configItemName {
+						return true
+					}
 				}
 			}
 		}
@@ -247,7 +249,7 @@ func ConfigItemExists(configItemName string, root *RootConfig) bool {
 
 func ComponentExists(componentName string, root *RootConfig) bool {
 	for _, component := range root.Components {
-		if component.Name == componentName {
+		if component != nil && component.Name == componentName {
 			return true
 		}
 	}
@@ -257,9 +259,9 @@ func ComponentExists(componentName string, root *RootConfig) bool {
 
 func ContainerExists(componentName, containerName string, root *RootConfig) bool {
 	for _, component := range root.Components {
-		if component.Name == componentName {
+		if component != nil && component.Name == componentName {
 			for _, container := range component.Containers {
-				if container.ImageName == containerName {
+				if container != nil && container.ImageName == containerName {
 					return true
 				}
 			}

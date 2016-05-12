@@ -20,16 +20,16 @@ type Container struct {
 	Cluster              bool                          `yaml:"cluster" json:"cluster"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
 	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
-	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive"`
+	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
 	SubscribedEvents     []map[string]interface{}      `yaml:"-" json:"-"`
-	ConfigFiles          []*ContainerConfigFile        `yaml:"config_files" json:"config_files" validate:"dive"`
-	CustomerFiles        []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files" validate:"dive"`
-	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive"`
-	Ports                []*ContainerPort              `yaml:"ports" json:"ports" validate:"dive"`
-	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive"`
-	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive"`
-	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive"`
-	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive"`
+	ConfigFiles          []*ContainerConfigFile        `yaml:"config_files" json:"config_files" validate:"dive,exists"`
+	CustomerFiles        []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
+	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
+	Ports                []*ContainerPort              `yaml:"ports" json:"ports" validate:"dive,exists"`
+	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
+	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
+	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
+	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	When                 string                        `yaml:"when" json:"when"`
 }
 
@@ -160,16 +160,16 @@ type nonclusterableContainer struct {
 	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
 	Cluster          bool                       `yaml:"cluster" json:"cluster"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
-	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive"`
+	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
 	SubscribedEvents []map[string]interface{}   `yaml:"-" json:"-"`
-	ConfigFiles      []*ContainerConfigFile     `yaml:"config_files" json:"config_files" validate:"dive"`
-	CustomerFiles    []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files" validate:"dive"`
-	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive"`
-	Ports            []*ContainerPort           `yaml:"ports" json:"ports" validate:"dive"`
-	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive"`
-	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"hosts" validate:"dive"`
-	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive"`
-	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive"`
+	ConfigFiles      []*ContainerConfigFile     `yaml:"config_files" json:"config_files" validate:"dive,exists"`
+	CustomerFiles    []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
+	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
+	Ports            []*ContainerPort           `yaml:"ports" json:"ports" validate:"dive,exists"`
+	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
+	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
+	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive,exists"`
+	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	When             string                     `yaml:"when" json:"when"`
 }
 

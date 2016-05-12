@@ -5,5 +5,5 @@ type ContainerEvent struct {
 	Trigger       string                        `yaml:"trigger" json:"trigger"`
 	Data          string                        `yaml:"data" json:"data"`
 	Args          []string                      `yaml:"args" json:"args"`
-	Subscriptions []*ContainerEventSubscription `yaml:"subscriptions" json:"subscriptions" validate:"dive"`
+	Subscriptions []*ContainerEventSubscription `yaml:"subscriptions" json:"subscriptions" validate:"dive,exists"`
 }
