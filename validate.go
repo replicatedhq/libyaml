@@ -16,7 +16,11 @@ var (
 	bytesRe = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
 )
 
+// RegisterValidations will register all known validation for the libyaml project.
 func RegisterValidations(v *validator.Validate) error {
+	if err := v.RegisterValidation("configitemtype", ConfigItemTypeValidation); err != nil {
+		return err
+	}
 	if err := v.RegisterValidation("configitemwhen", ConfigItemWhenValidation); err != nil {
 		return err
 	}
@@ -41,7 +45,7 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
-	if err := v.RegisterValidation("absolutepath", IsAbsolutePath); err != nil {
+	if err := v.RegisterValidation("absolutepath", IsAbsolutePathValidation); err != nil {
 		return err
 	}
 
@@ -63,7 +67,7 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
-	if err := v.RegisterValidation("tcpport", IsTcpPortValidation); err != nil {
+	if err := v.RegisterValidation("tcpport", IsTCPPortValidation); err != nil {
 		return err
 	}
 
@@ -198,9 +202,33 @@ func formatKey(keys []string, parent reflect.Value) (string, error) {
 	return "", nil
 }
 
-func ConfigItemWhenValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
-	// validates that the when in config items references a valid item
+// ConfigItemTypeValidation will validate that the type element of a config item is a supported and valid option.
+func ConfigItemTypeValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return false
+	}
 
+	validTypes := map[string]bool{
+		"text":        true,
+		"label":       true,
+		"password":    true,
+		"file":        true,
+		"bool":        true,
+		"select_one":  true,
+		"select_many": true,
+		"textarea":    true,
+		"select":      true,
+	}
+
+	if validTypes[field.String()] {
+		return true
+	}
+
+	return false
+}
+
+// ConfigItemWhenValidation will validate that the when element of a config item is in a valid format and references other valid, created objects.
+func ConfigItemWhenValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	root, ok := topStruct.Interface().(*RootConfig)
 	if !ok {
 		// this is an issue with the code and really should be a panic
@@ -229,10 +257,10 @@ func ConfigItemWhenValidation(v *validator.Validate, topStruct reflect.Value, cu
 		whenValue = parts[0]
 	}
 
-	return ConfigItemExists(whenValue, root)
+	return configItemExists(whenValue, root)
 }
 
-func ConfigItemExists(configItemName string, root *RootConfig) bool {
+func configItemExists(configItemName string, root *RootConfig) bool {
 	for _, group := range root.ConfigGroups {
 		for _, item := range group.Items {
 			if item != nil && item.Name == configItemName {
@@ -251,7 +279,7 @@ func ConfigItemExists(configItemName string, root *RootConfig) bool {
 	return false
 }
 
-func ComponentExists(componentName string, root *RootConfig) bool {
+func componentExists(componentName string, root *RootConfig) bool {
 	for _, component := range root.Components {
 		if component != nil && component.Name == componentName {
 			return true
@@ -261,7 +289,7 @@ func ComponentExists(componentName string, root *RootConfig) bool {
 	return false
 }
 
-func ContainerExists(componentName, containerName string, root *RootConfig) bool {
+func containerExists(componentName, containerName string, root *RootConfig) bool {
 	for _, component := range root.Components {
 		if component != nil && component.Name == componentName {
 			for _, container := range component.Containers {
@@ -276,6 +304,7 @@ func ContainerExists(componentName, containerName string, root *RootConfig) bool
 	return false
 }
 
+// ComponentExistsValidation will validate that the specified component name is present in the current YAML.
 func ComponentExistsValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	// validates that the component exists in the root.Components slice
 	root, ok := topStruct.Interface().(*RootConfig)
@@ -299,9 +328,10 @@ func ComponentExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 		componentName = parts[0]
 	}
 
-	return ComponentExists(componentName, root)
+	return componentExists(componentName, root)
 }
 
+// ContainerExistsValidation will validate that the specified container name is present in the current YAML.
 func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	// validates that the container exists in the root.components.containers slice
 
@@ -341,16 +371,16 @@ func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 		containerName = parts[1]
 	}
 
-	if !ComponentExists(componentName, root) {
+	if !componentExists(componentName, root) {
 		// let "componentexists" validation handle this case
 		return true
 	}
 
-	return ContainerExists(componentName, containerName, root)
+	return containerExists(componentName, containerName, root)
 }
 
-// IsAbsolutePath validates that the format of the field begins with a "/"
-func IsAbsolutePath(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+// IsAbsolutePathValidation validates that the format of the field begins with a "/"
+func IsAbsolutePathValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		// this is an issue with the code and really should be a panic
 		return true
@@ -359,6 +389,7 @@ func IsAbsolutePath(v *validator.Validate, topStruct reflect.Value, currentStruc
 	return strings.HasPrefix(field.String(), "/")
 }
 
+// ComponentContainerFormatValidation will validate that component/container name is in the correct format.
 func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	// validates the format of the string field conforms to "<component name>,<container image name>"
 
@@ -376,6 +407,7 @@ func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect
 	return true
 }
 
+// SemverValidation will validate that the field is in correct, proper semver format.
 func SemverValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		return true
@@ -389,6 +421,7 @@ func SemverValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 	return err == nil
 }
 
+// IsBytesValidation will return if a field is a parseable bytes value.
 func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		// this is an issue with the code and really should be a panic
@@ -412,6 +445,7 @@ func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentSt
 	return true
 }
 
+// IsBoolValidation will return if a string field parses to a bool.
 func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		// this is an issue with the code and really should be a panic
@@ -430,7 +464,8 @@ func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 	return true
 }
 
-func IsTcpPortValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+// IsTCPPortValidation will return true if a field value is also a valid TCP port.
+func IsTCPPortValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.Int32 {
 		// this is an issue with the code and really should be a panic
 		return true
@@ -440,10 +475,12 @@ func IsTcpPortValidation(v *validator.Validate, topStruct reflect.Value, current
 	return 0 <= port && port <= 65535
 }
 
+// NoopValidation will return true always.
 func NoopValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	return true
 }
 
+// GraphiteRetentionFormatValidation will return true if the field value is a valid graphite retention value.
 func GraphiteRetentionFormatValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		return true
@@ -490,6 +527,7 @@ func GraphiteRetentionFormatValidation(v *validator.Validate, topStruct reflect.
 	return true
 }
 
+// GraphiteAggregationFormatValidation will return true if the field value is a valid value for the a graphite aggregation.
 func GraphiteAggregationFormatValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		return true
@@ -508,6 +546,7 @@ func GraphiteAggregationFormatValidation(v *validator.Validate, topStruct reflec
 	}
 }
 
+// MonitorLabelScaleValidation will return true only if the value is a parseable and correct value for the scale.
 func MonitorLabelScaleValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		return true

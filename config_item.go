@@ -13,7 +13,7 @@ type ConfigItem struct {
 	DataCmd               *ConfigItemCmd         `yaml:"data_cmd" json:"data_cmd"`
 	ReadOnly              bool                   `yaml:"readonly" json:"readonly"`
 	When                  string                 `yaml:"when" json:"when" validate:"configitemwhen"`
-	Type                  string                 `yaml:"type" json:"type" validate:"required"`
+	Type                  string                 `yaml:"type" json:"type" validate:"required,configitemtype"`
 	Multiple              bool                   `yaml:"multiple" json:"multiple"`
 	Hidden                bool                   `yaml:"hidden" json:"hidden"`
 	Position              int                    `yaml:"-" json:"-"`
@@ -22,7 +22,7 @@ type ConfigItem struct {
 	Required              bool                   `yaml:"required" json:"required"`
 	TestProc              *TestProc              `yaml:"test_proc" json:"test_proc"`
 	IsExcludedFromSupport bool                   `yaml:"is_excluded_from_support" json:"is_excluded_from_support"`
-	Items                 []*ConfigItem          `yaml:"items" json:"items" validate:"dive,exists"`
+	Items                 []*ConfigChildItem     `yaml:"items" json:"items" validate:"dive,exists"`
 }
 
 type ConfigItemCmd struct {
