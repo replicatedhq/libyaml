@@ -379,14 +379,14 @@ func ContainerExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 	return containerExists(componentName, containerName, root)
 }
 
-// IsAbsolutePathValidation validates that the format of the field begins with a "/"
+// IsAbsolutePathValidation validates that the format of the field begins with a "/" unless is't a repl template
 func IsAbsolutePathValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		// this is an issue with the code and really should be a panic
 		return true
 	}
 
-	return strings.HasPrefix(field.String(), "/")
+	return strings.HasPrefix(field.String(), "/") || strings.HasPrefix(field.String(), "{{repl")
 }
 
 // ComponentContainerFormatValidation will validate that component/container name is in the correct format.
