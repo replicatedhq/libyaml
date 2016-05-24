@@ -20,6 +20,9 @@ config_files: []
 customer_files: []
 env_vars: []
 ports: []
+logs:
+  max_size: "100k"
+  max_files: "5"
 volumes: []
 support_files: []
 support_commands: []`
@@ -47,6 +50,12 @@ support_commands: []`
 	if c.ClusterInstanceCount.ThresholdHealthy != 0 {
 		t.Errorf("expecting \"Container.ClusterInstanceCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterInstanceCount.ThresholdHealthy)
 	}
+	if c.LogOptions.MaxFiles != "5" {
+		t.Errorf("expecting \"Container.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
+	}
+	if c.LogOptions.MaxSize != "100k" {
+		t.Errorf("expecting \"Container.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
+	}
 }
 
 func TestContainerUnmarshalYAMLCluster(t *testing.T) {
@@ -63,6 +72,9 @@ config_files: []
 customer_files: []
 env_vars: []
 ports: []
+logs:
+  max_size: ""
+  max_files: ""
 volumes: []
 support_files: []
 support_commands: []`
@@ -116,6 +128,9 @@ config_files: []
 customer_files: []
 env_vars: []
 ports: []
+logs:
+  max_size: 100k
+  max_files: "5"
 volumes: []
 extra_hosts: []
 support_files: []
@@ -123,10 +138,15 @@ support_commands: []
 when: ""
 `
 
+	logReqs := LogOptions{
+		MaxSize:  "100k",
+		MaxFiles: "5",
+	}
 	c := Container{
-		Source:    "public",
-		ImageName: "test",
-		Cluster:   false,
+		Source:     "public",
+		ImageName:  "test",
+		Cluster:    false,
+		LogOptions: logReqs,
 	}
 
 	b, err := yaml.Marshal(c)
@@ -166,6 +186,9 @@ config_files: []
 customer_files: []
 env_vars: []
 ports: []
+logs:
+  max_size: ""
+  max_files: ""
 volumes: []
 extra_hosts: []
 support_files: []

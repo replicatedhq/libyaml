@@ -26,6 +26,7 @@ type Container struct {
 	CustomerFiles        []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
 	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
 	Ports                []*ContainerPort              `yaml:"ports" json:"ports" validate:"dive,exists"`
+	LogOptions           LogOptions                    `yaml:"logs" json:"logs"`
 	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
 	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
@@ -101,6 +102,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.CustomerFiles = c.CustomerFiles
 	m.EnvVars = c.EnvVars
 	m.Ports = c.Ports
+	m.LogOptions = c.LogOptions
 	m.Volumes = c.Volumes
 	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles
@@ -134,6 +136,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.CustomerFiles = m.CustomerFiles
 	c.EnvVars = m.EnvVars
 	c.Ports = m.Ports
+	c.LogOptions = m.LogOptions
 	c.Volumes = m.Volumes
 	c.ExtraHosts = m.ExtraHosts
 	c.SupportFiles = m.SupportFiles
@@ -166,6 +169,7 @@ type nonclusterableContainer struct {
 	CustomerFiles    []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
 	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
 	Ports            []*ContainerPort           `yaml:"ports" json:"ports" validate:"dive,exists"`
+	LogOptions       LogOptions                 `yaml:"logs" json:"logs"`
 	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
 	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive,exists"`
@@ -198,6 +202,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.CustomerFiles = c.CustomerFiles
 	m.EnvVars = c.EnvVars
 	m.Ports = c.Ports
+	m.LogOptions = c.LogOptions
 	m.Volumes = c.Volumes
 	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles

@@ -14,6 +14,9 @@ cluster: false
 cluster_host_count:
   min: 0
   threshold_healthy: 0
+logs:
+  max_size: 100k
+  max_files: 5
 containers: []`
 
 	var c Component
@@ -32,6 +35,12 @@ containers: []`
 	}
 	if c.ClusterHostCount.ThresholdHealthy != 0 {
 		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterHostCount.ThresholdHealthy)
+	}
+	if c.LogOptions.MaxFiles != "5" {
+		t.Errorf("expecting \"Component.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
+	}
+	if c.LogOptions.MaxSize != "100k" {
+		t.Errorf("expecting \"Component.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
 	}
 }
 
@@ -74,6 +83,9 @@ host_requirements:
   cpu_mhz: 0
   memory: ""
   disk_space: ""
+logs:
+  max_size: ""
+  max_files: ""
 host_volumes: []
 containers: []
 `
@@ -106,13 +118,21 @@ host_requirements:
   cpu_mhz: 0
   memory: ""
   disk_space: ""
+logs:
+  max_size: 100k
+  max_files: "5"
 host_volumes: []
 containers: []
 `
 
+	logReqs := LogOptions{
+		MaxSize:  "100k",
+		MaxFiles: "5",
+	}
 	c := Component{
-		Name:    "test",
-		Cluster: true,
+		Name:       "test",
+		Cluster:    true,
+		LogOptions: logReqs,
 	}
 
 	b, err := yaml.Marshal(c)
