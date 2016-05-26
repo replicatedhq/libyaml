@@ -218,6 +218,7 @@ func ConfigItemTypeValidation(v *validator.Validate, topStruct reflect.Value, cu
 		"select_many": true,
 		"textarea":    true,
 		"select":      true,
+		"heading":     true,
 	}
 
 	if validTypes[field.String()] {
