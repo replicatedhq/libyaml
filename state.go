@@ -7,4 +7,5 @@ type State struct {
 type StateEvent struct {
 	Command string   `yaml:"command" json:"command"`
 	Args    []string `yaml:"args" json:"args"`
+	Timeout int      `yaml:"timeout" json:"timeout"`
 }
