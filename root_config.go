@@ -12,12 +12,14 @@ type RootConfig struct {
 	Backup                 Backup           `yaml:"backup" json:"backup"`
 	Monitors               Monitors         `yaml:"monitors" json:"monitors"`
 	HostRequirements       HostRequirements `yaml:"host_requirements" json:"host_requirements"`
-	Components             []*Component     `yaml:"components" json:"components" validate:"dive,exists"`
 	ConfigCommands         []*ConfigCommand `yaml:"cmds" json:"cmds" validate:"dive,exists"`
 	ConfigGroups           []*ConfigGroup   `yaml:"config" json:"config" validate:"dive,exists"`
 	AdminCommands          []*AdminCommand  `yaml:"admin_commands" json:"admin_commands" validate:"dive,exists"`
 	CustomMetrics          []*CustomMetric  `yaml:"custom_metrics" json:"custom_metrics" validate:"dive"`
 	Graphite               Graphite         `yaml:"graphite" json:"graphite" validate:"dive"`
+
+	Components []*Component `yaml:"components" json:"components" validate:"dive,exists"` // replicated scheduler config
+	K8s        *K8s         `yaml:"kubernetes" json:"kubernetes"`
 }
 
 const DEFAULT_APP_CONFIG = `---
