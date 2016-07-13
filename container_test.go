@@ -1,7 +1,9 @@
-package libyaml
+package libyaml_test
 
 import (
 	"testing"
+
+	"github.com/replicatedhq/libyaml"
 
 	"github.com/andreychernih/yaml"
 )
@@ -27,7 +29,7 @@ volumes: []
 support_files: []
 support_commands: []`
 
-	var c Container
+	var c libyaml.Container
 	if err := yaml.Unmarshal([]byte(s), &c); err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +81,7 @@ volumes: []
 support_files: []
 support_commands: []`
 
-	var c Container
+	var c libyaml.Container
 	if err := yaml.Unmarshal([]byte(s), &c); err != nil {
 		t.Fatal(err)
 	}
@@ -138,11 +140,11 @@ support_commands: []
 when: ""
 `
 
-	logReqs := LogOptions{
+	logReqs := libyaml.LogOptions{
 		MaxSize:  "100k",
 		MaxFiles: "5",
 	}
-	c := Container{
+	c := libyaml.Container{
 		Source:     "public",
 		ImageName:  "test",
 		Cluster:    false,
@@ -196,7 +198,7 @@ support_commands: []
 when: ""
 `
 
-	c := Container{
+	c := libyaml.Container{
 		Source:    "public",
 		ImageName: "test",
 		Cluster:   true,
