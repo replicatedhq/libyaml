@@ -31,6 +31,7 @@ type Container struct {
 	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
 	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
+	ContentTrust         ContentTrust                  `yaml:"content_trust" json:"content_trust" validate:"dive"`
 	When                 string                        `yaml:"when" json:"when"`
 }
 
@@ -107,6 +108,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles
 	m.SupportCommands = c.SupportCommands
+	m.ContentTrust = c.ContentTrust
 	m.When = c.When
 }
 
@@ -141,6 +143,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.ExtraHosts = m.ExtraHosts
 	c.SupportFiles = m.SupportFiles
 	c.SupportCommands = m.SupportCommands
+	c.ContentTrust = m.ContentTrust
 	c.When = m.When
 }
 
@@ -174,6 +177,7 @@ type nonclusterableContainer struct {
 	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
 	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive,exists"`
 	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
+	ContentTrust     ContentTrust               `yaml:"content_trust" json:"content_trust" validate:"dive"`
 	When             string                     `yaml:"when" json:"when"`
 }
 
@@ -207,5 +211,6 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles
 	m.SupportCommands = c.SupportCommands
+	m.ContentTrust = c.ContentTrust
 	m.When = c.When
 }
