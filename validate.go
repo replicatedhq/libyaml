@@ -83,6 +83,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("fingerprint", Fingerprint); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -125,6 +129,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "monitorlabelscale":
 		return fmt.Errorf("Please specify 'metric', 'none', or a floating point number for scale at %q", formatted)
+
+	case "fingerprint":
+		return fmt.Errorf("Please specify a valid RFC4716 key fingerprint at %q", formatted)
 
 	default:
 		return fmt.Errorf("Validation failed on the \"%s\" tag at key \"%s\"", fieldErr.Tag, formatted)
@@ -565,4 +572,30 @@ func MonitorLabelScaleValidation(v *validator.Validate, topStruct reflect.Value,
 		_, err := strconv.ParseFloat(valueStr, 64)
 		return err == nil
 	}
+}
+
+// Validates MD5 fingerprint defined in RFC4716
+func Fingerprint(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	valueStr := field.String()
+	if valueStr == "" {
+		return true
+	}
+
+	// Valid fingerprints look like this: cb:69:19:cd:76:1f:17:54:92:a4:fc:a9:6f:a5:57:72
+	octets := strings.Split(valueStr, ":")
+	if len(octets) != 16 {
+		return false
+	}
+	for _, o := range octets {
+		valid, err := regexp.MatchString("[a-f0-9][a-f0-9]", o)
+		if err != nil || !valid {
+			return false
+		}
+	}
+
+	return true
 }
