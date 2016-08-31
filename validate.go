@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/blang/semver"
-	validator "gopkg.in/bluesuncorp/validator.v8"
+	validator "gopkg.in/go-playground/validator.v8"
 )
 
 var (
