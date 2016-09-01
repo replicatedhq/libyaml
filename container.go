@@ -33,6 +33,7 @@ type Container struct {
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	ContentTrust         ContentTrust                  `yaml:"content_trust" json:"content_trust" validate:"dive"`
 	When                 string                        `yaml:"when" json:"when"`
+	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
 }
 
 type ContainerRestartPolicy struct {
@@ -110,6 +111,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.SupportCommands = c.SupportCommands
 	m.ContentTrust = c.ContentTrust
 	m.When = c.When
+	m.PidMode = c.PidMode
 }
 
 func (m marshallerContainer) decode(c *Container) {
@@ -145,6 +147,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.SupportCommands = m.SupportCommands
 	c.ContentTrust = m.ContentTrust
 	c.When = m.When
+	c.PidMode = m.PidMode
 }
 
 type nonclusterableContainer struct {
@@ -179,6 +182,7 @@ type nonclusterableContainer struct {
 	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	ContentTrust     ContentTrust               `yaml:"content_trust" json:"content_trust" validate:"dive"`
 	When             string                     `yaml:"when" json:"when"`
+	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
@@ -213,4 +217,5 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.SupportCommands = c.SupportCommands
 	m.ContentTrust = c.ContentTrust
 	m.When = c.When
+	m.PidMode = c.PidMode
 }
