@@ -4,6 +4,7 @@ type Container struct {
 	Source               string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
 	DisplayName          string                        `yaml:"display_name" json:"display_name"`
+	Name                 string                        `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
 	Version              string                        `yaml:"version" json:"version" validate:"required"`
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
 	NetworkMode          string                        `yaml:"network_mode" json:"network_mode"`
@@ -28,6 +29,7 @@ type Container struct {
 	Ports                []*ContainerPort              `yaml:"ports" json:"ports" validate:"dive,exists"`
 	LogOptions           LogOptions                    `yaml:"logs" json:"logs"`
 	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
+	VolumesFrom          []string                      `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists,requiressubscription"`
 	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
 	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
@@ -82,6 +84,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Source = c.Source
 	m.ImageName = c.ImageName
 	m.DisplayName = c.DisplayName
+	m.Name = c.Name
 	m.Version = c.Version
 	m.Privileged = c.Privileged
 	m.NetworkMode = c.NetworkMode
@@ -106,6 +109,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Ports = c.Ports
 	m.LogOptions = c.LogOptions
 	m.Volumes = c.Volumes
+	m.VolumesFrom = c.VolumesFrom
 	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles
 	m.SupportCommands = c.SupportCommands
@@ -118,6 +122,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Source = m.Source
 	c.ImageName = m.ImageName
 	c.DisplayName = m.DisplayName
+	c.Name = m.Name
 	c.Version = m.Version
 	c.Privileged = m.Privileged
 	c.NetworkMode = m.NetworkMode
@@ -142,6 +147,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Ports = m.Ports
 	c.LogOptions = m.LogOptions
 	c.Volumes = m.Volumes
+	c.VolumesFrom = m.VolumesFrom
 	c.ExtraHosts = m.ExtraHosts
 	c.SupportFiles = m.SupportFiles
 	c.SupportCommands = m.SupportCommands
@@ -154,6 +160,7 @@ type nonclusterableContainer struct {
 	Source           string                     `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName        string                     `yaml:"image_name" json:"image_name" validate:"required"`
 	DisplayName      string                     `yaml:"display_name" json:"display_name"`
+	Name             string                     `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
 	Version          string                     `yaml:"version" json:"version" validate:"required"`
 	Privileged       bool                       `yaml:"privileged" json:"privileged"`
 	NetworkMode      string                     `yaml:"network_mode" json:"network_mode"`
@@ -177,6 +184,7 @@ type nonclusterableContainer struct {
 	Ports            []*ContainerPort           `yaml:"ports" json:"ports" validate:"dive,exists"`
 	LogOptions       LogOptions                 `yaml:"logs" json:"logs"`
 	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
+	VolumesFrom      []string                   `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists"`
 	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
 	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive,exists"`
 	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
@@ -189,6 +197,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Source = c.Source
 	m.ImageName = c.ImageName
 	m.DisplayName = c.DisplayName
+	m.Name = c.Name
 	m.Version = c.Version
 	m.Privileged = c.Privileged
 	m.NetworkMode = c.NetworkMode
@@ -212,6 +221,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Ports = c.Ports
 	m.LogOptions = c.LogOptions
 	m.Volumes = c.Volumes
+	m.VolumesFrom = c.VolumesFrom
 	m.ExtraHosts = c.ExtraHosts
 	m.SupportFiles = c.SupportFiles
 	m.SupportCommands = c.SupportCommands

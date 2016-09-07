@@ -87,6 +87,22 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("containernameexists", ContainerNameExists); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("containernameunique", ContainerNameUnique); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("clusterinstancefalse", ClusterInstanceFalse); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("requiressubscription", RequiresSubscription); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -101,22 +117,22 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 		return fmt.Errorf("A valid \"replicated_api_version\" is required as a root element")
 
 	case "componentexists":
-		return fmt.Errorf("Component \"%s\" does not exist at key \"%s\"", fieldErr.Value, formatted)
+		return fmt.Errorf("Component %q does not exist at key %q", fieldErr.Value, formatted)
 
 	case "containerexists":
-		return fmt.Errorf("Container \"%s\" does not exist at key \"%s\"", fieldErr.Value, formatted)
+		return fmt.Errorf("Container %q does not exist at key %q", fieldErr.Value, formatted)
 
 	case "componentcontainer":
-		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\" at key \"%s\"", formatted)
+		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\" at key %q", formatted)
 
 	case "integrationexists":
-		return fmt.Errorf("Missing integration \"%s\" at key \"%s\"", fieldErr.Value, formatted)
+		return fmt.Errorf("Missing integration %q at key %q", fieldErr.Value, formatted)
 
 	case "externalregistryexists":
-		return fmt.Errorf("Missing external registry integration \"%s\" at key \"%s\"", fieldErr.Value, formatted)
+		return fmt.Errorf("Missing external registry integration %q at key %q", fieldErr.Value, formatted)
 
 	case "required":
-		return fmt.Errorf("Value required at key \"%s\"", formatted)
+		return fmt.Errorf("Value required at key %q", formatted)
 
 	case "tcpport":
 		return fmt.Errorf("A valid port number must be between 0 and 65535: %q", formatted)
@@ -133,8 +149,20 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 	case "fingerprint":
 		return fmt.Errorf("Please specify a valid RFC4716 key fingerprint at %q", formatted)
 
+	case "containernameexists":
+		return fmt.Errorf("Container name %q does not exist at key %q", fieldErr.Value, formatted)
+
+	case "containernameunique":
+		return fmt.Errorf("Container name %q is required to be unique at key %q", fieldErr.Value, formatted)
+
+	case "clusterinstancefalse":
+		return fmt.Errorf("Cluster must be set to false for container at key %q", formatted)
+
+	case "requiressubscription":
+		return fmt.Errorf("Failed to traverse subscription tree from key %q to container with name %q", formatted, fieldErr.Value)
+
 	default:
-		return fmt.Errorf("Validation failed on the \"%s\" tag at key \"%s\"", fieldErr.Tag, formatted)
+		return fmt.Errorf("Validation failed on the %q tag at key %q", fieldErr.Tag, formatted)
 	}
 }
 
@@ -174,7 +202,7 @@ func formatKey(keys []string, parent reflect.Value) (string, error) {
 
 		field, ok := parent.Type().FieldByName(matches[1])
 		if !ok {
-			return "", fmt.Errorf("field \"%s\" not found", matches[1])
+			return "", fmt.Errorf("field %q not found", matches[1])
 		}
 
 		yamlTag := field.Tag.Get("yaml")
@@ -394,7 +422,7 @@ func IsAbsolutePathValidation(v *validator.Validate, topStruct reflect.Value, cu
 		return true
 	}
 
-	return strings.HasPrefix(field.String(), "/") || strings.HasPrefix(field.String(), "{{repl")
+	return strings.HasPrefix(field.String(), "/") || strings.HasPrefix(field.String(), "{{repl ")
 }
 
 // ComponentContainerFormatValidation will validate that component/container name is in the correct format.
@@ -598,4 +626,220 @@ func Fingerprint(v *validator.Validate, topStruct reflect.Value, currentStructOr
 	}
 
 	return true
+}
+
+func ContainerNameExists(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	containerName := field.String()
+	if containerName == "" {
+		return true
+	}
+
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
+	root, ok := topStruct.Interface().(*RootConfig)
+	if !ok {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	currentContainer := getCurrentContainer(currentStructOrField)
+	if currentContainer == nil {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	container := getContainerFromName(containerName, currentContainer, root)
+	if container == nil {
+		return false
+	}
+	return true
+}
+
+func ContainerNameUnique(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	containerName := field.String()
+	if containerName == "" {
+		return true
+	}
+
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
+	root, ok := topStruct.Interface().(*RootConfig)
+	if !ok {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	currentContainer := getCurrentContainer(currentStructOrField)
+	if currentContainer == nil {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	container := getContainerFromName(containerName, currentContainer, root)
+	if container != nil {
+		return false
+	}
+	return true
+}
+
+func ClusterInstanceFalse(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	valueStr := field.String()
+	if valueStr == "" {
+		return true
+	}
+
+	currentContainer := getCurrentContainer(currentStructOrField)
+	if currentContainer == nil {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	if currentContainer.Cluster {
+		return false
+	}
+
+	return true
+}
+
+func RequiresSubscription(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	containerName := field.String()
+	if containerName == "" {
+		return true
+	}
+
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
+	root, ok := topStruct.Interface().(*RootConfig)
+	if !ok {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	currentContainer := getCurrentContainer(currentStructOrField)
+	if currentContainer == nil {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	currentComponent := getCurrentComponentFromContainer(currentContainer, root)
+	if currentComponent == nil {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	subscribedContainer := getContainerFromName(containerName, currentContainer, root)
+	if subscribedContainer == nil {
+		return false
+	}
+
+	subscribedComponent := getCurrentComponentFromContainer(subscribedContainer, root)
+	if subscribedComponent == nil {
+		return false
+	}
+
+	subscriptions := buildSubscriptionMap(root)
+
+	current := fmt.Sprintf("%s:%s", currentComponent.Name, currentContainer.ImageName)
+	subscribed := fmt.Sprintf("%s:%s", subscribedComponent.Name, subscribedContainer.ImageName)
+	if !dependsOn(subscriptions, current, subscribed) {
+		return false
+	}
+
+	return true
+}
+
+func hasReplTemplate(field reflect.Value) bool {
+	return strings.Contains(field.String(), "{{repl ")
+}
+
+func getCurrentContainer(current reflect.Value) *Container {
+	if !current.CanAddr() {
+		return nil
+	}
+	currentContainer, _ := current.Addr().Interface().(*Container)
+	return currentContainer
+}
+
+func getCurrentComponentFromContainer(current *Container, root *RootConfig) *Component {
+	for _, component := range root.Components {
+		for _, container := range component.Containers {
+			if current == container {
+				return component
+			}
+		}
+	}
+	return nil
+}
+
+func getContainerFromName(name string, current *Container, root *RootConfig) *Container {
+	for _, component := range root.Components {
+		for _, container := range component.Containers {
+			if current == container {
+				continue
+			}
+			if container.Name == name {
+				return container
+			}
+		}
+	}
+	return nil
+}
+
+func buildSubscriptionMap(root *RootConfig) map[string]string {
+	result := make(map[string]string)
+	for _, component := range root.Components {
+		for _, container := range component.Containers {
+			for _, p := range container.PublishEvents {
+				for _, s := range p.Subscriptions {
+					if s.Action != "start" {
+						continue
+					}
+					result[fmt.Sprintf("%s:%s", s.ComponentName, s.ContainerName)] = fmt.Sprintf("%s:%s", component.Name, container.ImageName)
+				}
+			}
+		}
+	}
+	return result
+}
+
+func dependsOn(subscriptions map[string]string, current string, subscribed string) bool {
+	nextCurrent, ok := subscriptions[current]
+	if !ok {
+		return false
+	}
+	if nextCurrent == subscribed {
+		return true
+	}
+	nextSubscriptions := make(map[string]string)
+	for k, v := range subscriptions {
+		if k != current {
+			nextSubscriptions[k] = v
+		}
+	}
+	return dependsOn(nextSubscriptions, nextCurrent, subscribed)
 }
