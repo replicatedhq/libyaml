@@ -5,7 +5,7 @@ import (
 
 	"github.com/replicatedhq/libyaml"
 
-	"github.com/andreychernih/yaml"
+	"gopkg.in/yaml.v2"
 )
 
 func TestContainerUnmarshalYAML(t *testing.T) {
@@ -58,6 +58,9 @@ support_commands: []`
 	if c.LogOptions.MaxSize != "100k" {
 		t.Errorf("expecting \"Container.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
 	}
+	if c.Entrypoint != nil {
+		t.Errorf("expecting \"Container.Entrypoint\" == \"nil\", got \"%s\"", c.Entrypoint)
+	}
 }
 
 func TestContainerUnmarshalYAMLCluster(t *testing.T) {
@@ -68,6 +71,7 @@ version: ""
 privileged: false
 hostname: ""
 cmd: ""
+entrypoint: []
 cluster: true
 publish_events: []
 config_files: []
@@ -104,12 +108,16 @@ support_commands: []`
 	if c.ClusterInstanceCount.ThresholdHealthy != 0 {
 		t.Errorf("expecting \"Container.ClusterInstanceCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterInstanceCount.ThresholdHealthy)
 	}
+	if c.Entrypoint == nil || len(*c.Entrypoint) != 0 {
+		t.Errorf("expecting \"Container.Entrypoint\" to be empty, got \"%s\"", c.Entrypoint)
+	}
 }
 
 func TestContainerMarshalYAML(t *testing.T) {
 	s := `source: public
 image_name: test
 display_name: ""
+name: ""
 version: ""
 privileged: false
 network_mode: ""
@@ -121,6 +129,7 @@ security_cap_add: []
 security_options: []
 hostname: ""
 cmd: ""
+entrypoint: null
 ephemeral: false
 suppress_restart: []
 cluster: false
@@ -134,10 +143,14 @@ logs:
   max_size: 100k
   max_files: "5"
 volumes: []
+volumes_from: []
 extra_hosts: []
 support_files: []
 support_commands: []
+content_trust:
+  public_key_fingerprint: ""
 when: ""
+pid_mode: ""
 `
 
 	logReqs := libyaml.LogOptions{
@@ -165,6 +178,7 @@ func TestContainerMarshalYAMLCluster(t *testing.T) {
 	s := `source: public
 image_name: test
 display_name: ""
+name: ""
 version: ""
 privileged: false
 network_mode: ""
@@ -176,6 +190,7 @@ security_cap_add: []
 security_options: []
 hostname: ""
 cmd: ""
+entrypoint: null
 ephemeral: false
 suppress_restart: []
 cluster: true
@@ -192,10 +207,14 @@ logs:
   max_size: ""
   max_files: ""
 volumes: []
+volumes_from: []
 extra_hosts: []
 support_files: []
 support_commands: []
+content_trust:
+  public_key_fingerprint: ""
 when: ""
+pid_mode: ""
 `
 
 	c := libyaml.Container{

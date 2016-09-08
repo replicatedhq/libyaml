@@ -16,6 +16,7 @@ type Container struct {
 	SecurityOptions      []string                      `yaml:"security_options" json:"security_options"`
 	Hostname             string                        `yaml:"hostname" json:"hostname"`
 	Cmd                  string                        `yaml:"cmd" json:"cmd"`
+	Entrypoint           *[]string                     `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral            bool                          `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
 	Cluster              bool                          `yaml:"cluster" json:"cluster"`
@@ -96,6 +97,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.SecurityOptions = c.SecurityOptions
 	m.Hostname = c.Hostname
 	m.Cmd = c.Cmd
+	m.Entrypoint = c.Entrypoint
 	m.Ephemeral = c.Ephemeral
 	m.SuppressRestart = c.SuppressRestart
 	m.Cluster = c.Cluster
@@ -134,6 +136,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.SecurityOptions = m.SecurityOptions
 	c.Hostname = m.Hostname
 	c.Cmd = m.Cmd
+	c.Entrypoint = m.Entrypoint
 	c.Ephemeral = m.Ephemeral
 	c.SuppressRestart = m.SuppressRestart
 	c.Cluster = m.Cluster
@@ -172,6 +175,7 @@ type nonclusterableContainer struct {
 	SecurityOptions  []string                   `yaml:"security_options" json:"security_options"`
 	Hostname         string                     `yaml:"hostname" json:"hostname"`
 	Cmd              string                     `yaml:"cmd" json:"cmd"`
+	Entrypoint       *[]string                  `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
 	Cluster          bool                       `yaml:"cluster" json:"cluster"`
@@ -209,6 +213,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.SecurityOptions = c.SecurityOptions
 	m.Hostname = c.Hostname
 	m.Cmd = c.Cmd
+	m.Entrypoint = c.Entrypoint
 	m.Ephemeral = c.Ephemeral
 	m.SuppressRestart = c.SuppressRestart
 	m.Cluster = false

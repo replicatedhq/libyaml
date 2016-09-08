@@ -5,7 +5,7 @@ import (
 
 	"github.com/replicatedhq/libyaml"
 
-	"github.com/andreychernih/yaml"
+	"gopkg.in/yaml.v2"
 )
 
 func TestComponentUnmarshalYAML(t *testing.T) {

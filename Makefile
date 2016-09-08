@@ -9,4 +9,4 @@ shell:
 	  libyaml
 
 deps:
-	go get .
+	go get -t .
