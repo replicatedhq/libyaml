@@ -22,6 +22,7 @@ type ConfigItem struct {
 	Required              bool                   `yaml:"required" json:"required"`
 	TestProc              *TestProc              `yaml:"test_proc" json:"test_proc"`
 	IsExcludedFromSupport bool                   `yaml:"is_excluded_from_support" json:"is_excluded_from_support"`
+	Filters               []string               `yaml:"filters" json:"filters" validate:"dive,exists"`
 	Items                 []*ConfigChildItem     `yaml:"items" json:"items" validate:"dive,exists"`
 }
 
