@@ -1,7 +1,10 @@
-.PHONY: test shell deps
+.PHONY: test docker shell deps
 
 test:
 	go test -v -covermode=count .
+
+docker:
+	docker build -t libyaml .
 
 shell:
 	docker run --rm -it --name libyaml \
