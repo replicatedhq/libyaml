@@ -492,6 +492,11 @@ func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 		return true
 	}
 
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
 	_, err := strconv.ParseBool(field.String())
 	if err != nil {
 		return false
