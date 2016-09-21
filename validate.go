@@ -706,13 +706,24 @@ func ClusterInstanceFalse(v *validator.Validate, topStruct reflect.Value, curren
 		return true
 	}
 
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
 	currentContainer := getCurrentContainer(currentStructOrField)
 	if currentContainer == nil {
 		// this is an issue with the code and really should be a panic
 		return true
 	}
 
-	if currentContainer.Cluster {
+	cluster, err := strconv.ParseBool(currentContainer.Cluster)
+	if err != nil {
+		// don't worry about this here. cluster should have the "bool" validator.
+		return true
+	}
+
+	if cluster {
 		return false
 	}
 

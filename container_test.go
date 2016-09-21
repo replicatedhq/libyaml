@@ -43,8 +43,8 @@ support_commands: []`
 	if c.DisplayName != "Test Container" {
 		t.Errorf("expecting \"Container.DisplayName\" == \"Test Container\", got \"%s\"", c.ImageName)
 	}
-	if c.Cluster {
-		t.Error("expecting \"Container.Cluster\" to be false")
+	if c.Cluster != "false" {
+		t.Error("expecting \"Container.Cluster\" to be \"false\"")
 	}
 	if c.ClusterInstanceCount.Initial != 0 {
 		t.Errorf("expecting \"Container.ClusterInstanceCount.Initial\" == 0, got \"%d\"", c.ClusterInstanceCount.Initial)
@@ -99,8 +99,8 @@ support_commands: []`
 	if c.DisplayName != "Test Container" {
 		t.Errorf("expecting \"Container.DisplayName\" == \"Test Container\", got \"%s\"", c.ImageName)
 	}
-	if !c.Cluster {
-		t.Error("expecting \"Container.Cluster\" to be true")
+	if c.Cluster != "true" {
+		t.Error("expecting \"Container.Cluster\" to be \"true\"")
 	}
 	if c.ClusterInstanceCount.Initial != 1 {
 		t.Errorf("expecting \"Container.ClusterInstanceCount.Initial\" == 1, got \"%d\"", c.ClusterInstanceCount.Initial)
@@ -132,7 +132,7 @@ cmd: ""
 entrypoint: null
 ephemeral: false
 suppress_restart: []
-cluster: false
+cluster: "false"
 restart: null
 publish_events: []
 config_files: []
@@ -160,7 +160,7 @@ pid_mode: ""
 	c := libyaml.Container{
 		Source:     "public",
 		ImageName:  "test",
-		Cluster:    false,
+		Cluster:    "false",
 		LogOptions: logReqs,
 	}
 
@@ -193,7 +193,7 @@ cmd: ""
 entrypoint: null
 ephemeral: false
 suppress_restart: []
-cluster: true
+cluster: "true"
 restart: null
 cluster_instance_count:
   initial: 1
@@ -220,7 +220,7 @@ pid_mode: ""
 	c := libyaml.Container{
 		Source:    "public",
 		ImageName: "test",
-		Cluster:   true,
+		Cluster:   "true",
 	}
 
 	b, err := yaml.Marshal(c)

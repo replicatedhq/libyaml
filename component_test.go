@@ -29,8 +29,8 @@ containers: []`
 	if c.Name != "test" {
 		t.Errorf("expecting \"Component.Name\" == \"test\", got \"%s\"", c.Name)
 	}
-	if c.Cluster {
-		t.Error("expecting \"Component.Cluster\" to be false")
+	if c.Cluster != "false" {
+		t.Error("expecting \"Component.Cluster\" to be \"false\"")
 	}
 	if c.ClusterHostCount.Min != 0 {
 		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == 0, got \"%d\"", c.ClusterHostCount.Min)
@@ -61,8 +61,8 @@ containers: []`
 	if c.Name != "test" {
 		t.Errorf("expecting \"Component.Name\" == \"test\", got \"%s\"", c.Name)
 	}
-	if !c.Cluster {
-		t.Error("expecting \"Component.Cluster\" to be true")
+	if c.Cluster != "true" {
+		t.Error("expecting \"Component.Cluster\" to be \"true\"")
 	}
 	if c.ClusterHostCount.Min != 0 {
 		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == 0, got \"%d\"", c.ClusterHostCount.Min)
@@ -76,7 +76,7 @@ func TestComponentMarshalYAML(t *testing.T) {
 	s := `name: test
 tags: []
 conflicts: []
-cluster: false
+cluster: "false"
 cluster_host_count:
   min: 0
   threshold_healthy: 0
@@ -94,7 +94,7 @@ containers: []
 
 	c := libyaml.Component{
 		Name:    "test",
-		Cluster: false,
+		Cluster: "false",
 	}
 
 	b, err := yaml.Marshal(c)
@@ -111,7 +111,7 @@ func TestComponentMarshalYAMLCluster(t *testing.T) {
 	s := `name: test
 tags: []
 conflicts: []
-cluster: true
+cluster: "true"
 cluster_host_count:
   min: 0
   threshold_healthy: 0
@@ -133,7 +133,7 @@ containers: []
 	}
 	c := libyaml.Component{
 		Name:       "test",
-		Cluster:    true,
+		Cluster:    "true",
 		LogOptions: logReqs,
 	}
 
