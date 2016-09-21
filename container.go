@@ -1,5 +1,7 @@
 package libyaml
 
+import "strconv"
+
 type Container struct {
 	Source               string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
@@ -19,7 +21,7 @@ type Container struct {
 	Entrypoint           *[]string                     `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral            bool                          `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster              bool                          `yaml:"cluster" json:"cluster"`
+	Cluster              string                        `yaml:"cluster" json:"cluster" validate:"bool"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
 	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
 	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
@@ -58,7 +60,11 @@ func (c *Container) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 	m.decode(c)
 
-	if c.Cluster {
+	cluster, err := strconv.ParseBool(c.Cluster)
+	if err != nil {
+		cluster = c.Cluster != "" // assume this is a template
+	}
+	if cluster {
 		if c.ClusterInstanceCount.Initial == 0 {
 			c.ClusterInstanceCount.Initial = 1
 		}
@@ -68,7 +74,11 @@ func (c *Container) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 func (c Container) MarshalYAML() (interface{}, error) {
-	if !c.Cluster {
+	cluster, err := strconv.ParseBool(c.Cluster)
+	if err != nil {
+		cluster = c.Cluster != "" // assume this is a template
+	}
+	if !cluster {
 		m := nonclusterableContainer{}
 		m.encode(c)
 		return m, nil
@@ -178,7 +188,7 @@ type nonclusterableContainer struct {
 	Entrypoint       *[]string                  `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster          bool                       `yaml:"cluster" json:"cluster"`
+	Cluster          string                     `yaml:"cluster" json:"cluster" validate:"bool"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
 	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
 	SubscribedEvents []map[string]interface{}   `yaml:"-" json:"-"`
@@ -216,7 +226,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Entrypoint = c.Entrypoint
 	m.Ephemeral = c.Ephemeral
 	m.SuppressRestart = c.SuppressRestart
-	m.Cluster = false
+	m.Cluster = "false"
 	m.Restart = c.Restart
 	m.PublishEvents = c.PublishEvents
 	m.SubscribedEvents = c.SubscribedEvents
