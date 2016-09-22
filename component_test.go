@@ -76,7 +76,7 @@ func TestComponentMarshalYAML(t *testing.T) {
 	s := `name: test
 tags: []
 conflicts: []
-cluster: "false"
+cluster: false
 cluster_host_count:
   min: 0
   threshold_healthy: 0
@@ -111,7 +111,7 @@ func TestComponentMarshalYAMLCluster(t *testing.T) {
 	s := `name: test
 tags: []
 conflicts: []
-cluster: "true"
+cluster: true
 cluster_host_count:
   min: 0
   threshold_healthy: 0

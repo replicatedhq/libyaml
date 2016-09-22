@@ -722,7 +722,7 @@ func ClusterInstanceFalse(v *validator.Validate, topStruct reflect.Value, curren
 		return true
 	}
 
-	cluster, err := strconv.ParseBool(currentContainer.Cluster)
+	cluster, err := currentContainer.Cluster.ParseBool()
 	if err != nil {
 		// don't worry about this here. cluster should have the "bool" validator.
 		return true

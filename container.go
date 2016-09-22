@@ -1,7 +1,5 @@
 package libyaml
 
-import "strconv"
-
 type Container struct {
 	Source               string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
@@ -21,7 +19,7 @@ type Container struct {
 	Entrypoint           *[]string                     `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral            bool                          `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster              string                        `yaml:"cluster" json:"cluster" validate:"bool"`
+	Cluster              BoolString                    `yaml:"cluster" json:"cluster" validate:"bool"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
 	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
 	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
@@ -60,7 +58,7 @@ func (c *Container) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 	m.decode(c)
 
-	cluster, err := strconv.ParseBool(c.Cluster)
+	cluster, err := c.Cluster.ParseBool()
 	if err != nil {
 		cluster = c.Cluster != "" // assume this is a template
 	}
@@ -74,7 +72,7 @@ func (c *Container) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 func (c Container) MarshalYAML() (interface{}, error) {
-	cluster, err := strconv.ParseBool(c.Cluster)
+	cluster, err := c.Cluster.ParseBool()
 	if err != nil {
 		cluster = c.Cluster != "" // assume this is a template
 	}
@@ -188,7 +186,7 @@ type nonclusterableContainer struct {
 	Entrypoint       *[]string                  `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster          string                     `yaml:"cluster" json:"cluster" validate:"bool"`
+	Cluster          BoolString                 `yaml:"cluster" json:"cluster" validate:"bool"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
 	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
 	SubscribedEvents []map[string]interface{}   `yaml:"-" json:"-"`
