@@ -132,7 +132,7 @@ cmd: ""
 entrypoint: null
 ephemeral: false
 suppress_restart: []
-cluster: "false"
+cluster: false
 restart: null
 publish_events: []
 config_files: []
@@ -193,7 +193,7 @@ cmd: ""
 entrypoint: null
 ephemeral: false
 suppress_restart: []
-cluster: "true"
+cluster: true
 restart: null
 cluster_instance_count:
   initial: 1
