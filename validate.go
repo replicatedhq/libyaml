@@ -468,6 +468,11 @@ func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentSt
 		return true
 	}
 
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
 	parts := bytesRe.FindStringSubmatch(strings.TrimSpace(field.String()))
 	if len(parts) < 3 {
 		return false
