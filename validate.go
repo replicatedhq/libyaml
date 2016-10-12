@@ -67,7 +67,11 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
-	if err := v.RegisterValidation("tcpport", IsTCPPortValidation); err != nil {
+	if err := v.RegisterValidation("tcpport", IsTCPUDPPortValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("udpport", IsTCPUDPPortValidation); err != nil {
 		return err
 	}
 
@@ -510,8 +514,8 @@ func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 	return true
 }
 
-// IsTCPPortValidation will return true if a field value is also a valid TCP port.
-func IsTCPPortValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+// IsTCPUDPPortValidation will return true if a field value is also a valid TCP port.
+func IsTCPUDPPortValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.Int32 {
 		// this is an issue with the code and really should be a panic
 		return true
