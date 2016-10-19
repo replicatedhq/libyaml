@@ -49,6 +49,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("volumeoptions", VolumeOptionsValidation); err != nil {
+		return err
+	}
+
 	// will handle this in vendor web. this prevents panic from validator.v8 library
 	if err := v.RegisterValidation("integrationexists", NoopValidation); err != nil {
 		return err
@@ -128,6 +132,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "componentcontainer":
 		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\" at key %q", formatted)
+
+	case "volumeoptions":
+		return fmt.Errorf("Invalid volume option list %q", formatted)
 
 	case "integrationexists":
 		return fmt.Errorf("Missing integration %q at key %q", fieldErr.Value, formatted)
@@ -427,6 +434,49 @@ func IsAbsolutePathValidation(v *validator.Validate, topStruct reflect.Value, cu
 	}
 
 	return strings.HasPrefix(field.String(), "/") || strings.HasPrefix(field.String(), "{{repl ")
+}
+
+// VolumeOptionsValidation checks that volume option list does not contain any conlicting or duplicate options.
+func VolumeOptionsValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	// TODO: There are more rules.  Look for errInvalidMode in docker source code.
+	// Specifically, the nocopy option requires some additional checks.
+
+	if fieldKind != reflect.Slice {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	options, ok := field.Interface().([]string)
+	if !ok {
+		return false
+	}
+
+	// Only one of each is allowed.
+	rwModes := map[string]bool{"rw": true, "ro": true}
+	labelModes := map[string]bool{"z": true, "Z": true}
+	propModes := map[string]bool{"shared": true, "slave": true, "private": true, "rshared": true, "rslave": true, "rprivate": true}
+	copyModes := map[string]bool{"nocopy": true}
+
+	numRwModes := 0
+	numLabelModes := 0
+	numPropModes := 0
+	numCopyModes := 0
+	for _, o := range options {
+		switch {
+		case rwModes[o]:
+			numRwModes++
+		case labelModes[o]:
+			numLabelModes++
+		case propModes[o]:
+			numPropModes++
+		case copyModes[o]:
+			numCopyModes++
+		default:
+			return false
+		}
+	}
+
+	return numRwModes < 2 && numLabelModes < 2 && numPropModes < 2 && numCopyModes < 2
 }
 
 // ComponentContainerFormatValidation will validate that component/container name is in the correct format.
