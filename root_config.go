@@ -18,6 +18,7 @@ type RootConfig struct {
 	CustomMetrics          []*CustomMetric  `yaml:"custom_metrics" json:"custom_metrics" validate:"dive"`
 	Graphite               Graphite         `yaml:"graphite" json:"graphite" validate:"dive"`
 	StatsD                 StatsD           `yaml:"statsd" json:"statsd" validate:"dive"`
+	Localization           *Localization    `yaml:"localization,omitempty" json:"localization,omitempty" validate:"dive"`
 
 	Components []*Component `yaml:"components" json:"components" validate:"dive,exists"` // replicated scheduler config
 	K8s        *K8s         `yaml:"kubernetes" json:"kubernetes"`                        // this is deprecated, prefer multi-doc

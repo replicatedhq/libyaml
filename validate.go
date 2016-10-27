@@ -217,6 +217,10 @@ func formatKey(keys []string, parent reflect.Value) (string, error) {
 		}
 
 		yamlTag := field.Tag.Get("yaml")
+		yamlTagParts := strings.Split(yamlTag, ",")
+		if len(yamlTagParts) > 0 {
+			yamlTag = yamlTagParts[0]
+		}
 
 		value := parent.FieldByName(matches[1])
 
