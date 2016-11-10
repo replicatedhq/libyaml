@@ -33,6 +33,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("semverrange", SemverRangeValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("componentexists", ComponentExistsValidation); err != nil {
 		return err
 	}
@@ -123,6 +127,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 	switch fieldErr.Tag {
 	case "apiversion":
 		return fmt.Errorf("A valid \"replicated_api_version\" is required as a root element")
+
+	case "semverrange":
+		return fmt.Errorf("Invalid version range suppiled in %q", formatted)
 
 	case "componentexists":
 		return fmt.Errorf("Component %q does not exist at key %q", fieldErr.Value, formatted)
@@ -512,6 +519,20 @@ func SemverValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 	}
 
 	_, err := semver.Make(field.String())
+	return err == nil
+}
+
+// SemverRangeValidation will validate that the field is in correct, proper semver format.
+func SemverRangeValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	if field.String() == "" {
+		return true
+	}
+
+	_, err := semver.ParseRange(field.String())
 	return err == nil
 }
 
