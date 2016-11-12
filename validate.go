@@ -37,6 +37,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("hastarget", HasTargetValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("componentexists", ComponentExistsValidation); err != nil {
 		return err
 	}
@@ -54,6 +58,10 @@ func RegisterValidations(v *validator.Validate) error {
 	}
 
 	if err := v.RegisterValidation("volumeoptions", VolumeOptionsValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("isempty", IsEmptyValidation); err != nil {
 		return err
 	}
 
@@ -130,6 +138,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "semverrange":
 		return fmt.Errorf("Invalid version range suppiled in %q", formatted)
+
+	case "hastarget":
+		return fmt.Errorf("Custom monitor is missing targets at key %q", formatted)
 
 	case "componentexists":
 		return fmt.Errorf("Component %q does not exist at key %q", fieldErr.Value, formatted)
@@ -360,6 +371,22 @@ func containerExists(componentName, containerName string, root *RootConfig) bool
 	}
 
 	return false
+}
+
+// HasTargetValidation validates that all custom monitors have at least one target defined
+func HasTargetValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	customMonitors, ok := field.Interface().([]CustomMonitor)
+	if !ok {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	for _, monitor := range customMonitors {
+		if len(monitor.Target) == 0 && len(monitor.Targets) == 0 {
+			return false
+		}
+	}
+	return true
 }
 
 // ComponentExistsValidation will validate that the specified component name is present in the current YAML.
@@ -598,6 +625,19 @@ func IsTCPUDPPortValidation(v *validator.Validate, topStruct reflect.Value, curr
 
 	port := field.Int()
 	return 0 <= port && port <= 65535
+}
+
+func IsEmptyValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	valueStr := field.String()
+	if valueStr == "" {
+		return true
+	}
+
+	return false
 }
 
 // NoopValidation will return true always.
