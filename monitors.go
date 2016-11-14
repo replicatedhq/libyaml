@@ -5,6 +5,8 @@ type CustomMonitor struct {
 	Target    string   `yaml:"target" json:"target"` // for backwards compatibility
 	Targets   []string `yaml:"targets" json:"targets"`
 	Dashboard string   `yaml:"dashboard" json:"dashboard"`
+	From      string   `yaml:"from" json:"from"`
+	Until     string   `yaml:"until" json:"until"`
 
 	Display struct {
 		LabelUnit          string  `yaml:"label_unit" json:"label_unit"`
