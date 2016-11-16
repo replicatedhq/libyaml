@@ -1,7 +1,7 @@
 package libyaml
 
 type ContainerConfigFile struct {
-	Filename  string `yaml:"filename" json:"filename"`
+	Filename  string `yaml:"filename" json:"filename" validate:"required"`
 	Contents  string `yaml:"contents" json:"contents"`
 	Source    string `yaml:"source" json:"source" validate:"integrationexists"`
 	Owner     string `yaml:"owner" json:"owner"`
