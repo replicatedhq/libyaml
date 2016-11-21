@@ -1,8 +1,8 @@
 package libyaml
 
 type AdminCommand struct {
+	Alias     string       `yaml:"alias" json:"alias" validate:"shellalias"`
 	Command   []string     `yaml:"command" json:"command"`
-	Alias     string       `yaml:"alias" json:"alias"`
 	Timeout   uint         `yaml:"timeout" json:"timeout"`
 	RunType   string       `yaml:"run_type" json:"run_type"`
 	Component string       `yaml:"component" json:"component" validate:"componentexists"`

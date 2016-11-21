@@ -107,6 +107,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("shellalias", ShellAlias); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("containernameexists", ContainerNameExists); err != nil {
 		return err
 	}
@@ -174,6 +178,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "monitorlabelscale":
 		return fmt.Errorf("Please specify 'metric', 'none', or a floating point number for scale at %q", formatted)
+
+	case "shellalias":
+		return fmt.Errorf("Valid characters for shell alias are [a-zA-Z0-9_\\-] at %q", formatted)
 
 	case "fingerprint":
 		return fmt.Errorf("Please specify a valid RFC4716 key fingerprint at %q", formatted)
@@ -752,6 +759,25 @@ func Fingerprint(v *validator.Validate, topStruct reflect.Value, currentStructOr
 		if err != nil || !valid {
 			return false
 		}
+	}
+
+	return true
+}
+
+// ShellAlias validates that the string is a suitable to be used as a shell alias
+func ShellAlias(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	valueStr := field.String()
+	if valueStr == "" {
+		return true
+	}
+
+	valid, err := regexp.MatchString("^[a-zA-Z0-9_\\-]*$", valueStr)
+	if err != nil || !valid {
+		return false
 	}
 
 	return true
