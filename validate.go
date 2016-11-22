@@ -1,7 +1,9 @@
 package libyaml
 
 import (
+	"bytes"
 	"fmt"
+	"html/template"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -127,6 +129,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("template_function_params", TemplateFunctionParameterValidation); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -196,6 +202,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "requiressubscription":
 		return fmt.Errorf("Failed to traverse subscription tree from key %q to container with name %q", formatted, fieldErr.Value)
+
+	case "template_function_params":
+		return fmt.Errorf("Bad template function name or parameters, %q at %q", fieldErr.Value, formatted)
 
 	default:
 		return fmt.Errorf("Validation failed on the %q tag at key %q", fieldErr.Tag, formatted)
@@ -879,6 +888,37 @@ func ClusterInstanceFalse(v *validator.Validate, topStruct reflect.Value, curren
 	}
 
 	if cluster {
+		return false
+	}
+
+	return true
+}
+
+func TemplateFunctionParameterValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	root, ok := topStruct.Interface().(*RootConfig)
+	if !ok {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	startCtx := &StartCtx{
+		config: root,
+	}
+	tmpl, err := template.New("test").Delims("{{repl ", "}}").Funcs(startCtx.buildFunctions()).Parse(field.String())
+	if err != nil {
+		return false
+	}
+
+	var contents bytes.Buffer
+	if err := tmpl.Execute(&contents, nil); err != nil {
+		return false
+	}
+
+	if startCtx.err != nil {
 		return false
 	}
 
