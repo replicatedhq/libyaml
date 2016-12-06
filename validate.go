@@ -2,6 +2,7 @@ package libyaml
 
 import (
 	"fmt"
+	"net/url"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -111,6 +112,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("url", URLValid); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("containernameexists", ContainerNameExists); err != nil {
 		return err
 	}
@@ -181,6 +186,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "shellalias":
 		return fmt.Errorf("Valid characters for shell alias are [a-zA-Z0-9_\\-] at %q", formatted)
+
+	case "url":
+		return fmt.Errorf("A valid URL accessible from the internet is required at %q", formatted)
 
 	case "fingerprint":
 		return fmt.Errorf("Please specify a valid RFC4716 key fingerprint at %q", formatted)
@@ -777,6 +785,24 @@ func ShellAlias(v *validator.Validate, topStruct reflect.Value, currentStructOrF
 
 	valid, err := regexp.MatchString("^[a-zA-Z0-9_\\-]*$", valueStr)
 	if err != nil || !valid {
+		return false
+	}
+
+	return true
+}
+
+func URLValid(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		return true
+	}
+
+	imageUrl := field.String()
+	if imageUrl == "" {
+		return true
+	}
+
+	_, err := url.Parse(imageUrl)
+	if err != nil {
 		return false
 	}
 
