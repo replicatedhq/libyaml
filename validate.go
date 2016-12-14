@@ -801,8 +801,16 @@ func URLValid(v *validator.Validate, topStruct reflect.Value, currentStructOrFie
 		return true
 	}
 
-	_, err := url.Parse(imageUrl)
+	parsed, err := url.Parse(imageUrl)
 	if err != nil {
+		return false
+	}
+
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return false
+	}
+
+	if parsed.Host == "" {
 		return false
 	}
 
