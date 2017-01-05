@@ -25,16 +25,40 @@ type RootConfig struct {
 }
 
 const DEFAULT_APP_CONFIG = `---
-replicated_api_version: "1.3.2"
+replicated_api_version: 2.4.2
 name: "%s"
+
+#
+# https://www.replicated.com/docs/packaging-an-application/application-properties
+#
 properties:
-  app_url: ""
-  logo_url: http://www.replicated.com/images/logo.png
-  console_title: Your App Name
-backup:
-  enabled: false
-monitors:
-  cpuacct: []
-  memory: []
+  app_url: http://{{repl ConfigOption "hostname" }}
+  console_title: "%s"
+
+#
+# Settings screen
+# https://www.replicated.com/docs/packaging-an-application/config-screen
+#
+config:
+- name: hostname
+  title: Hostname
+  description: Ensure this domain name is routable on your network.
+  items:
+  - name: hostname
+    title: Hostname
+    value: '{{repl ConsoleSetting "tls.hostname"}}'
+    type: text
+    test_proc:
+      display_name: Check DNS
+      command: resolve_host
+
+#
+# Define how the application containers will be created and started
+# https://www.replicated.com/docs/packaging-an-application/components-and-containers
+#
 components: []
-config: []`
+
+#
+# Documentation for additional features
+# https://www.replicated.com/docs/packaging-an-application
+#`
