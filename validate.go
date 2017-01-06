@@ -22,6 +22,7 @@ func RegisterValidations(v *validator.Validate) error {
 	if err := v.RegisterValidation("configitemtype", ConfigItemTypeValidation); err != nil {
 		return err
 	}
+
 	if err := v.RegisterValidation("configitemwhen", ConfigItemWhenValidation); err != nil {
 		return err
 	}
@@ -132,6 +133,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("customrequirementidunique", CustomRequirementIDUnique); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -204,6 +209,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "requiressubscription":
 		return fmt.Errorf("Failed to traverse subscription tree from key %q to container with name %q", formatted, fieldErr.Value)
+
+	case "customrequirementidunique":
+		return fmt.Errorf("Custom requirement %q is required to be unique at key %q", fieldErr.Value, formatted)
 
 	default:
 		return fmt.Errorf("Validation failed on the %q tag at key %q", fieldErr.Tag, formatted)

@@ -6,7 +6,7 @@ test:
 docker:
 	docker build -t libyaml .
 
-shell:
+shell: docker
 	docker run --rm -it --name libyaml \
 	  -v "`pwd`:/go/src/github.com/replicatedhq/libyaml" \
 	  libyaml
