@@ -1,4 +1,4 @@
-FROM golang:1.5
+FROM golang:1.6
 
 ENV PROJECTPATH=/go/src/github.com/replicatedhq/libyaml
 

@@ -8,6 +8,8 @@ func (s BoolString) ParseBool() (bool, error) {
 	return strconv.ParseBool(string(s))
 }
 
+// TODO: json?
+
 func (s BoolString) MarshalYAML() (interface{}, error) {
 	if s == "" {
 		return false, nil
