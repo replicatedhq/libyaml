@@ -3,8 +3,41 @@ package libyaml_test
 import (
 	"testing"
 
+	. "github.com/replicatedhq/libyaml"
 	validator "gopkg.in/go-playground/validator.v8"
 )
+
+func TestIntValidator(t *testing.T) {
+	v := validator.New(&validator.Config{TagName: "validate"})
+	err := v.RegisterValidation("int", IntValidation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.Field("123", "int")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("-123", "int")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("", "int")
+	AssertValidationErrors(t, err, map[string]string{
+		"": "int",
+	})
+	err = v.Field("", "omitempty,int")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("123.1", "int")
+	AssertValidationErrors(t, err, map[string]string{
+		"": "int",
+	})
+	err = v.Field("abc", "int")
+	AssertValidationErrors(t, err, map[string]string{
+		"": "int",
+	})
+}
 
 func AssertValidationErrors(t *testing.T, err error, pathAndTags map[string]string) bool {
 	validationErrors, ok := err.(validator.ValidationErrors)
