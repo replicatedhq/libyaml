@@ -19,6 +19,10 @@ var (
 
 // RegisterValidations will register all known validation for the libyaml project.
 func RegisterValidations(v *validator.Validate) error {
+	if err := v.RegisterValidation("int", IntValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("configitemtype", ConfigItemTypeValidation); err != nil {
 		return err
 	}
@@ -291,6 +295,13 @@ func formatKey(keys []string, parent reflect.Value) (string, error) {
 	}
 
 	return "", nil
+}
+
+var intRegex = regexp.MustCompile(`^[-+]?[0-9]+$`)
+
+// IntValidation is the validation function for validating if the current field's value is a valid integer
+func IntValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	return intRegex.MatchString(field.String())
 }
 
 // ConfigItemTypeValidation will validate that the type element of a config item is a supported and valid option.

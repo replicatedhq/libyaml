@@ -29,7 +29,7 @@ custom_requirements:
     id: cmd-id
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -54,7 +54,7 @@ custom_requirements:
     id: cmd-id
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -86,7 +86,7 @@ custom_requirements:
     id: cmd-id
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -123,7 +123,7 @@ custom_requirements:
     id: cmd-id
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -144,13 +144,63 @@ custom_requirements:
     id: cmd-id
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
 		AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].Results": "required",
+		})
+	}(t)
+
+	// test status code
+	func(t *testing.T) {
+		config := `---
+replicated_api_version: "1.3.2"
+custom_requirements:
+- id: req-id
+  message: message
+  results:
+  - status: status
+    message: message
+    condition:
+    condition:
+      status_code: 1.2
+  command:
+    id: cmd-id
+`
+		var root RootConfig
+		err := yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.CustomRequirements[0].Results[0].Condition.StatusCode": "int",
+		})
+
+		config = `---
+replicated_api_version: "1.3.2"
+custom_requirements:
+- id: req-id
+  message: message
+  results:
+  - status: status
+    message: message
+    condition:
+    condition:
+      status_code: abc
+  command:
+    id: cmd-id
+`
+		err = yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.CustomRequirements[0].Results[0].Condition.StatusCode": "int",
 		})
 	}(t)
 
@@ -166,7 +216,7 @@ custom_requirements:
     id: cmd-id
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -190,7 +240,7 @@ custom_requirements:
     id: cmd-id
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -221,7 +271,7 @@ custom_requirements:
     message: message
 `
 		var root RootConfig
-		err = yaml.Unmarshal([]byte(config), &root)
+		err := yaml.Unmarshal([]byte(config), &root)
 		if err != nil {
 			t.Fatal(err)
 		}

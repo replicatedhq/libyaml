@@ -18,7 +18,7 @@ type CustomResult struct {
 
 type CustomCondition struct {
 	Error      bool       `yaml:"error,omitempty" json:"error,omitempty"`
-	StatusCode int        `yaml:"status_code,omitempty" json:"status_code,omitempty"`
+	StatusCode string     `yaml:"status_code,omitempty" json:"status_code,omitempty" validate:"omitempty,int"`
 	BoolExpr   BoolString `yaml:"bool_expr,omitempty" json:"bool_expr,omitempty"`
 }
 
