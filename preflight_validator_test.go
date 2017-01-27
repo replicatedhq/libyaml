@@ -34,9 +34,11 @@ func TestCustomRequirementIDUnique(t *testing.T) {
 			newCustomRequirement("1"),
 		}
 		err := v.Struct(root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].ID": "customrequirementidunique",
 			"RootConfig.CustomRequirements[2].ID": "customrequirementidunique",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 }
