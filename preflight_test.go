@@ -59,10 +59,12 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].Message.DefaultMessage": "required",
 			"RootConfig.CustomRequirements[0].Details.DefaultMessage": "required",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 
 	// test id unique
@@ -91,10 +93,12 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].ID": "customrequirementidunique",
 			"RootConfig.CustomRequirements[1].ID": "customrequirementidunique",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 }
 
@@ -149,9 +153,11 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].Results": "required",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 
 	// test status code
@@ -176,9 +182,11 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].Results[0].Condition.StatusCode": "int",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 
 		config = `---
 replicated_api_version: "1.3.2"
@@ -199,9 +207,11 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].Results[0].Condition.StatusCode": "int",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 
 	// test min
@@ -221,9 +231,11 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].Results": "min",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 
 	// test dive required
@@ -245,10 +257,12 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
-			"RootConfig.CustomRequirements[0].Results[0].Status":  "required",
-			"RootConfig.CustomRequirements[0].Results[0].Message": "required",
-		})
+		if err := AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.CustomRequirements[0].Results[0].Status":                 "required",
+			"RootConfig.CustomRequirements[0].Results[0].Message.DefaultMessage": "required",
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 }
 
@@ -276,9 +290,11 @@ custom_requirements:
 			t.Fatal(err)
 		}
 		err = v.Struct(&root)
-		AssertValidationErrors(t, err, map[string]string{
+		if err := AssertValidationErrors(t, err, map[string]string{
 			"RootConfig.CustomRequirements[0].Command.ID": "required",
-		})
+		}); err != nil {
+			t.Error(err)
+		}
 	}(t)
 }
 
@@ -290,8 +306,10 @@ func newCustomRequirement(id string) CustomRequirement {
 		},
 		Results: []CustomResult{
 			CustomResult{
-				Status:  "status",
-				Message: "message",
+				Status: "status",
+				Message: Message{
+					DefaultMessage: "message",
+				},
 			},
 		},
 		Command: CustomCommand{

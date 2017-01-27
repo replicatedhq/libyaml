@@ -13,3 +13,6 @@ shell: docker
 
 deps:
 	go get -t .
+
+install:
+	go install .
