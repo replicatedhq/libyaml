@@ -171,8 +171,7 @@ custom_requirements:
   - status: status
     message: message
     condition:
-    condition:
-      status_code: 1.2
+      status_code: 1
   command:
     id: cmd-id
 `
@@ -181,11 +180,9 @@ custom_requirements:
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = v.Struct(&root)
-		if err := AssertValidationErrors(t, err, map[string]string{
-			"RootConfig.CustomRequirements[0].Results[0].Condition.StatusCode": "int",
-		}); err != nil {
-			t.Error(err)
+		actual := *(root.CustomRequirements[0].Results[0].Condition.StatusCode)
+		if actual != 1 {
+			t.Errorf("expecting \"StatusCode\" == 1, got %d", actual)
 		}
 
 		config = `---
@@ -197,8 +194,7 @@ custom_requirements:
   - status: status
     message: message
     condition:
-    condition:
-      status_code: abc
+      status_code: 0
   command:
     id: cmd-id
 `
@@ -206,11 +202,31 @@ custom_requirements:
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = v.Struct(&root)
-		if err := AssertValidationErrors(t, err, map[string]string{
-			"RootConfig.CustomRequirements[0].Results[0].Condition.StatusCode": "int",
-		}); err != nil {
-			t.Error(err)
+		actual = *(root.CustomRequirements[0].Results[0].Condition.StatusCode)
+		if actual != 0 {
+			t.Errorf("expecting \"StatusCode\" == 0, got %d", actual)
+		}
+
+		config = `---
+replicated_api_version: "1.3.2"
+custom_requirements:
+- id: req-id
+  message: message
+  results:
+  - status: status
+    message: message
+    condition:
+      error: true
+  command:
+    id: cmd-id
+`
+		err = yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if root.CustomRequirements[0].Results[0].Condition.StatusCode != nil {
+			actual = *(root.CustomRequirements[0].Results[0].Condition.StatusCode)
+			t.Errorf("expecting \"StatusCode\" nil, got %d", actual)
 		}
 	}(t)
 
