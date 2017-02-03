@@ -13,8 +13,9 @@ type Component struct {
 }
 
 type ComponentClusterHostCount struct {
-	Min               uint `yaml:"min" json:"min"`
-	Max               uint `yaml:"max,omitempty" json:"max"` // 0 == unlimited
-	ThresholdHealthy  uint `yaml:"threshold_healthy" json:"threshold_healthy"`
-	ThresholdDegraded uint `yaml:"threshold_degraded,omitempty" json:"threshold_degraded"` // 0 == no degraded state
+	Strategy          string `yaml:"strategy" json:"strategy" validate:"clusterstrategy"`
+	Min               uint   `yaml:"min" json:"min"`
+	Max               uint   `yaml:"max,omitempty" json:"max"` // 0 == unlimited
+	ThresholdHealthy  uint   `yaml:"threshold_healthy" json:"threshold_healthy"`
+	ThresholdDegraded uint   `yaml:"threshold_degraded,omitempty" json:"threshold_degraded"` // 0 == no degraded state
 }
