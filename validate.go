@@ -59,6 +59,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("clusterstrategy", ClusterStrategyValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("absolutepath", IsAbsolutePathValidation); err != nil {
 		return err
 	}
@@ -168,6 +172,9 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "componentcontainer":
 		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\" at key %q", formatted)
+
+	case "clusterstrategy":
+		return fmt.Errorf("Invalid strategy value at key %q.  Valid values are \"random\" and the empty string.", formatted)
 
 	case "volumeoptions":
 		return fmt.Errorf("Invalid volume option list %q", formatted)
@@ -567,6 +574,16 @@ func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect
 	}
 
 	return true
+}
+
+// ClusterStrategyValidation will validate that component/container name is in the correct format.
+func ClusterStrategyValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	return field.String() == "random" || field.String() == ""
 }
 
 // SemverValidation will validate that the field is in correct, proper semver format.
