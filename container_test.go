@@ -5,7 +5,7 @@ import (
 
 	"github.com/replicatedhq/libyaml"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 func TestContainerUnmarshalYAML(t *testing.T) {
@@ -124,6 +124,7 @@ network_mode: ""
 cpu_shares: ""
 memory_limit: ""
 memory_swap_limit: ""
+ulimits: []
 allocate_tty: ""
 security_cap_add: []
 security_options: []
