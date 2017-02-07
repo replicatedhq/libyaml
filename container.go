@@ -11,6 +11,7 @@ type Container struct {
 	CPUShares            string                        `yaml:"cpu_shares" json:"cpu_shares"`
 	MemoryLimit          string                        `yaml:"memory_limit" json:"memory_limit"`
 	MemorySwapLimit      string                        `yaml:"memory_swap_limit" json:"memory_swap_limit"`
+	ULimits              []ULimit                      `yaml:"ulimits,omitempty" json:"ulimits,omitempty"`
 	AllocateTTY          string                        `yaml:"allocate_tty" json:"allocate_tty"`
 	SecurityCapAdd       []string                      `yaml:"security_cap_add" json:"security_cap_add"`
 	SecurityOptions      []string                      `yaml:"security_options" json:"security_options"`
@@ -49,6 +50,12 @@ type ContainerClusterInstanceCount struct {
 	Max               uint    `yaml:"max,omitempty" json:"max"` // 0 == unlimited
 	ThresholdHealthy  uint    `yaml:"threshold_healthy" json:"threshold_healthy"`
 	ThresholdDegraded uint    `yaml:"threshold_degraded,omitempty" json:"threshold_degraded"` // 0 == no degraded state
+}
+
+type ULimit struct {
+	Name string `yaml:"name" json:"name" validate:"required"`
+	Soft string `yaml:"soft,omitempty" json:"soft,omitempty"`
+	Hard string `yaml:"hard,omitempty" json:"hard,omitempty"`
 }
 
 func (c *Container) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -100,6 +107,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.CPUShares = c.CPUShares
 	m.MemoryLimit = c.MemoryLimit
 	m.MemorySwapLimit = c.MemorySwapLimit
+	m.ULimits = c.ULimits
 	m.AllocateTTY = c.AllocateTTY
 	m.SecurityCapAdd = c.SecurityCapAdd
 	m.SecurityOptions = c.SecurityOptions
@@ -139,6 +147,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.CPUShares = m.CPUShares
 	c.MemoryLimit = m.MemoryLimit
 	c.MemorySwapLimit = m.MemorySwapLimit
+	c.ULimits = m.ULimits
 	c.AllocateTTY = m.AllocateTTY
 	c.SecurityCapAdd = m.SecurityCapAdd
 	c.SecurityOptions = m.SecurityOptions
@@ -178,6 +187,7 @@ type nonclusterableContainer struct {
 	CPUShares        string                     `yaml:"cpu_shares" json:"cpu_shares"`
 	MemoryLimit      string                     `yaml:"memory_limit" json:"memory_limit"`
 	MemorySwapLimit  string                     `yaml:"memory_swap_limit" json:"memory_swap_limit"`
+	ULimits          []ULimit                   `yaml:"ulimits" json:"ulimits"`
 	AllocateTTY      string                     `yaml:"allocate_tty" json:"allocate_tty"`
 	SecurityCapAdd   []string                   `yaml:"security_cap_add" json:"security_cap_add"`
 	SecurityOptions  []string                   `yaml:"security_options" json:"security_options"`
@@ -216,6 +226,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.CPUShares = c.CPUShares
 	m.MemoryLimit = c.MemoryLimit
 	m.MemorySwapLimit = c.MemorySwapLimit
+	m.ULimits = c.ULimits
 	m.AllocateTTY = c.AllocateTTY
 	m.SecurityCapAdd = c.SecurityCapAdd
 	m.SecurityOptions = c.SecurityOptions
