@@ -37,6 +37,7 @@ type Container struct {
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	ContentTrust         ContentTrust                  `yaml:"content_trust" json:"content_trust" validate:"dive"`
 	When                 string                        `yaml:"when" json:"when"`
+	Dynamic              string                        `yaml:"dynamic" json:"dynamic"`
 	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
 }
 
@@ -97,6 +98,7 @@ func (c Container) MarshalYAML() (interface{}, error) {
 type marshallerContainer Container
 
 func (m *marshallerContainer) encode(c Container) {
+	// TODO: In go 1.8, this can be just copied automatically
 	m.Source = c.Source
 	m.ImageName = c.ImageName
 	m.DisplayName = c.DisplayName
@@ -133,10 +135,12 @@ func (m *marshallerContainer) encode(c Container) {
 	m.SupportCommands = c.SupportCommands
 	m.ContentTrust = c.ContentTrust
 	m.When = c.When
+	m.Dynamic = c.Dynamic
 	m.PidMode = c.PidMode
 }
 
 func (m marshallerContainer) decode(c *Container) {
+	// TODO: In go 1.8, this can be just copied automatically
 	c.Source = m.Source
 	c.ImageName = m.ImageName
 	c.DisplayName = m.DisplayName
@@ -173,6 +177,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.SupportCommands = m.SupportCommands
 	c.ContentTrust = m.ContentTrust
 	c.When = m.When
+	c.Dynamic = m.Dynamic
 	c.PidMode = m.PidMode
 }
 
@@ -212,10 +217,12 @@ type nonclusterableContainer struct {
 	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	ContentTrust     ContentTrust               `yaml:"content_trust" json:"content_trust" validate:"dive"`
 	When             string                     `yaml:"when" json:"when"`
+	Dynamic          string                     `yaml:"dynamic" json:"dynamic"`
 	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
+	// TODO: In go 1.8, this can be just copied automatically
 	m.Source = c.Source
 	m.ImageName = c.ImageName
 	m.DisplayName = c.DisplayName
@@ -251,5 +258,6 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.SupportCommands = c.SupportCommands
 	m.ContentTrust = c.ContentTrust
 	m.When = c.When
+	m.Dynamic = c.Dynamic
 	m.PidMode = c.PidMode
 }
