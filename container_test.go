@@ -151,6 +151,7 @@ support_commands: []
 content_trust:
   public_key_fingerprint: ""
 when: ""
+dynamic: ""
 pid_mode: ""
 `
 
@@ -215,6 +216,7 @@ support_commands: []
 content_trust:
   public_key_fingerprint: ""
 when: ""
+dynamic: ""
 pid_mode: ""
 `
 
