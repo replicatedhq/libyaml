@@ -583,7 +583,7 @@ func ClusterStrategyValidation(v *validator.Validate, topStruct reflect.Value, c
 		return true
 	}
 
-	return field.String() == "random" || field.String() == ""
+	return field.String() == "random"
 }
 
 // SemverValidation will validate that the field is in correct, proper semver format.
