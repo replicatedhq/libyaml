@@ -14,18 +14,17 @@ type AdminCommand struct {
 }
 
 type AdminCommandV2 struct {
-	Alias            string                        `yaml:"alias" json:"alias" validate:"required,shellalias"`
-	Command          []string                      `yaml:"command,flow" json:"command" validate:"required"`
-	Timeout          uint                          `yaml:"timeout,omitempty" json:"timeout,omitempty"`
-	RunType          AdminCommandRunType           `yaml:"run_type,omitempty" json:"run_type,omitempty"` // default "exec"
-	When             string                        `yaml:"when,omitempty" json:"when,omitempty"`
-	SourceReplicated *AdminCommandSourceReplicated `yaml:"replicated,omitempty" json:"replicated,omitempty" validate:"omitempty,dive"`
-	SourceKubernetes *AdminCommandSourceKubernetes `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty" validate:"omitempty,dive"`
+	Alias   string              `yaml:"alias" json:"alias" validate:"required,shellalias"`
+	Command []string            `yaml:"command,flow" json:"command" validate:"required"`
+	Timeout uint                `yaml:"timeout,omitempty" json:"timeout,omitempty"`
+	RunType AdminCommandRunType `yaml:"run_type,omitempty" json:"run_type,omitempty"` // default "exec"
+	When    string              `yaml:"when,omitempty" json:"when,omitempty"`
+	Source  AdminCommandSource  `yaml:"source" json:"source" validate:"required"`
 }
 
-type AdminCommandV1 struct { // deprecated
-	Component string        `yaml:"component,omitempty" json:"component,omitempty" validate:"omitempty,componentexists"`
-	Image     *CommandImage `yaml:"image,omitempty" json:"image,omitempty" validate:"omitempty,dive"`
+type AdminCommandSource struct {
+	Replicated *AdminCommandSourceReplicated `yaml:"replicated,omitempty" json:"replicated,omitempty" validate:"omitempty,dive"`
+	Kubernetes *AdminCommandSourceKubernetes `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty" validate:"omitempty,dive"`
 }
 
 type AdminCommandSourceReplicated struct {
@@ -39,6 +38,11 @@ type AdminCommandSourceKubernetes struct {
 }
 
 type AdminCommandRunType string
+
+type AdminCommandV1 struct { // deprecated
+	Component string        `yaml:"component,omitempty" json:"component,omitempty" validate:"omitempty,componentexists"`
+	Image     *CommandImage `yaml:"image,omitempty" json:"image,omitempty" validate:"omitempty,dive"`
+}
 
 type CommandImage struct {
 	Name    string `yaml:"image_name" json:"image_name" validate:"required"`
@@ -69,33 +73,33 @@ func (c *AdminCommand) unmarshal(unmarshal func(interface{}) error) error {
 	}
 	c.AdminCommandV1 = v1
 
-	if c.SourceReplicated == nil {
+	if c.Source.Replicated == nil {
 		out := &AdminCommandSourceReplicated{}
 		if err := unmarshal(out); err == nil && out.Component != "" {
-			c.SourceReplicated = out
+			c.Source.Replicated = out
 		}
 	}
-	if c.SourceKubernetes == nil {
+	if c.Source.Kubernetes == nil {
 		out := &AdminCommandSourceKubernetes{}
 		if err := unmarshal(out); err == nil && out.Selectors != nil {
-			c.SourceKubernetes = out
+			c.Source.Kubernetes = out
 		}
 	}
 
 	// backwards compatibility
-	if c.SourceReplicated != nil {
+	if c.Source.Replicated != nil {
 		if c.Image == nil {
 			c.Image = &CommandImage{}
 		}
 
 		if c.Component == "" {
-			c.Component = c.SourceReplicated.Component
+			c.Component = c.Source.Replicated.Component
 		}
 
-		if c.SourceReplicated.Container == "" {
-			c.SourceReplicated.Container = c.Image.Name
+		if c.Source.Replicated.Container == "" {
+			c.Source.Replicated.Container = c.Image.Name
 		} else {
-			c.Image.Name = c.SourceReplicated.Container
+			c.Image.Name = c.Source.Replicated.Container
 		}
 	}
 

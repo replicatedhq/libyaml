@@ -78,7 +78,6 @@ tags: []
 conflicts: []
 cluster: false
 cluster_host_count:
-  strategy: ""
   min: 0
   threshold_healthy: 0
 host_requirements:
@@ -114,7 +113,6 @@ tags: []
 conflicts: []
 cluster: true
 cluster_host_count:
-  strategy: ""
   min: 0
   threshold_healthy: 0
 host_requirements:

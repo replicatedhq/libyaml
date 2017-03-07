@@ -56,9 +56,10 @@ admin_commands:
 - alias: redis-sadd
   command: [redis-cli, sadd]
   run_type: exec
-  replicated:
-    component: MyComponent
-    container: redis
+  source:
+    replicated:
+      component: MyComponent
+      container: redis
 `,
 			"",
 		},
@@ -102,9 +103,11 @@ admin_commands:
 					Alias:   "redis-sadd",
 					Command: []string{"redis-cli", "sadd"},
 					RunType: AdminCommandRunTypeExec,
-					SourceReplicated: &AdminCommandSourceReplicated{
-						Component: "MyComponent",
-						Container: "redis",
+					Source: AdminCommandSource{
+						Replicated: &AdminCommandSourceReplicated{
+							Component: "MyComponent",
+							Container: "redis",
+						},
 					},
 				},
 				AdminCommandV1: AdminCommandV1{
@@ -136,9 +139,10 @@ admin_commands:
 			expectedOut := fmt.Sprintf(`alias: redis-sadd
 command: [redis-cli, sadd]
 run_type: exec
-replicated:
-  component: MyComponent
-  container: redis
+source:
+  replicated:
+    component: MyComponent
+    container: redis
 component: MyComponent
 image:
   image_name: redis
@@ -172,11 +176,12 @@ admin_commands:
 - alias: redis-sadd
   command: [redis-cli, sadd]
   run_type: exec
-  kubernetes:
-    selectors:
-      app: redis
-      role: master
-    container: master
+  source:
+    kubernetes:
+      selectors:
+        app: redis
+        role: master
+      container: master
 `,
 		// test non-indented
 		`---
@@ -215,12 +220,14 @@ admin_commands:
 					Alias:   "redis-sadd",
 					Command: []string{"redis-cli", "sadd"},
 					RunType: AdminCommandRunTypeExec,
-					SourceKubernetes: &AdminCommandSourceKubernetes{
-						Selectors: map[string]string{
-							"app":  "redis",
-							"role": "master",
+					Source: AdminCommandSource{
+						Kubernetes: &AdminCommandSourceKubernetes{
+							Selectors: map[string]string{
+								"app":  "redis",
+								"role": "master",
+							},
+							Container: "master",
 						},
-						Container: "master",
 					},
 				},
 			}
@@ -241,11 +248,12 @@ admin_commands:
 			expectedOut := fmt.Sprintf(`alias: redis-sadd
 command: [redis-cli, sadd]
 run_type: exec
-kubernetes:
-  selectors:
-    app: redis
-    role: master
-  container: master`) // v2 yaml omits container version
+source:
+  kubernetes:
+    selectors:
+      app: redis
+      role: master
+    container: master`) // v2 yaml omits container version
 			if strings.TrimSpace(expectedOut) != strings.TrimSpace(string(b)) {
 				t.Errorf("expected:\n%s\n\nactual:\n%s", expectedOut, string(b))
 			}
