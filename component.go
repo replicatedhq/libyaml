@@ -13,7 +13,7 @@ type Component struct {
 }
 
 type ComponentClusterHostCount struct {
-	Strategy          string `yaml:"strategy" json:"strategy" validate:"clusterstrategy"`
+	Strategy          string `yaml:"strategy,omitempty" json:"strategy,omitempty" validate:"omitempty,clusterstrategy"`
 	Min               uint   `yaml:"min" json:"min"`
 	Max               uint   `yaml:"max,omitempty" json:"max"` // 0 == unlimited
 	ThresholdHealthy  uint   `yaml:"threshold_healthy" json:"threshold_healthy"`
