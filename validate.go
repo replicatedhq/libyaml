@@ -13,8 +13,10 @@ import (
 )
 
 var (
-	keyRe   = regexp.MustCompile("^([^\\[]+)(?:\\[(\\d+)\\])?$")
-	bytesRe = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
+	keyRe             = regexp.MustCompile(`^([^\\[]+)(?:\\[(\\d+)\\])?$`)
+	bytesRe           = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
+	dockerVerLegacyRe = regexp.MustCompile(`^1\.([0-9]|(1[0-3]))\.[0-9]+$`)
+	dockerVerRe       = regexp.MustCompile(`^[0-9]{2}\.((0[1-9])|(1[0-2]))\.[0-9]+(-(ce|ee))?$`)
 )
 
 // RegisterValidations will register all known validation for the libyaml project.
@@ -32,6 +34,10 @@ func RegisterValidations(v *validator.Validate) error {
 	}
 
 	if err := v.RegisterValidation("apiversion", SemverValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("dockerversion", DockerVersionValidation); err != nil {
 		return err
 	}
 
@@ -157,6 +163,12 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 	switch fieldErr.Tag {
 	case "apiversion":
 		return fmt.Errorf("A valid \"replicated_api_version\" is required as a root element")
+
+	case "dockerversion":
+		return fmt.Errorf("Invalid Docker version suppiled in %q", formatted)
+
+	case "semver":
+		return fmt.Errorf("Invalid version suppiled in %q", formatted)
 
 	case "semverrange":
 		return fmt.Errorf("Invalid version range suppiled in %q", formatted)
@@ -586,13 +598,28 @@ func ClusterStrategyValidation(v *validator.Validate, topStruct reflect.Value, c
 	return field.String() == "random"
 }
 
-// SemverValidation will validate that the field is in correct, proper semver format.
-func SemverValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+// DockerVersionValidation will validate that the field is in correct, proper docker version format.
+func DockerVersionValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		return true
 	}
 
-	if field.String() == "" {
+	// new style docker version e.g. 17.03.0-ce
+	if dockerVerRe.MatchString(field.String()) {
+		return true
+	}
+
+	// legacy style docker version e.g. 1.13.1
+	if dockerVerLegacyRe.MatchString(field.String()) {
+		return true
+	}
+
+	return false
+}
+
+// SemverValidation will validate that the field is in correct, proper semver format.
+func SemverValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
 		return true
 	}
 
@@ -603,10 +630,6 @@ func SemverValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 // SemverRangeValidation will validate that the field is in correct, proper semver format.
 func SemverRangeValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
-		return true
-	}
-
-	if field.String() == "" {
 		return true
 	}
 
