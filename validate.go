@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	keyRe             = regexp.MustCompile(`^([^\\[]+)(?:\\[(\\d+)\\])?$`)
+	keyRe             = regexp.MustCompile(`^([^\[]+)(?:\[(\d+)\])?$`)
 	bytesRe           = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
 	dockerVerLegacyRe = regexp.MustCompile(`^1\.([0-9]|(1[0-3]))\.[0-9]+$`)
 	dockerVerRe       = regexp.MustCompile(`^[0-9]{2}\.((0[1-9])|(1[0-2]))\.[0-9]+(-(ce|ee))?$`)
