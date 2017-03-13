@@ -1,0 +1,25 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "gntLgvUzJqZWf4NYxJr3p/3gcvk=",
+			"path": "github.com/blang/semver",
+			"revision": "4a1e882c79dcf4ec00d2e29fac74b9c8938d5052",
+			"revisionTime": "2017-02-02T18:38:21Z"
+		},
+		{
+			"checksumSHA1": "39V1idWER42Lmcmg2Uy40wMzOlo=",
+			"path": "gopkg.in/go-playground/validator.v8",
+			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
+			"revisionTime": "2016-07-18T13:41:25Z"
+		},
+		{
+			"checksumSHA1": "0KwOlQV1dNUh9X8t+5s7nX5bqfk=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "a3f3340b5840cee44f372bddb5880fcbc419b46a",
+			"revisionTime": "2017-02-08T14:18:51Z"
+		}
+	],
+	"rootPath": "github.com/replicatedhq/libyaml"
+}
