@@ -186,7 +186,7 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\" at key %q", formatted)
 
 	case "clusterstrategy":
-		return fmt.Errorf("Invalid strategy value at key %q.  Valid values are \"random\" and the empty string.", formatted)
+		return fmt.Errorf("Invalid strategy value at key %q. Valid values are \"autoscale\", \"random\".", formatted)
 
 	case "volumeoptions":
 		return fmt.Errorf("Invalid volume option list %q", formatted)
@@ -595,7 +595,7 @@ func ClusterStrategyValidation(v *validator.Validate, topStruct reflect.Value, c
 		return true
 	}
 
-	return field.String() == "random"
+	return field.String() == "autoscale" || field.String() == "random"
 }
 
 // DockerVersionValidation will validate that the field is in correct, proper docker version format.
