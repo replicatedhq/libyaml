@@ -13,6 +13,8 @@ type Component struct {
 }
 
 type ComponentClusterHostCount struct {
+	// Strategy = "autoscale" api version >= 2.7.0
+	// Strategy = "random" api version >= 2.5.0
 	Strategy          string `yaml:"strategy,omitempty" json:"strategy,omitempty" validate:"omitempty,clusterstrategy"`
 	Min               uint   `yaml:"min" json:"min"`
 	Max               uint   `yaml:"max,omitempty" json:"max"` // 0 == unlimited
