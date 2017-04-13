@@ -2,14 +2,14 @@ package libyaml
 
 type Component struct {
 	Name             string                    `yaml:"name" json:"name"`
-	Tags             []string                  `yaml:"tags" json:"tags"`
-	Conflicts        []string                  `yaml:"conflicts" json:"conflicts"`
+	Tags             []string                  `yaml:"tags,omitempty" json:"tags,omitempty"`
+	Conflicts        []string                  `yaml:"conflicts,omitempty" json:"conflicts,omitempty"`
 	Cluster          BoolString                `yaml:"cluster" json:"cluster"`
-	ClusterHostCount ComponentClusterHostCount `yaml:"cluster_host_count" json:"cluster_host_count"`
-	HostRequirements ComponentHostRequirements `yaml:"host_requirements" json:"host_requirements"`
+	ClusterHostCount ComponentClusterHostCount `yaml:"cluster_host_count,omitempty" json:"cluster_host_count,omitempty"`
+	HostRequirements HostRequirements          `yaml:"host_requirements,omitempty" json:"host_requirements,omitempty"`
 	LogOptions       LogOptions                `yaml:"logs" json:"logs"`
-	HostVolumes      []*HostVolume             `yaml:"host_volumes" json:"host_volumes"`
-	Containers       []*Container              `yaml:"containers" json:"containers" validate:"dive,exists"`
+	HostVolumes      []*HostVolume             `yaml:"host_volumes,omitempty" json:"host_volumes,omitempty"`
+	Containers       []*Container              `yaml:"containers" json:"containers" validate:"dive,exists"` // TODO: validate:"min=1"
 }
 
 type ComponentClusterHostCount struct {
@@ -17,7 +17,7 @@ type ComponentClusterHostCount struct {
 	// Strategy = "random" api version >= 2.5.0
 	Strategy          string `yaml:"strategy,omitempty" json:"strategy,omitempty" validate:"omitempty,clusterstrategy"`
 	Min               uint   `yaml:"min" json:"min"`
-	Max               uint   `yaml:"max,omitempty" json:"max"` // 0 == unlimited
-	ThresholdHealthy  uint   `yaml:"threshold_healthy" json:"threshold_healthy"`
-	ThresholdDegraded uint   `yaml:"threshold_degraded,omitempty" json:"threshold_degraded"` // 0 == no degraded state
+	Max               uint   `yaml:"max,omitempty" json:"max,omitempty"` // 0 == unlimited
+	ThresholdHealthy  uint   `yaml:"threshold_healthy,omitempty" json:"threshold_healthy,omitempty"`
+	ThresholdDegraded uint   `yaml:"threshold_degraded,omitempty" json:"threshold_degraded,omitempty"` // 0 == no degraded state
 }

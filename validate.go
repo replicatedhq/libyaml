@@ -13,11 +13,21 @@ import (
 )
 
 var (
-	keyRe             = regexp.MustCompile(`^([^\[]+)(?:\[(\d+)\])?$`)
-	bytesRe           = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
-	dockerVerLegacyRe = regexp.MustCompile(`^1\.([0-9]|(1[0-3]))\.[0-9]+$`)
-	dockerVerRe       = regexp.MustCompile(`^[0-9]{2}\.((0[1-9])|(1[0-2]))\.[0-9]+(-(ce|ee))?$`)
+	KeyRegExp             = regexp.MustCompile(`^([^\[]+)(?:\[(\d+)\])?$`)
+	BytesRegExp           = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
+	DockerVerLegacyRegExp = regexp.MustCompile(`^1\.([0-9]|(1[0-3]))\.[0-9]+$`)
+	DockerVerRegExp       = regexp.MustCompile(`^[0-9]{2}\.((0[1-9])|(1[0-2]))\.[0-9]+(-(ce|ee))?$`)
+
+	registeredValidationFuncs      = map[string]validator.Func{}
+	registeredValidationErrorFuncs = map[string]ValidationErrorFunc{}
 )
+
+type ValidationErrorFunc func(formatted string, key string, fieldErr *validator.FieldError, root *RootConfig) error
+
+func RegisterValidation(key string, validatorFn validator.Func, errorFn ValidationErrorFunc) {
+	registeredValidationFuncs[key] = validatorFn
+	registeredValidationErrorFuncs[key] = errorFn
+}
 
 // RegisterValidations will register all known validation for the libyaml project.
 func RegisterValidations(v *validator.Validate) error {
@@ -151,6 +161,12 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	for key, fn := range registeredValidationFuncs {
+		if err := v.RegisterValidation(key, fn); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -237,6 +253,10 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 		return fmt.Errorf("Custom requirement %q is required to be unique at key %q", fieldErr.Value, formatted)
 
 	default:
+		if fn, ok := registeredValidationErrorFuncs[fieldErr.Tag]; ok {
+			return fn(formatted, key, fieldErr, root)
+		}
+
 		return fmt.Errorf("Validation failed on the %q tag at key %q", fieldErr.Tag, formatted)
 	}
 }
@@ -253,7 +273,7 @@ func FormatKey(keyChain string, fieldErr *validator.FieldError, root *RootConfig
 	if rest != "" {
 		rest = rest[1:]
 
-		matches := keyRe.FindStringSubmatch(fieldErr.Field)
+		matches := KeyRegExp.FindStringSubmatch(fieldErr.Field)
 		if matches[2] != "" {
 			rest += fmt.Sprintf("[%s]", matches[2])
 		}
@@ -273,7 +293,7 @@ func formatKey(keys []string, parent reflect.Value) (string, error) {
 
 	if parent.Type().Kind() == reflect.Struct {
 		key := keys[1]
-		matches := keyRe.FindStringSubmatch(key)
+		matches := KeyRegExp.FindStringSubmatch(key)
 
 		field, ok := parent.Type().FieldByName(matches[1])
 		if !ok {
@@ -296,7 +316,7 @@ func formatKey(keys []string, parent reflect.Value) (string, error) {
 		return "." + yamlTag + rest, nil
 	} else if parent.Type().Kind() == reflect.Slice {
 		key := keys[0]
-		matches := keyRe.FindStringSubmatch(key)
+		matches := KeyRegExp.FindStringSubmatch(key)
 
 		i, err := strconv.Atoi(matches[2])
 		if err != nil {
@@ -605,12 +625,12 @@ func DockerVersionValidation(v *validator.Validate, topStruct reflect.Value, cur
 	}
 
 	// new style docker version e.g. 17.03.0-ce
-	if dockerVerRe.MatchString(field.String()) {
+	if DockerVerRegExp.MatchString(field.String()) {
 		return true
 	}
 
 	// legacy style docker version e.g. 1.13.1
-	if dockerVerLegacyRe.MatchString(field.String()) {
+	if DockerVerLegacyRegExp.MatchString(field.String()) {
 		return true
 	}
 
@@ -653,7 +673,7 @@ func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentSt
 		return true
 	}
 
-	parts := bytesRe.FindStringSubmatch(strings.TrimSpace(field.String()))
+	parts := BytesRegExp.FindStringSubmatch(strings.TrimSpace(field.String()))
 	if len(parts) < 3 {
 		return false
 	}

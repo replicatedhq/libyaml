@@ -4,6 +4,6 @@ import . "github.com/replicatedhq/libyaml"
 
 func newRootConfig() *RootConfig {
 	return &RootConfig{
-		ApiVersion: "2.4.0",
+		APIVersion: "2.4.0",
 	}
 }
