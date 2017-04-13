@@ -10,12 +10,7 @@ import (
 
 func TestComponentUnmarshalYAML(t *testing.T) {
 	s := `name: test
-tags: []
-conflicts: []
 cluster: false
-cluster_host_count:
-  min: 0
-  threshold_healthy: 0
 logs:
   max_size: 100k
   max_files: 5
@@ -48,8 +43,6 @@ containers: []`
 
 func TestComponentUnmarshalYAMLCluster(t *testing.T) {
 	s := `name: test
-tags: []
-conflicts: []
 cluster: true
 containers: []`
 
@@ -74,21 +67,10 @@ containers: []`
 
 func TestComponentMarshalYAML(t *testing.T) {
 	s := `name: test
-tags: []
-conflicts: []
 cluster: false
-cluster_host_count:
-  min: 0
-  threshold_healthy: 0
-host_requirements:
-  cpu_cores: 0
-  cpu_mhz: 0
-  memory: ""
-  disk_space: ""
 logs:
   max_size: ""
   max_files: ""
-host_volumes: []
 containers: []
 `
 
@@ -109,21 +91,10 @@ containers: []
 
 func TestComponentMarshalYAMLCluster(t *testing.T) {
 	s := `name: test
-tags: []
-conflicts: []
 cluster: true
-cluster_host_count:
-  min: 0
-  threshold_healthy: 0
-host_requirements:
-  cpu_cores: 0
-  cpu_mhz: 0
-  memory: ""
-  disk_space: ""
 logs:
   max_size: 100k
   max_files: "5"
-host_volumes: []
 containers: []
 `
 

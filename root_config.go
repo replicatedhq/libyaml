@@ -1,7 +1,7 @@
 package libyaml
 
 type RootConfig struct {
-	ApiVersion             string           `yaml:"replicated_api_version" json:"replicated_api_version" validate:"required,apiversion"`
+	APIVersion             string           `yaml:"replicated_api_version" json:"replicated_api_version" validate:"required,apiversion"`
 	Name                   string           `yaml:"name" json:"name"`
 	Version                string           `yaml:"version" json:"version"`
 	ReleaseNotes           string           `yaml:"release_notes" json:"release_notes"`
@@ -22,8 +22,11 @@ type RootConfig struct {
 	StatsD             StatsD              `yaml:"statsd" json:"statsd" validate:"dive"`
 	Localization       *Localization       `yaml:"localization,omitempty" json:"localization,omitempty" validate:"omitempty,dive"`
 
-	Components []*Component `yaml:"components" json:"components" validate:"dive,exists"` // replicated scheduler config
-	K8s        *K8s         `yaml:"kubernetes" json:"kubernetes"`                        // this is deprecated, prefer multi-doc
+	Components []*Component `yaml:"components,omitempty" json:"components,omitempty" validate:"dive,exists"` // replicated scheduler config
+	K8s        *K8s         `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty"`                        // this is deprecated, prefer multi-doc
+
+	// Swarm api version >= 2.7.0
+	Swarm *Swarm `yaml:"swarm,omitempty" json:"swarm,omitempty"`
 }
 
 const DEFAULT_APP_CONFIG = `---
