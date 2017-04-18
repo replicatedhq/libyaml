@@ -34,8 +34,8 @@ type SwarmNode struct {
 }
 
 type SwarmSecret struct {
-	Name   string            `yaml:"name" json:"name,omitempty" validate:"required"`
-	Value  string            `yaml:"value" json:"value,omitempty" validate:"required"`
+	Name   string            `yaml:"name" json:"name" validate:"required"`
+	Value  string            `yaml:"value" json:"value" validate:"required"`
 	Labels map[string]string `yaml:"labels,omitempty" json:"labels,omitempty" validate:"mapkeylengthnonzero"`
 }
 

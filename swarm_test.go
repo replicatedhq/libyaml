@@ -1,7 +1,6 @@
 package libyaml_test
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/replicatedhq/libyaml"
@@ -270,8 +269,11 @@ swarm:
 		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
 			t.Fatal(err)
 		}
-		if err := v.Struct(&root); err == nil {
-			t.Error(fmt.Errorf("Invalid swarm secret YAML was not properly caught"))
+		err := v.Struct(&root)
+		if err := AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.Swarm.Secrets[0].Value": "required",
+		}); err != nil {
+			t.Error(err)
 		}
 	})
 
@@ -290,8 +292,11 @@ swarm:
 		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
 			t.Fatal(err)
 		}
-		if err := v.Struct(&root); err == nil {
-			t.Error(fmt.Errorf("Invalid swarm secret YAML was not properly caught"))
+		err := v.Struct(&root)
+		if err := AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.Swarm.Secrets[0].Name": "required",
+		}); err != nil {
+			t.Error(err)
 		}
 	})
 
@@ -309,8 +314,11 @@ swarm:
 		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
 			t.Fatal(err)
 		}
-		if err := v.Struct(&root); err == nil {
-			t.Error(fmt.Errorf("Invalid swarm secret YAML was not properly caught"))
+		err := v.Struct(&root)
+		if err := AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.Swarm.Secrets[0].Labels": "mapkeylengthnonzero",
+		}); err != nil {
+			t.Error(err)
 		}
 	})
 }
