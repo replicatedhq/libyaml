@@ -221,7 +221,7 @@ swarm:
   secrets:
   - name: foo
     value: bar
-    label:
+    labels:
       foo: bar
       baz: boo
 `
@@ -236,16 +236,54 @@ swarm:
 		}
 	})
 
-	t.Run("invalid", func(t *testing.T) {
+	t.Run("invalid no value", func(t *testing.T) {
 		config := `---
 replicated_api_version: "2.7.0"
 swarm:
   secrets:
   - name: foo
     value:
-    label:
+    labels:
       foo: bar
       baz: boo
+`
+		var root RootConfig
+		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
+			t.Fatal(err)
+		}
+		if err := v.Struct(&root); err == nil {
+			t.Error(fmt.Errorf("Invalid swarm secret YAML was not properly caught"))
+		}
+	})
+
+	t.Run("invalid no name", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: 
+    value: bar
+    labels:
+      foo: bar
+      baz: boo
+`
+		var root RootConfig
+		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
+			t.Fatal(err)
+		}
+		if err := v.Struct(&root); err == nil {
+			t.Error(fmt.Errorf("Invalid swarm secret YAML was not properly caught"))
+		}
+	})
+
+	t.Run("invalid empty labels", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value: bar
+    labels:
 `
 		var root RootConfig
 		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
