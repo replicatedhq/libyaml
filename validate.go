@@ -255,7 +255,8 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "customrequirementidunique":
 		return fmt.Errorf("Custom requirement %q is required to be unique at key %q", fieldErr.Value, formatted)
-
+	case "mapkeylengthnonzero":
+		return fmt.Errorf("Map keys are required to have a length greater than zero: %q", formatted)
 	default:
 		if fn, ok := registeredValidationErrorFuncs[fieldErr.Tag]; ok {
 			return fn(formatted, key, fieldErr, root)
