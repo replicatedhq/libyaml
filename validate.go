@@ -161,6 +161,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("mapkeylengthnonzero", MapKeyLengthNonZero); err != nil {
+		return err
+	}
+
 	for key, fn := range registeredValidationFuncs {
 		if err := v.RegisterValidation(key, fn); err != nil {
 			return err
@@ -993,6 +997,20 @@ func ClusterInstanceFalse(v *validator.Validate, topStruct reflect.Value, curren
 
 	if cluster {
 		return false
+	}
+
+	return true
+}
+
+func MapKeyLengthNonZero(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.Map {
+		return true
+	}
+
+	for _, k := range field.MapKeys() {
+		if len(k.String()) == 0 {
+			return false
+		}
 	}
 
 	return true

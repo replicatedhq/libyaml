@@ -206,3 +206,119 @@ swarm:
 		}
 	})
 }
+
+func TestSwarmSecret(t *testing.T) {
+	v := validator.New(&validator.Config{TagName: "validate"})
+	if err := RegisterValidations(v); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("valid with labels", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value: bar
+    labels:
+      foo: bar
+      baz: boo
+`
+		var root RootConfig
+		err := yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("valid without labels", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value: bar
+`
+		var root RootConfig
+		err := yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("invalid no value", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value:
+    labels:
+      foo: bar
+      baz: boo
+`
+		var root RootConfig
+		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
+			t.Fatal(err)
+		}
+		err := v.Struct(&root)
+		if err := AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.Swarm.Secrets[0].Value": "required",
+		}); err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("invalid no name", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: 
+    value: bar
+    labels:
+      foo: bar
+      baz: boo
+`
+		var root RootConfig
+		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
+			t.Fatal(err)
+		}
+		err := v.Struct(&root)
+		if err := AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.Swarm.Secrets[0].Name": "required",
+		}); err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("invalid empty label keys", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value: bar
+    labels:
+      "": bar
+`
+		var root RootConfig
+		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
+			t.Fatal(err)
+		}
+		err := v.Struct(&root)
+		if err := AssertValidationErrors(t, err, map[string]string{
+			"RootConfig.Swarm.Secrets[0].Labels": "mapkeylengthnonzero",
+		}); err != nil {
+			t.Error(err)
+		}
+	})
+}
