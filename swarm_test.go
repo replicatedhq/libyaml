@@ -1,6 +1,7 @@
 package libyaml_test
 
 import (
+	"fmt"
 	"testing"
 
 	. "github.com/replicatedhq/libyaml"
@@ -203,6 +204,55 @@ swarm:
 			"RootConfig.Swarm.Nodes[0].MinCount": "number",
 		}); err != nil {
 			t.Error(err)
+		}
+	})
+}
+
+func TestSwarmSecret(t *testing.T) {
+	v := validator.New(&validator.Config{TagName: "validate"})
+	if err := RegisterValidations(v); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("valid", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value: bar
+    label:
+      foo: bar
+      baz: boo
+`
+		var root RootConfig
+		err := yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("invalid", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value:
+    label:
+      foo: bar
+      baz: boo
+`
+		var root RootConfig
+		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
+			t.Fatal(err)
+		}
+		if err := v.Struct(&root); err == nil {
+			t.Error(fmt.Errorf("Invalid swarm secret YAML was not properly caught"))
 		}
 	})
 }
