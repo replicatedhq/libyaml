@@ -295,7 +295,7 @@ swarm:
 		}
 	})
 
-	t.Run("invalid empty labels", func(t *testing.T) {
+	t.Run("invalid empty label keys", func(t *testing.T) {
 		config := `---
 replicated_api_version: "2.7.0"
 swarm:
@@ -303,7 +303,7 @@ swarm:
   - name: foo
     value: bar
     labels:
-      foo:
+      "": bar
 `
 		var root RootConfig
 		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
