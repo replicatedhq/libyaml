@@ -214,7 +214,7 @@ func TestSwarmSecret(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Run("valid", func(t *testing.T) {
+	t.Run("valid with labels", func(t *testing.T) {
 		config := `---
 replicated_api_version: "2.7.0"
 swarm:
@@ -224,6 +224,25 @@ swarm:
     labels:
       foo: bar
       baz: boo
+`
+		var root RootConfig
+		err := yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("valid without labels", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  secrets:
+  - name: foo
+    value: bar
 `
 		var root RootConfig
 		err := yaml.Unmarshal([]byte(config), &root)
@@ -284,6 +303,7 @@ swarm:
   - name: foo
     value: bar
     labels:
+      foo:
 `
 		var root RootConfig
 		if err := yaml.Unmarshal([]byte(config), &root); err != nil {
