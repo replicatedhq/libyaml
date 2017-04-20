@@ -1,7 +1,7 @@
 package libyaml
 
 type Component struct {
-	Name             string                    `yaml:"name" json:"name"`
+	Name             string                    `yaml:"name" json:"name" validate:"required"`
 	Tags             []string                  `yaml:"tags,omitempty" json:"tags,omitempty"`
 	Conflicts        []string                  `yaml:"conflicts,omitempty" json:"conflicts,omitempty"`
 	Cluster          BoolString                `yaml:"cluster" json:"cluster"`
