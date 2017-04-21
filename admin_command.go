@@ -24,12 +24,17 @@ type AdminCommandV2 struct {
 
 type AdminCommandSource struct {
 	Replicated *AdminCommandSourceReplicated `yaml:"replicated,omitempty" json:"replicated,omitempty" validate:"omitempty,dive"`
+	Swarm      *AdminCommandSourceSwarm      `yaml:"swarm,omitempty" json:"swarm,omitempty" validate:"omitempty,dive"`
 	Kubernetes *AdminCommandSourceKubernetes `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty" validate:"omitempty,dive"`
 }
 
 type AdminCommandSourceReplicated struct {
 	Component string `yaml:"component" json:"component" validate:"required,componentexists"`
 	Container string `yaml:"container" json:"container" validate:"containerexists=Component"`
+}
+
+type AdminCommandSourceSwarm struct {
+	Service string `yaml:"service" json:"container" validate:"required"`
 }
 
 type AdminCommandSourceKubernetes struct {
@@ -77,6 +82,12 @@ func (c *AdminCommand) unmarshal(unmarshal func(interface{}) error) error {
 		out := &AdminCommandSourceReplicated{}
 		if err := unmarshal(out); err == nil && out.Component != "" {
 			c.Source.Replicated = out
+		}
+	}
+	if c.Source.Swarm == nil {
+		out := &AdminCommandSourceSwarm{}
+		if err := unmarshal(out); err == nil && out.Service != "" {
+			c.Source.Swarm = out
 		}
 	}
 	if c.Source.Kubernetes == nil {
