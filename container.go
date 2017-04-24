@@ -3,9 +3,9 @@ package libyaml
 type Container struct {
 	Source               string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
+	Version              string                        `yaml:"version" json:"version" validate:"required"`
 	DisplayName          string                        `yaml:"display_name" json:"display_name"`
 	Name                 string                        `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
-	Version              string                        `yaml:"version" json:"version" validate:"required"`
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
 	NetworkMode          string                        `yaml:"network_mode" json:"network_mode"`
 	CPUShares            string                        `yaml:"cpu_shares" json:"cpu_shares"`
@@ -35,7 +35,7 @@ type Container struct {
 	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
 	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
-	ContentTrust         ContentTrust                  `yaml:"content_trust" json:"content_trust" validate:"dive"`
+	ContentTrust         ContentTrust                  `yaml:"content_trust" json:"content_trust"`
 	When                 string                        `yaml:"when" json:"when"`
 	Dynamic              string                        `yaml:"dynamic" json:"dynamic"`
 	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
@@ -101,9 +101,9 @@ func (m *marshallerContainer) encode(c Container) {
 	// TODO: In go 1.8, this can be just copied automatically
 	m.Source = c.Source
 	m.ImageName = c.ImageName
+	m.Version = c.Version
 	m.DisplayName = c.DisplayName
 	m.Name = c.Name
-	m.Version = c.Version
 	m.Privileged = c.Privileged
 	m.NetworkMode = c.NetworkMode
 	m.CPUShares = c.CPUShares
@@ -143,9 +143,9 @@ func (m marshallerContainer) decode(c *Container) {
 	// TODO: In go 1.8, this can be just copied automatically
 	c.Source = m.Source
 	c.ImageName = m.ImageName
+	c.Version = m.Version
 	c.DisplayName = m.DisplayName
 	c.Name = m.Name
-	c.Version = m.Version
 	c.Privileged = m.Privileged
 	c.NetworkMode = m.NetworkMode
 	c.CPUShares = m.CPUShares
@@ -184,9 +184,9 @@ func (m marshallerContainer) decode(c *Container) {
 type nonclusterableContainer struct {
 	Source           string                     `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName        string                     `yaml:"image_name" json:"image_name" validate:"required"`
+	Version          string                     `yaml:"version" json:"version" validate:"required"`
 	DisplayName      string                     `yaml:"display_name" json:"display_name"`
 	Name             string                     `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
-	Version          string                     `yaml:"version" json:"version" validate:"required"`
 	Privileged       bool                       `yaml:"privileged" json:"privileged"`
 	NetworkMode      string                     `yaml:"network_mode" json:"network_mode"`
 	CPUShares        string                     `yaml:"cpu_shares" json:"cpu_shares"`
@@ -225,9 +225,9 @@ func (m *nonclusterableContainer) encode(c Container) {
 	// TODO: In go 1.8, this can be just copied automatically
 	m.Source = c.Source
 	m.ImageName = c.ImageName
+	m.Version = c.Version
 	m.DisplayName = c.DisplayName
 	m.Name = c.Name
-	m.Version = c.Version
 	m.Privileged = c.Privileged
 	m.NetworkMode = c.NetworkMode
 	m.CPUShares = c.CPUShares
