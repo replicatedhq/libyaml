@@ -22,6 +22,9 @@ type RootConfig struct {
 	StatsD             StatsD              `yaml:"statsd" json:"statsd" validate:"dive"`
 	Localization       *Localization       `yaml:"localization,omitempty" json:"localization,omitempty" validate:"omitempty,dive"`
 
+	// Images api version >= 2.8.0
+	Images []Image `yaml:"images,omitempty" json:"images,omitempty" validate:"dive"`
+
 	Components []*Component `yaml:"components,omitempty" json:"components,omitempty" validate:"dive,exists"` // replicated scheduler config
 	K8s        *K8s         `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty"`                        // this is deprecated, prefer multi-doc
 

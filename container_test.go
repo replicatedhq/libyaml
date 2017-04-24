@@ -66,8 +66,8 @@ support_commands: []`
 func TestContainerUnmarshalYAMLCluster(t *testing.T) {
 	s := `source: public
 image_name: test
-display_name: Test Container
 version: ""
+display_name: Test Container
 privileged: false
 hostname: ""
 cmd: ""
@@ -116,9 +116,9 @@ support_commands: []`
 func TestContainerMarshalYAML(t *testing.T) {
 	s := `source: public
 image_name: test
+version: ""
 display_name: ""
 name: ""
-version: ""
 privileged: false
 network_mode: ""
 cpu_shares: ""
@@ -179,9 +179,9 @@ pid_mode: ""
 func TestContainerMarshalYAMLCluster(t *testing.T) {
 	s := `source: public
 image_name: test
+version: ""
 display_name: ""
 name: ""
-version: ""
 privileged: false
 network_mode: ""
 cpu_shares: ""
