@@ -21,7 +21,6 @@ publish_events: []
 config_files: []
 customer_files: []
 env_vars: []
-ports: []
 logs:
   max_size: "100k"
   max_files: "5"
@@ -77,7 +76,6 @@ publish_events: []
 config_files: []
 customer_files: []
 env_vars: []
-ports: []
 logs:
   max_size: ""
   max_files: ""
@@ -139,7 +137,6 @@ publish_events: []
 config_files: []
 customer_files: []
 env_vars: []
-ports: []
 logs:
   max_size: 100k
   max_files: "5"
@@ -204,7 +201,6 @@ publish_events: []
 config_files: []
 customer_files: []
 env_vars: []
-ports: []
 logs:
   max_size: ""
   max_files: ""

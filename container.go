@@ -28,7 +28,7 @@ type Container struct {
 	ConfigFiles          []*ContainerConfigFile        `yaml:"config_files" json:"config_files" validate:"dive,exists"`
 	CustomerFiles        []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
 	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
-	Ports                []*ContainerPort              `yaml:"ports" json:"ports" validate:"dive,exists"`
+	Ports                []*ContainerPort              `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
 	LogOptions           LogOptions                    `yaml:"logs" json:"logs"`
 	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	VolumesFrom          []string                      `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists,requiressubscription"`
@@ -208,7 +208,7 @@ type nonclusterableContainer struct {
 	ConfigFiles      []*ContainerConfigFile     `yaml:"config_files" json:"config_files" validate:"dive,exists"`
 	CustomerFiles    []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
 	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
-	Ports            []*ContainerPort           `yaml:"ports" json:"ports" validate:"dive,exists"`
+	Ports            []*ContainerPort           `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
 	LogOptions       LogOptions                 `yaml:"logs" json:"logs"`
 	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	VolumesFrom      []string                   `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists"`
