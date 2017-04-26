@@ -1,5 +1,13 @@
 package libyaml
 
+var (
+	_ APIVersioner = &RootConfig{} // to make sure we implement the interface
+)
+
+type APIVersioner interface {
+	GetAPIVersion() string
+}
+
 type RootConfig struct {
 	APIVersion             string           `yaml:"replicated_api_version" json:"replicated_api_version" validate:"required,apiversion"`
 	Name                   string           `yaml:"name" json:"name"`
@@ -32,8 +40,12 @@ type RootConfig struct {
 	Swarm *Swarm `yaml:"swarm,omitempty" json:"swarm,omitempty"`
 }
 
+func (r *RootConfig) GetAPIVersion() string {
+	return r.APIVersion
+}
+
 const DEFAULT_APP_CONFIG = `---
-replicated_api_version: 2.4.2
+replicated_api_version: 2.8.0
 name: "%s"
 
 #
