@@ -165,6 +165,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("required_minapiversion", RequiredMinAPIVersion); err != nil {
+		return err
+	}
+
 	for key, fn := range registeredValidationFuncs {
 		if err := v.RegisterValidation(key, fn); err != nil {
 			return err
@@ -255,8 +259,13 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "customrequirementidunique":
 		return fmt.Errorf("Custom requirement %q is required to be unique at key %q", fieldErr.Value, formatted)
+
 	case "mapkeylengthnonzero":
 		return fmt.Errorf("Map keys are required to have a length greater than zero: %q", formatted)
+
+	case "required_minapiversion":
+		return fmt.Errorf("Field is required for \"min_api_version\" < %s at key %q", fieldErr.Param, formatted)
+
 	default:
 		if fn, ok := registeredValidationErrorFuncs[fieldErr.Tag]; ok {
 			return fn(formatted, key, fieldErr, root)
@@ -1069,6 +1078,32 @@ func RequiresSubscription(v *validator.Validate, topStruct reflect.Value, curren
 	}
 
 	return true
+}
+
+func RequiredMinAPIVersion(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	root, ok := topStruct.Interface().(APIVersioner)
+	if !ok {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	apiVer, err := semver.Make(root.GetAPIVersion())
+	if err != nil {
+		// this will get caught in min_api_version field validation
+		return true
+	}
+
+	minVer, err := semver.Make(param)
+	if err != nil {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	if apiVer.GTE(minVer) {
+		return true
+	}
+
+	return validator.HasValue(v, topStruct, currentStructOrField, field, fieldType, fieldKind, "")
 }
 
 func hasReplTemplate(field reflect.Value) bool {

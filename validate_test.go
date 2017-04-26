@@ -114,6 +114,37 @@ func TestDockerVersionValidation(t *testing.T) {
 	}
 }
 
+type RequiredMinAPIVersionStruct struct {
+	APIVersion string
+	Required   string `validate:"required_minapiversion=2.8.0"`
+}
+
+func (r *RequiredMinAPIVersionStruct) GetAPIVersion() string {
+	return r.APIVersion
+}
+
+func TestRequiredMinAPIVersionValidation(t *testing.T) {
+	v := validator.New(&validator.Config{TagName: "validate"})
+	err := v.RegisterValidation("required_minapiversion", RequiredMinAPIVersion)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.Struct(&RequiredMinAPIVersionStruct{APIVersion: "2.8.0"})
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Struct(&RequiredMinAPIVersionStruct{APIVersion: "2.8.1"})
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Struct(&RequiredMinAPIVersionStruct{APIVersion: "2.7.0"})
+	if err := AssertValidationErrors(t, err, map[string]string{
+		"RequiredMinAPIVersionStruct.Required": "required_minapiversion",
+	}); err != nil {
+		t.Error(err)
+	}
+}
+
 func AssertValidationErrors(t *testing.T, err error, pathAndTags map[string]string) error {
 	validationErrors, ok := err.(validator.ValidationErrors)
 	if !ok {
