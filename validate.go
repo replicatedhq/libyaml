@@ -109,6 +109,10 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("uint", IsUintValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("tcpport", IsTCPUDPPortValidation); err != nil {
 		return err
 	}
@@ -707,7 +711,23 @@ func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 		return true
 	}
 
-	if field.String() == "" {
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
+	_, err := strconv.ParseBool(field.String())
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
+// IsUintValidation will return if a string field parses to a uint.
+func IsUintValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		// this is an issue with the code and really should be a panic
 		return true
 	}
 
@@ -716,7 +736,7 @@ func IsBoolValidation(v *validator.Validate, topStruct reflect.Value, currentStr
 		return true
 	}
 
-	_, err := strconv.ParseBool(field.String())
+	_, err := strconv.ParseUint(field.String(), 10, 64)
 	if err != nil {
 		return false
 	}
@@ -999,7 +1019,7 @@ func ClusterInstanceFalse(v *validator.Validate, topStruct reflect.Value, curren
 		return true
 	}
 
-	cluster, err := currentContainer.Cluster.ParseBool()
+	cluster, err := currentContainer.Cluster.Parse()
 	if err != nil {
 		// don't worry about this here. cluster should have the "bool" validator.
 		return true

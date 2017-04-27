@@ -58,12 +58,6 @@ func TestBoolStringValidate(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	s = S{Bool: libyaml.BoolString("")}
-	err = v.Struct(s)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	s = S{Bool: libyaml.BoolString("0")}
 	err = v.Struct(s)
 	if err != nil {
@@ -81,6 +75,12 @@ func TestBoolStringValidate(t *testing.T) {
 	if err == nil {
 		t.Fatal(err)
 	}
+	if !strings.Contains(err.Error(), "failed on the 'bool' tag") {
+		t.Errorf("unexpected error, %v", err)
+	}
+
+	s = S{Bool: libyaml.BoolString("")}
+	err = v.Struct(s)
 	if !strings.Contains(err.Error(), "failed on the 'bool' tag") {
 		t.Errorf("unexpected error, %v", err)
 	}

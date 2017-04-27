@@ -15,9 +15,9 @@ type Component struct {
 type ComponentClusterHostCount struct {
 	// Strategy = "autoscale" api version >= 2.7.0
 	// Strategy = "random" api version >= 2.5.0
-	Strategy          string `yaml:"strategy,omitempty" json:"strategy,omitempty" validate:"omitempty,clusterstrategy"`
-	Min               uint   `yaml:"min" json:"min"`
-	Max               uint   `yaml:"max,omitempty" json:"max,omitempty"` // 0 == unlimited
-	ThresholdHealthy  uint   `yaml:"threshold_healthy,omitempty" json:"threshold_healthy,omitempty"`
-	ThresholdDegraded uint   `yaml:"threshold_degraded,omitempty" json:"threshold_degraded,omitempty"` // 0 == no degraded state
+	Strategy          string     `yaml:"strategy,omitempty" json:"strategy,omitempty" validate:"omitempty,clusterstrategy"`
+	Min               UintString `yaml:"min" json:"min" validate:"omitempty,uint"`
+	Max               UintString `yaml:"max,omitempty" json:"max,omitempty" validate:"omitempty,uint"` // 0 == unlimited
+	ThresholdHealthy  UintString `yaml:"threshold_healthy,omitempty" json:"threshold_healthy,omitempty" validate:"omitempty,uint"`
+	ThresholdDegraded UintString `yaml:"threshold_degraded,omitempty" json:"threshold_degraded,omitempty" validate:"omitempty,uint"` // 0 == no degraded state
 }

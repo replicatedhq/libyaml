@@ -27,11 +27,11 @@ containers: []`
 	if c.Cluster != "false" {
 		t.Error("expecting \"Component.Cluster\" to be \"false\"")
 	}
-	if c.ClusterHostCount.Min != 0 {
-		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == 0, got \"%d\"", c.ClusterHostCount.Min)
+	if c.ClusterHostCount.Min != "" {
+		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == \"\", got \"%s\"", c.ClusterHostCount.Min)
 	}
-	if c.ClusterHostCount.ThresholdHealthy != 0 {
-		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterHostCount.ThresholdHealthy)
+	if c.ClusterHostCount.ThresholdHealthy != "" {
+		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == \"\", got \"%s\"", c.ClusterHostCount.ThresholdHealthy)
 	}
 	if c.LogOptions.MaxFiles != "5" {
 		t.Errorf("expecting \"Component.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
@@ -57,11 +57,11 @@ containers: []`
 	if c.Cluster != "true" {
 		t.Error("expecting \"Component.Cluster\" to be \"true\"")
 	}
-	if c.ClusterHostCount.Min != 0 {
-		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == 0, got \"%d\"", c.ClusterHostCount.Min)
+	if c.ClusterHostCount.Min != "" {
+		t.Errorf("expecting \"Component.ClusterHostCount.Min\" == \"\", got \"%s\"", c.ClusterHostCount.Min)
 	}
-	if c.ClusterHostCount.ThresholdHealthy != 0 {
-		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterHostCount.ThresholdHealthy)
+	if c.ClusterHostCount.ThresholdHealthy != "" {
+		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == \"\", got \"%s\"", c.ClusterHostCount.ThresholdHealthy)
 	}
 }
 

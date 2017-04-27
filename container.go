@@ -20,7 +20,7 @@ type Container struct {
 	Entrypoint           *[]string                     `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral            bool                          `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster              BoolString                    `yaml:"cluster" json:"cluster" validate:"bool"`
+	Cluster              BoolString                    `yaml:"cluster" json:"cluster" validate:"omitempty,bool"`
 	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
 	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
 	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
@@ -47,10 +47,10 @@ type ContainerRestartPolicy struct {
 }
 
 type ContainerClusterInstanceCount struct {
-	Initial           minInt1 `yaml:"initial" json:"initial"`
-	Max               uint    `yaml:"max,omitempty" json:"max"` // 0 == unlimited
-	ThresholdHealthy  uint    `yaml:"threshold_healthy" json:"threshold_healthy"`
-	ThresholdDegraded uint    `yaml:"threshold_degraded,omitempty" json:"threshold_degraded"` // 0 == no degraded state
+	Initial           UintString `yaml:"initial" json:"initial" validate:"omitempty,uint"`
+	Max               UintString `yaml:"max,omitempty" json:"max" validate:"omitempty,uint"` // 0 == unlimited
+	ThresholdHealthy  UintString `yaml:"threshold_healthy,omitempty" json:"threshold_healthy,omitempty" validate:"omitempty,uint"`
+	ThresholdDegraded UintString `yaml:"threshold_degraded,omitempty" json:"threshold_degraded" validate:"omitempty,uint"` // 0 == no degraded state
 }
 
 type ULimit struct {
@@ -66,13 +66,13 @@ func (c *Container) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 	m.decode(c)
 
-	cluster, err := c.Cluster.ParseBool()
+	cluster, err := c.Cluster.Parse()
 	if err != nil {
 		cluster = c.Cluster != "" // assume this is a template
 	}
 	if cluster {
-		if c.ClusterInstanceCount.Initial == 0 {
-			c.ClusterInstanceCount.Initial = 1
+		if c.ClusterInstanceCount.Initial == "" || c.ClusterInstanceCount.Initial == "0" {
+			c.ClusterInstanceCount.Initial = "1"
 		}
 	}
 
@@ -80,7 +80,7 @@ func (c *Container) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 func (c Container) MarshalYAML() (interface{}, error) {
-	cluster, err := c.Cluster.ParseBool()
+	cluster, err := c.Cluster.Parse()
 	if err != nil {
 		cluster = c.Cluster != "" // assume this is a template
 	}
@@ -92,6 +92,10 @@ func (c Container) MarshalYAML() (interface{}, error) {
 
 	m := marshallerContainer{}
 	m.encode(c)
+
+	if m.ClusterInstanceCount.Initial == "" || m.ClusterInstanceCount.Initial == "0" {
+		m.ClusterInstanceCount.Initial = "1"
+	}
 	return m, nil
 }
 
@@ -201,7 +205,7 @@ type nonclusterableContainer struct {
 	Entrypoint       *[]string                  `yaml:"entrypoint" json:"entrypoint"`
 	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
 	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster          BoolString                 `yaml:"cluster" json:"cluster" validate:"bool"`
+	Cluster          BoolString                 `yaml:"cluster" json:"cluster" validate:"omitempty,bool"`
 	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
 	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
 	SubscribedEvents []map[string]interface{}   `yaml:"-" json:"-"`
