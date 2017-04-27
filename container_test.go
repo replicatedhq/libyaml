@@ -45,11 +45,11 @@ support_commands: []`
 	if c.Cluster != "false" {
 		t.Error("expecting \"Container.Cluster\" to be \"false\"")
 	}
-	if c.ClusterInstanceCount.Initial != 0 {
-		t.Errorf("expecting \"Container.ClusterInstanceCount.Initial\" == 0, got \"%d\"", c.ClusterInstanceCount.Initial)
+	if c.ClusterInstanceCount.Initial != "" {
+		t.Errorf("expecting \"Container.ClusterInstanceCount.Initial\" == \"\", got \"%s\"", c.ClusterInstanceCount.Initial)
 	}
-	if c.ClusterInstanceCount.ThresholdHealthy != 0 {
-		t.Errorf("expecting \"Container.ClusterInstanceCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterInstanceCount.ThresholdHealthy)
+	if c.ClusterInstanceCount.ThresholdHealthy != "" {
+		t.Errorf("expecting \"Container.ClusterInstanceCount.ThresholdHealthy\" == \"\", got \"%s\"", c.ClusterInstanceCount.ThresholdHealthy)
 	}
 	if c.LogOptions.MaxFiles != "5" {
 		t.Errorf("expecting \"Container.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
@@ -58,7 +58,7 @@ support_commands: []`
 		t.Errorf("expecting \"Container.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
 	}
 	if c.Entrypoint != nil {
-		t.Errorf("expecting \"Container.Entrypoint\" == \"nil\", got \"%s\"", c.Entrypoint)
+		t.Errorf("expecting \"Container.Entrypoint\" == \"nil\", got \"%v\"", c.Entrypoint)
 	}
 }
 
@@ -100,14 +100,14 @@ support_commands: []`
 	if c.Cluster != "true" {
 		t.Error("expecting \"Container.Cluster\" to be \"true\"")
 	}
-	if c.ClusterInstanceCount.Initial != 1 {
-		t.Errorf("expecting \"Container.ClusterInstanceCount.Initial\" == 1, got \"%d\"", c.ClusterInstanceCount.Initial)
+	if c.ClusterInstanceCount.Initial != "1" {
+		t.Errorf("expecting \"Container.ClusterInstanceCount.Initial\" == 1, got \"%s\"", c.ClusterInstanceCount.Initial)
 	}
-	if c.ClusterInstanceCount.ThresholdHealthy != 0 {
-		t.Errorf("expecting \"Container.ClusterInstanceCount.ThresholdHealthy\" == 0, got \"%d\"", c.ClusterInstanceCount.ThresholdHealthy)
+	if c.ClusterInstanceCount.ThresholdHealthy != "" {
+		t.Errorf("expecting \"Container.ClusterInstanceCount.ThresholdHealthy\" == \"\", got \"%s\"", c.ClusterInstanceCount.ThresholdHealthy)
 	}
 	if c.Entrypoint == nil || len(*c.Entrypoint) != 0 {
-		t.Errorf("expecting \"Container.Entrypoint\" to be empty, got \"%s\"", c.Entrypoint)
+		t.Errorf("expecting \"Container.Entrypoint\" to be empty, got \"%v\"", c.Entrypoint)
 	}
 }
 
@@ -196,7 +196,6 @@ cluster: true
 restart: null
 cluster_instance_count:
   initial: 1
-  threshold_healthy: 0
 publish_events: []
 config_files: []
 customer_files: []

@@ -4,7 +4,7 @@ import "strconv"
 
 type BoolString string
 
-func (s BoolString) ParseBool() (bool, error) {
+func (s BoolString) Parse() (bool, error) {
 	return strconv.ParseBool(string(s))
 }
 
@@ -14,9 +14,9 @@ func (s BoolString) MarshalYAML() (interface{}, error) {
 	if s == "" {
 		return false, nil
 	}
-	b, err := s.ParseBool()
+	b, err := s.Parse()
 	if err == nil {
 		return b, nil
 	}
-	return s, nil
+	return string(s), nil
 }
