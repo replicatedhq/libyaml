@@ -407,6 +407,14 @@ func ConfigItemWhenValidation(v *validator.Validate, topStruct reflect.Value, cu
 		return true
 	}
 
+	// new style
+	if hasReplTemplate(field) {
+		return true
+	}
+	if _, err := strconv.ParseBool(whenValue); err == nil {
+		return true
+	}
+
 	splitString := "="
 	if strings.Contains(whenValue, "!=") {
 		splitString = "!="
