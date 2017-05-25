@@ -690,10 +690,6 @@ func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentSt
 		return true
 	}
 
-	if field.String() == "" {
-		return true
-	}
-
 	if hasReplTemplate(field) {
 		// all bets are off
 		return true
