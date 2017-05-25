@@ -2,11 +2,41 @@ package libyaml_test
 
 import (
 	"fmt"
+	"reflect"
+	"strconv"
 	"testing"
 
 	. "github.com/replicatedhq/libyaml"
 	validator "gopkg.in/go-playground/validator.v8"
+	yaml "gopkg.in/yaml.v2"
 )
+
+type ValidateTestRun struct {
+	Config string
+	Errs   map[string]string
+}
+
+func RunValidateTest(t *testing.T, runs []ValidateTestRun, v *validator.Validate, src interface{}) {
+	for i, run := range runs {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			current := reflect.New(reflect.TypeOf(src)).Interface()
+			if err := yaml.Unmarshal([]byte(run.Config), current); err != nil {
+				t.Error(err)
+				return
+			}
+			err := v.Struct(current)
+			if len(run.Errs) == 0 {
+				if err != nil {
+					t.Errorf("got unexpected error %v", err)
+				}
+			} else {
+				if err := AssertValidationErrors(t, err, run.Errs); err != nil {
+					t.Error(err)
+				}
+			}
+		})
+	}
+}
 
 func TestIntValidation(t *testing.T) {
 	v := validator.New(&validator.Config{TagName: "validate"})

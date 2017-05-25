@@ -34,7 +34,7 @@ type RootConfig struct {
 	Images []Image `yaml:"images,omitempty" json:"images,omitempty" validate:"dive"`
 
 	Components []*Component `yaml:"components,omitempty" json:"components,omitempty" validate:"dive,exists"` // replicated scheduler config
-	K8s        *K8s         `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty"`                        // this is deprecated, prefer multi-doc
+	K8s        *K8s         `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty"`
 
 	// Swarm api version >= 2.7.0
 	Swarm *Swarm `yaml:"swarm,omitempty" json:"swarm,omitempty"`
