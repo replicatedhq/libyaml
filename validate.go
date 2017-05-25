@@ -14,7 +14,7 @@ import (
 
 var (
 	KeyRegExp             = regexp.MustCompile(`^([^\[]+)(?:\[(\d+)\])?$`)
-	BytesRegExp           = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
+	BytesRegExp           = regexp.MustCompile(`(?i)^(\d+(?:\.\d{1,3})?)([KMGTPE]B?)$`)
 	DockerVerLegacyRegExp = regexp.MustCompile(`^1\.([0-9]|(1[0-3]))\.[0-9]+$`)
 	DockerVerRegExp       = regexp.MustCompile(`^[0-9]{2}\.((0[1-9])|(1[0-2]))\.[0-9]+(-(ce|ee))?$`)
 
@@ -700,8 +700,8 @@ func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentSt
 		return false
 	}
 
-	value, err := strconv.ParseUint(parts[1], 10, 0)
-	if err != nil || value < 1 {
+	value, err := strconv.ParseFloat(parts[1], 64)
+	if err != nil || value <= 0 {
 		return false
 	}
 
