@@ -211,6 +211,38 @@ func TestIsBytesValidation(t *testing.T) {
 	}
 }
 
+func TestIsK8sQuantityValidation(t *testing.T) {
+	v := validator.New(&validator.Config{TagName: "validate"})
+	err := v.RegisterValidation("quantity", IsK8sQuantityValidation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.Field("10Gi", "quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11G", "quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11e6", "quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11", "quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11GB", "quantity")
+	if err == nil {
+		t.Error("error expected")
+	}
+	err = v.Field("blah", "quantity")
+	if err == nil {
+		t.Error("error expected")
+	}
+}
+
 func AssertValidationErrors(t *testing.T, err error, pathAndTags map[string]string) error {
 	validationErrors, ok := err.(validator.ValidationErrors)
 	if !ok {

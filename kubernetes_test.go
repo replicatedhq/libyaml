@@ -48,13 +48,13 @@ kubernetes:
     server_version: ">=1.5"
     cluster_size: -1
     total_cores: -1
-    total_memory: 10
+    total_memory: 10blah
 `,
 			map[string]string{
 				"RootConfig.K8s.Requirements.ServerVersion": "semverrange",
 				"RootConfig.K8s.Requirements.ClusterSize":   "number",
 				"RootConfig.K8s.Requirements.TotalCores":    "number",
-				"RootConfig.K8s.Requirements.TotalMemory":   "bytes",
+				"RootConfig.K8s.Requirements.TotalMemory":   "bytes|quantity",
 			},
 		},
 	}
@@ -78,6 +78,9 @@ kubernetes:
   - name: pv1
     storage: 10GB
     access_modes: ["RWO"]
+  - name: pv2
+    storage: 10Gi
+    access_modes: ["RWO"]
 `,
 			map[string]string{},
 		},
@@ -87,11 +90,11 @@ replicated_api_version: "1.3.2"
 kubernetes:
   persistent_volume_claims:
   - name: ""
-    storage: 10
+    storage: 10blah
 `,
 			map[string]string{
 				"RootConfig.K8s.PVClaims[0].Name":    "required",
-				"RootConfig.K8s.PVClaims[0].Storage": "bytes",
+				"RootConfig.K8s.PVClaims[0].Storage": "bytes|quantity",
 			},
 		},
 	}
