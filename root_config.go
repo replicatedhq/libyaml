@@ -45,7 +45,7 @@ func (r *RootConfig) GetAPIVersion() string {
 }
 
 const DEFAULT_APP_CONFIG = `---
-replicated_api_version: 2.8.0
+replicated_api_version: 2.9.2
 name: "%s"
 
 #
@@ -54,6 +54,12 @@ name: "%s"
 properties:
   app_url: http://{{repl ConfigOption "hostname" }}
   console_title: "%s"
+
+#
+# https://www.replicated.com/docs/kb/supporting-your-customers/install-known-versions
+#
+host_requirements:
+  replicated_version: ">=2.9.2"
 
 #
 # Settings screen
