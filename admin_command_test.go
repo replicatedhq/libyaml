@@ -103,8 +103,8 @@ admin_commands:
 					Alias:   "redis-sadd",
 					Command: []string{"redis-cli", "sadd"},
 					RunType: AdminCommandRunTypeExec,
-					Source: AdminCommandSource{
-						Replicated: &AdminCommandSourceReplicated{
+					Source: SchedulerContainerSource{
+						SourceContainerNative: &SourceContainerNative{
 							Component: "MyComponent",
 							Container: "redis",
 						},
@@ -220,8 +220,8 @@ admin_commands:
 					Alias:   "redis-sadd",
 					Command: []string{"redis-cli", "sadd"},
 					RunType: AdminCommandRunTypeExec,
-					Source: AdminCommandSource{
-						Kubernetes: &AdminCommandSourceKubernetes{
+					Source: SchedulerContainerSource{
+						SourceContainerK8s: &SourceContainerK8s{
 							Selectors: map[string]string{
 								"app":  "redis",
 								"role": "master",
