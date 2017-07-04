@@ -22,7 +22,7 @@ func TestAdminCommandSourceReplicated(t *testing.T) {
 	// all three configs are equivalent (sort of)
 	configs := [][]string{
 		// test deprecated
-		[]string{
+		{
 			`---
 replicated_api_version: "1.3.2"
 components:
@@ -42,7 +42,7 @@ admin_commands:
 `,
 			"latest",
 		},
-		[]string{
+		{
 			// test indented
 			`---
 replicated_api_version: "1.3.2"
@@ -63,7 +63,7 @@ admin_commands:
 `,
 			"",
 		},
-		[]string{
+		{
 			// test non-indented
 			`---
 replicated_api_version: "1.3.2"

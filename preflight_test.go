@@ -321,7 +321,7 @@ func newCustomRequirement(id string) CustomRequirement {
 			DefaultMessage: "message",
 		},
 		Results: []CustomResult{
-			CustomResult{
+			{
 				Status: "status",
 				Message: Message{
 					DefaultMessage: "message",
