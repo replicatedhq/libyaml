@@ -1,7 +1,6 @@
 package libyaml_test
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -241,7 +240,6 @@ func TestUnmarshalSchedulerContainerSourceMarshal(t *testing.T) {
   container: c
 `
 		if expected != string(out) {
-			fmt.Println(string(out))
 			t.Errorf("expected:\n%s\nactual:\n%s", expected, out)
 		}
 	})
@@ -267,7 +265,6 @@ func TestUnmarshalSchedulerContainerSourceMarshal(t *testing.T) {
   container: c
 `
 		if expected != string(out) {
-			fmt.Println(string(out))
 			t.Errorf("expected:\n%s\nactual:\n%s", expected, out)
 		}
 	})
