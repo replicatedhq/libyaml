@@ -178,7 +178,7 @@ admin_commands:
   run_type: exec
   source:
     kubernetes:
-      selectors:
+      selector:
         app: redis
         role: master
       container: master
@@ -196,7 +196,7 @@ admin_commands:
 - alias: redis-sadd
   command: [redis-cli, sadd]
   run_type: exec
-  selectors:
+  selector:
     app: redis
     role: master
   container: master
@@ -222,6 +222,10 @@ admin_commands:
 					RunType: AdminCommandRunTypeExec,
 					Source: SchedulerContainerSource{
 						SourceContainerK8s: &SourceContainerK8s{
+							Selector: map[string]string{
+								"app":  "redis",
+								"role": "master",
+							},
 							Selectors: map[string]string{
 								"app":  "redis",
 								"role": "master",
@@ -250,6 +254,9 @@ command: [redis-cli, sadd]
 run_type: exec
 source:
   kubernetes:
+    selector:
+      app: redis
+      role: master
     selectors:
       app: redis
       role: master

@@ -30,6 +30,12 @@ support:
     source:
       component: DB
       container: redis
+  commands:
+  - filename: /path/to/command
+    command: [ps, aux]
+    source:
+      component: DB
+      container: redis
 `
 		var root RootConfig
 		err := yaml.Unmarshal([]byte(config), &root)
@@ -54,6 +60,11 @@ components:
 support:
   files:
   - filename: /path/to/file
+    component: DB
+    container: redis
+  commands:
+  - filename: /path/to/command
+    command: [ps, aux]
     component: DB
     container: redis
 `
@@ -83,6 +94,12 @@ support:
     source:
       component: DB
       container: notexists
+  commands:
+  - filename: /path/to/command
+    command: [ps, aux]
+    source:
+      component: DB
+      container: notexists
 `
 		var root RootConfig
 		err := yaml.Unmarshal([]byte(config), &root)
@@ -91,7 +108,8 @@ support:
 		}
 		err = v.Struct(&root)
 		if err := AssertValidationErrors(t, err, map[string]string{
-			"RootConfig.Support.Files[0].Source.SourceContainerNative.Container": "containerexists",
+			"RootConfig.Support.Files[0].Source.SourceContainerNative.Container":    "containerexists",
+			"RootConfig.Support.Commands[0].Source.SourceContainerNative.Container": "containerexists",
 		}); err != nil {
 			t.Error(err)
 		}

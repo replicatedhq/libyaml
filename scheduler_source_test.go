@@ -1,6 +1,7 @@
 package libyaml_test
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -18,7 +19,7 @@ replicated:
 swarm:
   service: DB
 kubernetes:
-  selectors:
+  selector:
     app: redis
     role: master
   container: master`
@@ -37,8 +38,8 @@ kubernetes:
 			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerSwarm.Service)
 		}
 		expected := map[string]string{"app": "redis", "role": "master"}
-		if !reflect.DeepEqual(expected, out.SourceContainerK8s.Selectors) {
-			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerK8s.Selectors)
+		if !reflect.DeepEqual(expected, out.SourceContainerK8s.Selector) {
+			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerK8s.Selector)
 		}
 		if "master" != out.SourceContainerK8s.Container {
 			t.Errorf("expected:\n%s\nactual:\n%s", "master", out.SourceContainerK8s.Container)
@@ -140,7 +141,7 @@ func TestUnmarshalSchedulerContainerSourceK8s(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		in := `
 kubernetes:
-  selectors:
+  selector:
     app: redis
     role: master
   container: master`
@@ -150,8 +151,8 @@ kubernetes:
 			t.Fatal(err)
 		}
 		expected := map[string]string{"app": "redis", "role": "master"}
-		if !reflect.DeepEqual(expected, out.SourceContainerK8s.Selectors) {
-			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerK8s.Selectors)
+		if !reflect.DeepEqual(expected, out.SourceContainerK8s.Selector) {
+			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerK8s.Selector)
 		}
 		if "master" != out.SourceContainerK8s.Container {
 			t.Errorf("expected:\n%s\nactual:\n%s", "master", out.SourceContainerK8s.Container)
@@ -166,7 +167,7 @@ kubernetes:
 
 	t.Run("valid inline", func(t *testing.T) {
 		in := `
-selectors:
+selector:
   app: redis
   role: master
 container: master`
@@ -176,8 +177,8 @@ container: master`
 			t.Fatal(err)
 		}
 		expected := map[string]string{"app": "redis", "role": "master"}
-		if !reflect.DeepEqual(expected, out.SourceContainerK8s.Selectors) {
-			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerK8s.Selectors)
+		if !reflect.DeepEqual(expected, out.SourceContainerK8s.Selector) {
+			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerK8s.Selector)
 		}
 		if "master" != out.SourceContainerK8s.Container {
 			t.Errorf("expected:\n%s\nactual:\n%s", "master", out.SourceContainerK8s.Container)
@@ -187,6 +188,87 @@ container: master`
 		}
 		if nil != out.SourceContainerSwarm {
 			t.Errorf("expected SourceContainerK8s <nil>")
+		}
+	})
+
+	t.Run("valid deprecated", func(t *testing.T) {
+		in := `
+kubernetes:
+  selectors:
+    app: redis
+    role: master
+  container: master`
+		out := SchedulerContainerSource{}
+		err := yaml.Unmarshal([]byte(in), &out)
+		if err != nil {
+			t.Fatal(err)
+		}
+		expected := map[string]string{"app": "redis", "role": "master"}
+		if !reflect.DeepEqual(expected, out.SourceContainerK8s.Selector) {
+			t.Errorf("expected:\n%s\nactual:\n%s", "DB", out.SourceContainerK8s.Selector)
+		}
+		if "master" != out.SourceContainerK8s.Container {
+			t.Errorf("expected:\n%s\nactual:\n%s", "master", out.SourceContainerK8s.Container)
+		}
+		if nil != out.SourceContainerNative {
+			t.Errorf("expected SourceContainerNative <nil>")
+		}
+		if nil != out.SourceContainerSwarm {
+			t.Errorf("expected SourceContainerK8s <nil>")
+		}
+	})
+}
+
+func TestUnmarshalSchedulerContainerSourceMarshal(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		in := SchedulerContainerSource{
+			SourceContainerK8s: &SourceContainerK8s{
+				Selector: map[string]string{
+					"a": "b",
+				},
+				Container: "c",
+			},
+		}
+		out, err := yaml.Marshal(in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		expected := `kubernetes:
+  selector:
+    a: b
+  selectors:
+    a: b
+  container: c
+`
+		if expected != string(out) {
+			fmt.Println(string(out))
+			t.Errorf("expected:\n%s\nactual:\n%s", expected, out)
+		}
+	})
+
+	t.Run("valid deprecated", func(t *testing.T) {
+		in := SchedulerContainerSource{
+			SourceContainerK8s: &SourceContainerK8s{
+				Selectors: map[string]string{
+					"a": "b",
+				},
+				Container: "c",
+			},
+		}
+		out, err := yaml.Marshal(in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		expected := `kubernetes:
+  selector:
+    a: b
+  selectors:
+    a: b
+  container: c
+`
+		if expected != string(out) {
+			fmt.Println(string(out))
+			t.Errorf("expected:\n%s\nactual:\n%s", expected, out)
 		}
 	})
 }
