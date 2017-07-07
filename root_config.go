@@ -30,6 +30,9 @@ type RootConfig struct {
 	StatsD             StatsD              `yaml:"statsd" json:"statsd" validate:"dive"`
 	Localization       *Localization       `yaml:"localization,omitempty" json:"localization,omitempty" validate:"omitempty,dive"`
 
+	// Support api version >= 2.10.0
+	Support *Support `yaml:"support,omitempty" json:"support,omitempty" validate:"omitempty,dive"`
+
 	// Images api version >= 2.8.0
 	Images []Image `yaml:"images,omitempty" json:"images,omitempty" validate:"dive"`
 

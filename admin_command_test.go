@@ -22,7 +22,7 @@ func TestAdminCommandSourceReplicated(t *testing.T) {
 	// all three configs are equivalent (sort of)
 	configs := [][]string{
 		// test deprecated
-		[]string{
+		{
 			`---
 replicated_api_version: "1.3.2"
 components:
@@ -42,7 +42,7 @@ admin_commands:
 `,
 			"latest",
 		},
-		[]string{
+		{
 			// test indented
 			`---
 replicated_api_version: "1.3.2"
@@ -63,7 +63,7 @@ admin_commands:
 `,
 			"",
 		},
-		[]string{
+		{
 			// test non-indented
 			`---
 replicated_api_version: "1.3.2"
@@ -103,8 +103,8 @@ admin_commands:
 					Alias:   "redis-sadd",
 					Command: []string{"redis-cli", "sadd"},
 					RunType: AdminCommandRunTypeExec,
-					Source: AdminCommandSource{
-						Replicated: &AdminCommandSourceReplicated{
+					Source: SchedulerContainerSource{
+						SourceContainerNative: &SourceContainerNative{
 							Component: "MyComponent",
 							Container: "redis",
 						},
@@ -178,7 +178,7 @@ admin_commands:
   run_type: exec
   source:
     kubernetes:
-      selectors:
+      selector:
         app: redis
         role: master
       container: master
@@ -196,7 +196,7 @@ admin_commands:
 - alias: redis-sadd
   command: [redis-cli, sadd]
   run_type: exec
-  selectors:
+  selector:
     app: redis
     role: master
   container: master
@@ -220,8 +220,12 @@ admin_commands:
 					Alias:   "redis-sadd",
 					Command: []string{"redis-cli", "sadd"},
 					RunType: AdminCommandRunTypeExec,
-					Source: AdminCommandSource{
-						Kubernetes: &AdminCommandSourceKubernetes{
+					Source: SchedulerContainerSource{
+						SourceContainerK8s: &SourceContainerK8s{
+							Selector: map[string]string{
+								"app":  "redis",
+								"role": "master",
+							},
 							Selectors: map[string]string{
 								"app":  "redis",
 								"role": "master",
@@ -250,6 +254,9 @@ command: [redis-cli, sadd]
 run_type: exec
 source:
   kubernetes:
+    selector:
+      app: redis
+      role: master
     selectors:
       app: redis
       role: master

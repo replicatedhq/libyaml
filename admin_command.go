@@ -14,32 +14,12 @@ type AdminCommand struct {
 }
 
 type AdminCommandV2 struct {
-	Alias   string              `yaml:"alias" json:"alias" validate:"required,shellalias"`
-	Command []string            `yaml:"command,flow" json:"command" validate:"required"`
-	Timeout uint                `yaml:"timeout,omitempty" json:"timeout,omitempty"`
-	RunType AdminCommandRunType `yaml:"run_type,omitempty" json:"run_type,omitempty"` // default "exec"
-	When    string              `yaml:"when,omitempty" json:"when,omitempty"`
-	Source  AdminCommandSource  `yaml:"source" json:"source" validate:"required"`
-}
-
-type AdminCommandSource struct {
-	Replicated *AdminCommandSourceReplicated `yaml:"replicated,omitempty" json:"replicated,omitempty" validate:"omitempty,dive"`
-	Swarm      *AdminCommandSourceSwarm      `yaml:"swarm,omitempty" json:"swarm,omitempty" validate:"omitempty,dive"`
-	Kubernetes *AdminCommandSourceKubernetes `yaml:"kubernetes,omitempty" json:"kubernetes,omitempty" validate:"omitempty,dive"`
-}
-
-type AdminCommandSourceReplicated struct {
-	Component string `yaml:"component" json:"component" validate:"required,componentexists"`
-	Container string `yaml:"container" json:"container" validate:"containerexists=Component"`
-}
-
-type AdminCommandSourceSwarm struct {
-	Service string `yaml:"service" json:"container" validate:"required"`
-}
-
-type AdminCommandSourceKubernetes struct {
-	Selectors map[string]string `yaml:"selectors" json:"selectors" validate:"required,dive,required"`
-	Container string            `yaml:"container,omitempty" json:"container,omitempty"`
+	Alias   string                   `yaml:"alias" json:"alias" validate:"required,shellalias"`
+	Command []string                 `yaml:"command,flow" json:"command" validate:"required"`
+	Timeout uint                     `yaml:"timeout,omitempty" json:"timeout,omitempty"`
+	RunType AdminCommandRunType      `yaml:"run_type,omitempty" json:"run_type,omitempty"` // default "exec"
+	When    string                   `yaml:"when,omitempty" json:"when,omitempty"`
+	Source  SchedulerContainerSource `yaml:"source" json:"source" validate:"required"`
 }
 
 type AdminCommandRunType string
@@ -78,39 +58,27 @@ func (c *AdminCommand) unmarshal(unmarshal func(interface{}) error) error {
 	}
 	c.AdminCommandV1 = v1
 
-	if c.Source.Replicated == nil {
-		out := &AdminCommandSourceReplicated{}
-		if err := unmarshal(out); err == nil && out.Component != "" {
-			c.Source.Replicated = out
-		}
-	}
-	if c.Source.Swarm == nil {
-		out := &AdminCommandSourceSwarm{}
-		if err := unmarshal(out); err == nil && out.Service != "" {
-			c.Source.Swarm = out
-		}
-	}
-	if c.Source.Kubernetes == nil {
-		out := &AdminCommandSourceKubernetes{}
-		if err := unmarshal(out); err == nil && out.Selectors != nil {
-			c.Source.Kubernetes = out
+	// if any are already set its probably not the "inline" style
+	if c.Source.SourceContainerNative == nil && c.Source.SourceContainerSwarm == nil && c.Source.SourceContainerK8s == nil {
+		if err := UnmarshalInline(unmarshal, &c.Source); err != nil {
+			return err
 		}
 	}
 
 	// backwards compatibility
-	if c.Source.Replicated != nil {
+	if c.Source.SourceContainerNative != nil {
 		if c.Image == nil {
 			c.Image = &CommandImage{}
 		}
 
 		if c.Component == "" {
-			c.Component = c.Source.Replicated.Component
+			c.Component = c.Source.SourceContainerNative.Component
 		}
 
-		if c.Source.Replicated.Container == "" {
-			c.Source.Replicated.Container = c.Image.Name
+		if c.Source.SourceContainerNative.Container == "" {
+			c.Source.SourceContainerNative.Container = c.Image.Name
 		} else {
-			c.Image.Name = c.Source.Replicated.Container
+			c.Image.Name = c.Source.SourceContainerNative.Container
 		}
 	}
 
