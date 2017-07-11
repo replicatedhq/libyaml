@@ -5,6 +5,7 @@ import "encoding/json"
 type Support struct {
 	Files    []SupportFile    `yaml:"files,omitempty" json:"files,omitempty" validate:"dive"`
 	Commands []SupportCommand `yaml:"commands,omitempty" json:"commands,omitempty" validate:"dive"`
+	Timeout  UintString       `yaml:"timeout,omitempty" json:"timeout,omitempty"`
 }
 
 type SupportFile struct {

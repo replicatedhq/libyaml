@@ -36,6 +36,7 @@ support:
     source:
       component: DB
       container: redis
+  timeout: 600
 `
 		var root RootConfig
 		err := yaml.Unmarshal([]byte(config), &root)
@@ -45,6 +46,9 @@ support:
 		err = v.Struct(&root)
 		if err != nil {
 			t.Error(err)
+		}
+		if root.Support.Timeout != "600" {
+			t.Errorf("Support.Timeout == %s, want %s", root.Support.Timeout, "600")
 		}
 	})
 
