@@ -4,6 +4,7 @@ type K8s struct {
 	Config       string          `yaml:"config"` // this is deprecated, prefer multi-doc
 	Requirements K8sRequirements `yaml:"requirements,omitempty" json:"requirements,omitempty"`
 	PVClaims     []K8sPVClaim    `yaml:"persistent_volume_claims,omitempty" json:"persistent_volume_claims,omitempty" validate:"dive"`
+	Backups      K8sBackups      `yaml:"backups" json:"backups"`
 }
 
 type K8sRequirements struct {
@@ -18,4 +19,9 @@ type K8sPVClaim struct {
 	Name        string   `yaml:"name" json:"name" validate:"required"`
 	Storage     string   `yaml:"storage,omitempty" json:"storage,omitempty" validate:"omitempty,bytes|quantity"`
 	AccessModes []string `yaml:"access_modes,omitempty" json:"access_modes,omitempty"`
+}
+
+type K8sBackups struct {
+	Enabled  bool     `yaml:"enabled" json:"enabled"`
+	PVCNames []string `yaml:"pvc_names" json:"pvc_names"`
 }
