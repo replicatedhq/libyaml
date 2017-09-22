@@ -14,7 +14,7 @@ type SourceContainerNative struct {
 }
 
 type SourceContainerSwarm struct {
-	Service string `yaml:"service" json:"container" validate:"required"`
+	Service string `yaml:"service" json:"service" validate:"required"`
 }
 
 type SourceContainerK8s struct {
