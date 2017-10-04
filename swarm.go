@@ -24,6 +24,7 @@ type Swarm struct {
 	MinNodeCount string        `yaml:"minimum_node_count,omitempty" json:"minimum_node_count,omitempty" validate:"omitempty,number"` // uint
 	Nodes        []SwarmNode   `yaml:"nodes,omitempty" json:"nodes,omitempty" validate:"dive"`
 	Secrets      []SwarmSecret `yaml:"secrets,omitempty" json:"secrets,omitempty" validate:"dive"`
+	Configs      []SwarmConfig `yaml:"configs,omitempty" json:"configs,omitempty" validate:"dive"`
 }
 
 type SwarmNode struct {
@@ -34,6 +35,12 @@ type SwarmNode struct {
 }
 
 type SwarmSecret struct {
+	Name   string            `yaml:"name" json:"name" validate:"required"`
+	Value  string            `yaml:"value" json:"value" validate:"required"`
+	Labels map[string]string `yaml:"labels,omitempty" json:"labels,omitempty" validate:"mapkeylengthnonzero"`
+}
+
+type SwarmConfig struct {
 	Name   string            `yaml:"name" json:"name" validate:"required"`
 	Value  string            `yaml:"value" json:"value" validate:"required"`
 	Labels map[string]string `yaml:"labels,omitempty" json:"labels,omitempty" validate:"mapkeylengthnonzero"`
