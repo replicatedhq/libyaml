@@ -3,9 +3,10 @@ package libyaml
 import "encoding/json"
 
 type ContainerEnvVar struct {
-	Name                  string `yaml:"name" json:"name"`
-	Value                 string `yaml:"value" json:"value"`
-	StaticVal             string `yaml:"static_val" json:"static_val"` // deprecated
+	Name  string `yaml:"name" json:"name"`
+	Value string `yaml:"value" json:"value"`
+	// deprecated: use Value instead
+	StaticVal             string `yaml:"static_val" json:"static_val"`
 	IsExcludedFromSupport string `yaml:"is_excluded_from_support" json:"is_excluded_from_support"`
 	When                  string `yaml:"when" json:"when"`
 }
