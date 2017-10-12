@@ -4,6 +4,8 @@ type Container struct {
 	Source               string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
 	Version              string                        `yaml:"version" json:"version" validate:"required"`
+	ImageKey             string                        `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
+	ImageDomain          string                        `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
 	DisplayName          string                        `yaml:"display_name" json:"display_name"`
 	Name                 string                        `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
@@ -106,6 +108,8 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Source = c.Source
 	m.ImageName = c.ImageName
 	m.Version = c.Version
+	m.ImageKey = c.ImageKey
+	m.ImageDomain = c.ImageDomain
 	m.DisplayName = c.DisplayName
 	m.Name = c.Name
 	m.Privileged = c.Privileged
@@ -148,6 +152,8 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Source = m.Source
 	c.ImageName = m.ImageName
 	c.Version = m.Version
+	c.ImageKey = m.ImageKey
+	c.ImageDomain = m.ImageDomain
 	c.DisplayName = m.DisplayName
 	c.Name = m.Name
 	c.Privileged = m.Privileged
@@ -189,6 +195,8 @@ type nonclusterableContainer struct {
 	Source           string                     `yaml:"source" json:"source" validate:"required,externalregistryexists"`
 	ImageName        string                     `yaml:"image_name" json:"image_name" validate:"required"`
 	Version          string                     `yaml:"version" json:"version" validate:"required"`
+	ImageKey         string                     `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
+	ImageDomain      string                     `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
 	DisplayName      string                     `yaml:"display_name" json:"display_name"`
 	Name             string                     `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
 	Privileged       bool                       `yaml:"privileged" json:"privileged"`
@@ -230,6 +238,8 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Source = c.Source
 	m.ImageName = c.ImageName
 	m.Version = c.Version
+	m.ImageKey = c.ImageKey
+	m.ImageDomain = c.ImageDomain
 	m.DisplayName = c.DisplayName
 	m.Name = c.Name
 	m.Privileged = c.Privileged
