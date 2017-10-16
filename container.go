@@ -32,7 +32,7 @@ type Container struct {
 	LogOptions           LogOptions                    `yaml:"logs" json:"logs"`
 	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	VolumesFrom          []string                      `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists,requiressubscription"`
-	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
+	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
 	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
 	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	ContentTrust         ContentTrust                  `yaml:"content_trust" json:"content_trust"`
@@ -216,7 +216,7 @@ type nonclusterableContainer struct {
 	LogOptions       LogOptions                 `yaml:"logs" json:"logs"`
 	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	VolumesFrom      []string                   `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists"`
-	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"hosts" validate:"dive,exists"`
+	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
 	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive,exists"`
 	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
 	ContentTrust     ContentTrust               `yaml:"content_trust" json:"content_trust" validate:"dive"`
