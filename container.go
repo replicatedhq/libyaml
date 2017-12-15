@@ -41,7 +41,7 @@ type Container struct {
 	When                 string                        `yaml:"when" json:"when"`
 	Dynamic              string                        `yaml:"dynamic" json:"dynamic"`
 	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
-	ShmSize              string                        `yaml:"shm_size" json:"shm_size"`
+	ShmSize              int64                         `yaml:"shm_size" json:"shm_size"`
 }
 
 type ContainerRestartPolicy struct {
@@ -234,7 +234,7 @@ type nonclusterableContainer struct {
 	When             string                     `yaml:"when" json:"when"`
 	Dynamic          string                     `yaml:"dynamic" json:"dynamic"`
 	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
-	ShmSize          string                     `yaml:"shm_size" json:"shm_size"`
+	ShmSize          int64                      `yaml:"shm_size" json:"shm_size"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
