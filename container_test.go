@@ -150,7 +150,7 @@ content_trust:
 when: ""
 dynamic: ""
 pid_mode: ""
-shm_size: ""
+shm_size: 0
 `
 
 	logReqs := libyaml.LogOptions{
@@ -214,7 +214,7 @@ content_trust:
 when: ""
 dynamic: ""
 pid_mode: ""
-shm_size: ""
+shm_size: 0
 `
 
 	c := libyaml.Container{
