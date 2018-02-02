@@ -519,6 +519,14 @@ func ComponentExistsValidation(v *validator.Validate, topStruct reflect.Value, c
 
 	parts := strings.SplitN(componentName, ",", 2)
 
+	if len(parts) == 1 {
+		//This might be a swarm config
+		//If the scheduler is swarm, accept it
+		if IsSwarm(root) {
+			return true
+		}
+	}
+
 	if len(parts) >= 2 {
 		componentName = parts[0]
 	}
@@ -637,6 +645,17 @@ func ComponentContainerFormatValidation(v *validator.Validate, topStruct reflect
 	}
 
 	parts := strings.SplitN(field.String(), ",", 2)
+
+	if len(parts) == 1 {
+		//This might be a swarm config
+		//If the scheduler is swarm, accept it
+		root, ok := topStruct.Interface().(*RootConfig)
+		if !ok {
+			// this is an issue with the code and really should be a panic
+			return true
+		}
+		return IsSwarm(root)
+	}
 
 	if len(parts) < 2 {
 		return false
@@ -1226,4 +1245,8 @@ func dependsOn(subscriptions map[string]string, current string, subscribed strin
 		}
 	}
 	return dependsOn(nextSubscriptions, nextCurrent, subscribed)
+}
+
+func IsSwarm(root *RootConfig) bool {
+	return root.Swarm != nil
 }
