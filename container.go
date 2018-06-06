@@ -42,6 +42,7 @@ type Container struct {
 	Dynamic              string                        `yaml:"dynamic" json:"dynamic"`
 	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
 	ShmSize              int64                         `yaml:"shm_size" json:"shm_size"`
+	Labels               []string                      `yaml:"labels" json:"labels"`
 }
 
 type ContainerRestartPolicy struct {
@@ -147,6 +148,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Dynamic = c.Dynamic
 	m.PidMode = c.PidMode
 	m.ShmSize = c.ShmSize
+	m.Labels = c.Labels
 }
 
 func (m marshallerContainer) decode(c *Container) {
@@ -192,6 +194,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Dynamic = m.Dynamic
 	c.PidMode = m.PidMode
 	c.ShmSize = m.ShmSize
+	c.Labels = m.Labels
 }
 
 type nonclusterableContainer struct {
@@ -235,6 +238,7 @@ type nonclusterableContainer struct {
 	Dynamic          string                     `yaml:"dynamic" json:"dynamic"`
 	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
 	ShmSize          int64                      `yaml:"shm_size" json:"shm_size"`
+	Labels           []string                   `yaml:"labels" json:"labels"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
@@ -279,4 +283,5 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Dynamic = c.Dynamic
 	m.PidMode = c.PidMode
 	m.ShmSize = c.ShmSize
+	m.Labels = c.Labels
 }

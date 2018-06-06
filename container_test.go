@@ -151,6 +151,7 @@ when: ""
 dynamic: ""
 pid_mode: ""
 shm_size: 0
+labels: []
 `
 
 	logReqs := libyaml.LogOptions{
@@ -215,6 +216,7 @@ when: ""
 dynamic: ""
 pid_mode: ""
 shm_size: 0
+labels: []
 `
 
 	c := libyaml.Container{
