@@ -8,7 +8,8 @@ type BackupStrategy struct {
 	// same names in the Backup struct will be ignored.
 	ExcludeAppData        string       `yaml:"exclude_app_data" json:"exclude_app_data"`
 	ExcludeReplicatedData string       `yaml:"exclude_replicated_data" json:"exclude_replicated_data"`
-	ExcludeRegsistryData  string       `yaml:"exclude_registry_data" json:"exclude_registry_data"`
+	ExcludeRegistryData   string       `yaml:"exclude_registry_data" json:"exclude_registry_data"`
+	DisableDeduplication  string       `yaml:"disable_deduplication" json:"disable_deduplication"`
 	Enabled               string       `yaml:"enabled" json:"enabled"`
 	PauseContainers       string       `yaml:"pause_containers" json:"pause_containers"`
 	Script                string       `yaml:"script" json:"script"`
@@ -22,7 +23,8 @@ type Backup struct {
 	Hidden               string           `yaml:"hidden" json:"hidden"`
 	PauseAll             bool             `yaml:"pause_all" json:"pause_all"` // deprecated
 	PauseContainers      string           `yaml:"pause_containers" json:"pause_containers"`
-	ExcludeRegsistryData string           `yaml:"exclude_registry_data" json:"exclude_registry_data"`
+	ExcludeRegistryData  string           `yaml:"exclude_registry_data" json:"exclude_registry_data"`
+	DisableDeduplication string           `yaml:"disable_deduplication" json:"disable_deduplication"`
 	Script               string           `yaml:"script" json:"script"`
 	Kubernetes           K8sBackups       `yaml:"kubernetes" json:"kubernetes"`
 	Swarm                SwarmBackups     `yaml:"swarm" json:"swarm"`
