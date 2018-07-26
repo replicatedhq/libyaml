@@ -13,6 +13,7 @@ type BackupStrategy struct {
 	Enabled               string       `yaml:"enabled" json:"enabled"`
 	PauseContainers       string       `yaml:"pause_containers" json:"pause_containers"`
 	Script                string       `yaml:"script" json:"script"`
+	RestoreScript         string       `yaml:"restore_script" json:"restore_script"`
 	Manual                string       `yaml:"manual" json:"manual"`
 	Kubernetes            K8sBackups   `yaml:"kubernetes" json:"kubernetes"`
 	Swarm                 SwarmBackups `yaml:"swarm" json:"swarm"`
@@ -26,6 +27,7 @@ type Backup struct {
 	ExcludeRegistryData  string           `yaml:"exclude_registry_data" json:"exclude_registry_data"`
 	DisableDeduplication string           `yaml:"disable_deduplication" json:"disable_deduplication"`
 	Script               string           `yaml:"script" json:"script"`
+	RestoreScript        string           `yaml:"restore_script" json:"restore_script"`
 	Kubernetes           K8sBackups       `yaml:"kubernetes" json:"kubernetes"`
 	Swarm                SwarmBackups     `yaml:"swarm" json:"swarm"`
 	Strategies           []BackupStrategy `yaml:"strategies" json:"strategies"`
