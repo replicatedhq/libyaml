@@ -7,4 +7,5 @@ type HostRequirements struct {
 	CPUMhz            uint   `yaml:"cpu_mhz,omitempty" json:"cpu_mhz,omitempty"`
 	Memory            string `yaml:"memory,omitempty" json:"memory,omitempty" validate:"omitempty,bytes"`
 	DiskSpace         string `yaml:"disk_space,omitempty" json:"disk_space,omitempty" validate:"omitempty,bytes"`
+	DockerSpace       string `yaml:"docker_space,omitempty" json:"docker_space,omitempty" validate:"omitempty,bytes"`
 }
