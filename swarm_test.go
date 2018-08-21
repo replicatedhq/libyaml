@@ -75,6 +75,7 @@ swarm:
       cpu_mhz: 2000
       memory: 4GB
       disk_space: 10GB
+      docker_space: 5GB
 `
 		var root RootConfig
 		err := yaml.Unmarshal([]byte(config), &root)
