@@ -14,6 +14,7 @@ type RootConfig struct {
 	Version                string           `yaml:"version" json:"version"`
 	ReleaseNotes           string           `yaml:"release_notes" json:"release_notes"`
 	ConsoleSupportMarkdown string           `yaml:"console_support_markdown" json:"console_support_markdown"`
+	Terms                  *Terms           `yaml:"terms,omitempty" json:"terms,omitempty"` // api version >= 2.27.0
 	Properties             Properties       `yaml:"properties" json:"properties"`
 	Identity               Identity         `yaml:"identity" json:"identity"`
 	State                  State            `yaml:"state" json:"state"`
