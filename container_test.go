@@ -152,7 +152,7 @@ dynamic: ""
 pid_mode: ""
 shm_size: 0
 labels: []
-stop_timeout: 0
+stop_timeout: ""
 `
 
 	logReqs := libyaml.LogOptions{
@@ -218,7 +218,7 @@ dynamic: ""
 pid_mode: ""
 shm_size: 0
 labels: []
-stop_timeout: 0
+stop_timeout: ""
 `
 
 	c := libyaml.Container{
