@@ -43,6 +43,7 @@ type Container struct {
 	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
 	ShmSize              int64                         `yaml:"shm_size" json:"shm_size"`
 	Labels               []string                      `yaml:"labels" json:"labels"`
+	StopTimeout          UintString                    `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
 }
 
 type ContainerRestartPolicy struct {
@@ -149,6 +150,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.PidMode = c.PidMode
 	m.ShmSize = c.ShmSize
 	m.Labels = c.Labels
+	m.StopTimeout = c.StopTimeout
 }
 
 func (m marshallerContainer) decode(c *Container) {
@@ -195,6 +197,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.PidMode = m.PidMode
 	c.ShmSize = m.ShmSize
 	c.Labels = m.Labels
+	c.StopTimeout = m.StopTimeout
 }
 
 type nonclusterableContainer struct {
@@ -239,6 +242,7 @@ type nonclusterableContainer struct {
 	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
 	ShmSize          int64                      `yaml:"shm_size" json:"shm_size"`
 	Labels           []string                   `yaml:"labels" json:"labels"`
+	StopTimeout      UintString                 `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
@@ -284,4 +288,5 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.PidMode = c.PidMode
 	m.ShmSize = c.ShmSize
 	m.Labels = c.Labels
+	m.StopTimeout = c.StopTimeout
 }
