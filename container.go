@@ -43,7 +43,7 @@ type Container struct {
 	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
 	ShmSize              int64                         `yaml:"shm_size" json:"shm_size"`
 	Labels               []string                      `yaml:"labels" json:"labels"`
-	StopTimeout          string                        `yaml:"stop_timeout" json:"stop_timeout"`
+	StopTimeout          UintString                    `yaml:"stop_timeout" json:"stop_timeout"`
 }
 
 type ContainerRestartPolicy struct {
@@ -242,7 +242,7 @@ type nonclusterableContainer struct {
 	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
 	ShmSize          int64                      `yaml:"shm_size" json:"shm_size"`
 	Labels           []string                   `yaml:"labels" json:"labels"`
-	StopTimeout      string                     `yaml:"stop_timeout" json:"stop_timeout"`
+	StopTimeout      UintString                 `yaml:"stop_timeout" json:"stop_timeout"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
