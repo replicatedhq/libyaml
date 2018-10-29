@@ -194,6 +194,19 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 	}
 
 	switch fieldErr.Tag {
+	case "int":
+		return fmt.Errorf("Value %q must be a valid integer at key %q", fieldErr.Value, formatted)
+
+	case "configitemtype":
+		var validTypes []string
+		for t := range configItemValidTypes {
+			validTypes = append(validTypes, t)
+		}
+		return fmt.Errorf("Invalid config item type %q at key %q (must be one of %q)", fieldErr.Value, formatted, validTypes)
+
+	case "configitemwhen":
+		return fmt.Errorf("Referenced config item %q in when clause does not exist at key %q", fieldErr.Value, formatted)
+
 	case "apiversion":
 		return fmt.Errorf("A valid \"replicated_api_version\" is required as a root element")
 
@@ -219,10 +232,16 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 		return fmt.Errorf("Should be in the format \"<component name>,<container image name>\" at key %q", formatted)
 
 	case "clusterstrategy":
-		return fmt.Errorf("Invalid strategy value at key %q. Valid values are \"autoscale\", \"random\".", formatted)
+		return fmt.Errorf("Invalid strategy value at key %q, valid values are \"autoscale\", \"random\"", formatted)
+
+	case "absolutepath":
+		return fmt.Errorf("Path %q must be absolute at key %q", fieldErr.Value, formatted)
 
 	case "volumeoptions":
-		return fmt.Errorf("Invalid volume option list %q", formatted)
+		return fmt.Errorf("Invalid volume option list at key %q", formatted)
+
+	case "isempty":
+		return fmt.Errorf("Value must be emoty at key %q", formatted)
 
 	case "integrationexists":
 		return fmt.Errorf("Missing integration %q at key %q", fieldErr.Value, formatted)
@@ -236,10 +255,19 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 	case "quantity", "bytes|quantity":
 		return fmt.Errorf("Quantity at key %q must be expressed as a plain integer, a fixed-point integer, or the power-of-two equivalent (e.g. 128974848, 129e6, 129M, 123Mi)", formatted)
 
+	case "bool":
+		return fmt.Errorf("Value %q must be a valid boolean at key %q", fieldErr.Value, formatted)
+
+	case "uint":
+		return fmt.Errorf("Value %q must be a valid unsigned integer at key %q", fieldErr.Value, formatted)
+
 	case "required":
 		return fmt.Errorf("Value required at key %q", formatted)
 
 	case "tcpport":
+		return fmt.Errorf("A valid port number must be between 0 and 65535: %q", formatted)
+
+	case "udpport":
 		return fmt.Errorf("A valid port number must be between 0 and 65535: %q", formatted)
 
 	case "graphiteretention":
@@ -251,14 +279,14 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 	case "monitorlabelscale":
 		return fmt.Errorf("Please specify 'metric', 'none', or a floating point number for scale at %q", formatted)
 
+	case "fingerprint":
+		return fmt.Errorf("Please specify a valid RFC4716 key fingerprint at %q", formatted)
+
 	case "shellalias":
 		return fmt.Errorf("Valid characters for shell alias are [a-zA-Z0-9_\\-] at %q", formatted)
 
 	case "url":
 		return fmt.Errorf("A valid URL accessible from the internet is required at %q", formatted)
-
-	case "fingerprint":
-		return fmt.Errorf("Please specify a valid RFC4716 key fingerprint at %q", formatted)
 
 	case "containernameexists":
 		return fmt.Errorf("Container name %q does not exist at key %q", fieldErr.Value, formatted)
@@ -372,26 +400,26 @@ func IntValidation(v *validator.Validate, topStruct reflect.Value, currentStruct
 	return intRegex.MatchString(field.String())
 }
 
+var configItemValidTypes = map[string]bool{
+	"text":        true,
+	"label":       true,
+	"password":    true,
+	"file":        true,
+	"bool":        true,
+	"select_one":  true,
+	"select_many": true,
+	"textarea":    true,
+	"select":      true,
+	"heading":     true,
+}
+
 // ConfigItemTypeValidation will validate that the type element of a config item is a supported and valid option.
 func ConfigItemTypeValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		return false
 	}
 
-	validTypes := map[string]bool{
-		"text":        true,
-		"label":       true,
-		"password":    true,
-		"file":        true,
-		"bool":        true,
-		"select_one":  true,
-		"select_many": true,
-		"textarea":    true,
-		"select":      true,
-		"heading":     true,
-	}
-
-	if validTypes[field.String()] {
+	if configItemValidTypes[field.String()] {
 		return true
 	}
 
