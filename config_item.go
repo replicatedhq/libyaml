@@ -38,4 +38,5 @@ type TestProc struct {
 	ArgFields   []string `yaml:"arg_fields" json:"arg_fields"`
 	Args        []string `yaml:"args" json:"args"`
 	RunOnSave   string   `yaml:"run_on_save" json:"run_on_save"`
+	When        string   `yaml:"when" json:"when" validate:"configitemwhen"`
 }
