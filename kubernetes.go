@@ -22,5 +22,5 @@ type K8sPVClaim struct {
 }
 
 type K8sSharedFS struct {
-	Enabled string `yaml:"enabled,omitempty" json:"enabled,omitempty" validate:"omitempty,bool"`
+	Enabled string `yaml:"enabled,omitempty" json:"enabled,omitempty"`
 }
