@@ -1,0 +1,24 @@
+version: 2
+
+# jobs
+
+jobs:
+
+  test:
+    docker:
+      - image: circleci/golang:1.11
+    working_directory: /go/src/github.com/replicatedhq/libyaml
+    steps:
+      - checkout
+      - run:
+          name: Test
+          command: go test -v .
+
+# workflows
+
+workflows:
+  version: 2
+
+  accept:
+    jobs:
+      - test
