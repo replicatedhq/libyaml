@@ -937,7 +937,7 @@ func MonitorLabelScaleValidation(v *validator.Validate, topStruct reflect.Value,
 	}
 }
 
-// Validates MD5 fingerprint defined in RFC4716
+// Fingerprint validates MD5 fingerprint defined in RFC4716
 func Fingerprint(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 	if fieldKind != reflect.String {
 		return true
