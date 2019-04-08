@@ -13,6 +13,10 @@ func TestMonitorsDefault(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	err = RegisterNativeValidations(v)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	runs := []ValidateTestRun{
 		{
@@ -69,8 +73,7 @@ monitors:
 swarm:
   minimum_node_count: "1"
 `,
-			map[string]string{
-			},
+			map[string]string{},
 		},
 		{
 			`---
@@ -126,8 +129,7 @@ monitors:
 swarm:
   minimum_node_count: "1"
 `,
-			map[string]string{
-			},
+			map[string]string{},
 		},
 	}
 
