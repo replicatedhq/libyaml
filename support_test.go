@@ -14,6 +14,10 @@ func TestSupport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	err = RegisterNativeValidations(v)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	t.Run("valid", func(t *testing.T) {
 		config := `---

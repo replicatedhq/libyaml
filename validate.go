@@ -64,27 +64,7 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
-	if err := v.RegisterValidation("componentexists", ComponentExistsValidation); err != nil {
-		return err
-	}
-
-	if err := v.RegisterValidation("containerexists", ContainerExistsValidation); err != nil {
-		return err
-	}
-
-	if err := v.RegisterValidation("componentcontainer", ComponentContainerFormatValidation); err != nil {
-		return err
-	}
-
-	if err := v.RegisterValidation("clusterstrategy", ClusterStrategyValidation); err != nil {
-		return err
-	}
-
 	if err := v.RegisterValidation("absolutepath", IsAbsolutePathValidation); err != nil {
-		return err
-	}
-
-	if err := v.RegisterValidation("volumeoptions", VolumeOptionsValidation); err != nil {
 		return err
 	}
 
@@ -150,6 +130,56 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
+	if err := v.RegisterValidation("customrequirementidunique", CustomRequirementIDUnique); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("mapkeylengthnonzero", MapKeyLengthNonZero); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("required_minapiversion", RequiredMinAPIVersion); err != nil {
+		return err
+	}
+
+	// These validations are scheduler specific
+	schedulerValidations := []string{
+		"componentexists", "containerexists", "componentcontainer", "containernameexists",
+		"containernameunique", "clusterinstancefalse", "requiressubscription", "clusterstrategy",
+		"volumeoptions",
+	}
+	for _, key := range schedulerValidations {
+		if err := v.RegisterValidation(key, NoopValidation); err != nil {
+			return fmt.Errorf("register %s: %v", key, err)
+		}
+	}
+
+	for key, fn := range registeredValidationFuncs {
+		if err := v.RegisterValidation(key, fn); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// RegisterNativeValidations will register validations for the Native scheduler.
+// NOTE: Validations defined here must also be defined in the schedulerValidations slice in the
+// RegisterValidations function above.
+func RegisterNativeValidations(v *validator.Validate) error {
+
+	if err := v.RegisterValidation("componentexists", ComponentExistsValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("containerexists", ContainerExistsValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("componentcontainer", ComponentContainerFormatValidation); err != nil {
+		return err
+	}
+
 	if err := v.RegisterValidation("containernameexists", ContainerNameExists); err != nil {
 		return err
 	}
@@ -166,23 +196,29 @@ func RegisterValidations(v *validator.Validate) error {
 		return err
 	}
 
-	if err := v.RegisterValidation("customrequirementidunique", CustomRequirementIDUnique); err != nil {
+	if err := v.RegisterValidation("clusterstrategy", ClusterStrategyValidation); err != nil {
 		return err
 	}
 
-	if err := v.RegisterValidation("mapkeylengthnonzero", MapKeyLengthNonZero); err != nil {
+	if err := v.RegisterValidation("volumeoptions", VolumeOptionsValidation); err != nil {
 		return err
 	}
 
-	if err := v.RegisterValidation("required_minapiversion", RequiredMinAPIVersion); err != nil {
-		return err
-	}
+	return nil
+}
 
-	for key, fn := range registeredValidationFuncs {
-		if err := v.RegisterValidation(key, fn); err != nil {
-			return err
-		}
-	}
+// RegisterKubernetesValidations will register validations for the Kubernetes scheduler.
+// NOTE: Validations defined here must also be defined in the schedulerValidations slice in the
+// RegisterValidations function above.
+func RegisterKubernetesValidations(v *validator.Validate) error {
+
+	return nil
+}
+
+// RegisterSwarmValidations will register validations for the Swarm scheduler.
+// NOTE: Validations defined here must also be defined in the schedulerValidations slice in the
+// RegisterValidations function above.
+func RegisterSwarmValidations(v *validator.Validate) error {
 
 	return nil
 }
