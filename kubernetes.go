@@ -22,5 +22,6 @@ type K8sPVClaim struct {
 }
 
 type K8sSharedFS struct {
-	Enabled string `yaml:"enabled,omitempty" json:"enabled,omitempty"`
+	Enabled    string   `yaml:"enabled,omitempty" json:"enabled,omitempty"`
+	MountPaths []string `yaml:"mount_paths,omitempty" json:"mount_paths,omitempty"`
 }
