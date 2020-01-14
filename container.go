@@ -41,7 +41,7 @@ type Container struct {
 	When                 string                        `yaml:"when" json:"when"`
 	Dynamic              string                        `yaml:"dynamic" json:"dynamic"`
 	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
-	ShmSize              int64                         `yaml:"shm_size" json:"shm_size"`
+	ShmSize              UintString                    `yaml:"shm_size,omitempty" json:"shm_size,omitempty" validate:"omitempty,uint"`
 	Labels               []string                      `yaml:"labels" json:"labels"`
 	StopTimeout          UintString                    `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
 }
@@ -240,7 +240,7 @@ type nonclusterableContainer struct {
 	When             string                     `yaml:"when" json:"when"`
 	Dynamic          string                     `yaml:"dynamic" json:"dynamic"`
 	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
-	ShmSize          int64                      `yaml:"shm_size" json:"shm_size"`
+	ShmSize          UintString                 `yaml:"shm_size,omitempty" json:"shm_size,omitempty" validate:"omitempty,uint"`
 	Labels           []string                   `yaml:"labels" json:"labels"`
 	StopTimeout      UintString                 `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
 }
