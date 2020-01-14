@@ -26,7 +26,8 @@ logs:
   max_files: "5"
 volumes: []
 support_files: []
-support_commands: []`
+support_commands: []
+shm_size: 100`
 
 	var c libyaml.Container
 	if err := yaml.Unmarshal([]byte(s), &c); err != nil {
@@ -60,6 +61,9 @@ support_commands: []`
 	if c.Entrypoint != nil {
 		t.Errorf("expecting \"Container.Entrypoint\" == \"nil\", got \"%v\"", c.Entrypoint)
 	}
+	if c.ShmSize != libyaml.UintString("100") {
+		t.Errorf("expecting \"Container.ShmSize\" == \"100\", got \"%v\"", c.ShmSize)
+	}
 }
 
 func TestContainerUnmarshalYAMLCluster(t *testing.T) {
@@ -81,7 +85,8 @@ logs:
   max_files: ""
 volumes: []
 support_files: []
-support_commands: []`
+support_commands: []
+shm_size: 100`
 
 	var c libyaml.Container
 	if err := yaml.Unmarshal([]byte(s), &c); err != nil {
@@ -108,6 +113,9 @@ support_commands: []`
 	}
 	if c.Entrypoint == nil || len(*c.Entrypoint) != 0 {
 		t.Errorf("expecting \"Container.Entrypoint\" to be empty, got \"%v\"", c.Entrypoint)
+	}
+	if c.ShmSize != libyaml.UintString("100") {
+		t.Errorf("expecting \"Container.ShmSize\" == \"100\", got \"%v\"", c.ShmSize)
 	}
 }
 
@@ -150,7 +158,7 @@ content_trust:
 when: ""
 dynamic: ""
 pid_mode: ""
-shm_size: 0
+shm_size: 100
 labels: []
 `
 
@@ -163,6 +171,7 @@ labels: []
 		ImageName:  "test",
 		Cluster:    "false",
 		LogOptions: logReqs,
+		ShmSize:    libyaml.UintString("100"),
 	}
 
 	b, err := yaml.Marshal(c)
@@ -203,8 +212,8 @@ config_files: []
 customer_files: []
 env_vars: []
 logs:
-  max_size: ""
-  max_files: ""
+  max_size: 100k
+  max_files: "5"
 volumes: []
 volumes_from: []
 extra_hosts: []
@@ -215,14 +224,20 @@ content_trust:
 when: ""
 dynamic: ""
 pid_mode: ""
-shm_size: 0
+shm_size: '{{repl Blah}}'
 labels: []
 `
 
+	logReqs := libyaml.LogOptions{
+		MaxSize:  "100k",
+		MaxFiles: "5",
+	}
 	c := libyaml.Container{
-		Source:    "public",
-		ImageName: "test",
-		Cluster:   "true",
+		Source:     "public",
+		ImageName:  "test",
+		Cluster:    "true",
+		LogOptions: logReqs,
+		ShmSize:    libyaml.UintString("{{repl Blah}}"),
 	}
 
 	b, err := yaml.Marshal(c)
