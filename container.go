@@ -7,7 +7,7 @@ type Container struct {
 	ImageKey             string                        `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
 	ImageDomain          string                        `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
 	DisplayName          string                        `yaml:"display_name" json:"display_name"`
-	Name                 string                        `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
+	Name                 string                        `yaml:"name" json:"name" validate:"containernameunique"`
 	Privileged           bool                          `yaml:"privileged" json:"privileged"`
 	NetworkMode          string                        `yaml:"network_mode" json:"network_mode"`
 	CPUShares            string                        `yaml:"cpu_shares" json:"cpu_shares"`
@@ -207,7 +207,7 @@ type nonclusterableContainer struct {
 	ImageKey         string                     `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
 	ImageDomain      string                     `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
 	DisplayName      string                     `yaml:"display_name" json:"display_name"`
-	Name             string                     `yaml:"name" json:"name" validate:"containernameunique,clusterinstancefalse"`
+	Name             string                     `yaml:"name" json:"name" validate:"containernameunique"`
 	Privileged       bool                       `yaml:"privileged" json:"privileged"`
 	NetworkMode      string                     `yaml:"network_mode" json:"network_mode"`
 	CPUShares        string                     `yaml:"cpu_shares" json:"cpu_shares"`

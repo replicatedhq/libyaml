@@ -145,7 +145,7 @@ func RegisterValidations(v *validator.Validate) error {
 	// These validations are scheduler specific
 	schedulerValidations := []string{
 		"componentexists", "containerexists", "componentcontainer", "containernameexists",
-		"containernameunique", "clusterinstancefalse", "requiressubscription", "clusterstrategy",
+		"containernameunique", "requiressubscription", "clusterstrategy",
 		"volumeoptions",
 	}
 	for _, key := range schedulerValidations {
@@ -185,10 +185,6 @@ func RegisterNativeValidations(v *validator.Validate) error {
 	}
 
 	if err := v.RegisterValidation("containernameunique", ContainerNameUnique); err != nil {
-		return err
-	}
-
-	if err := v.RegisterValidation("clusterinstancefalse", ClusterInstanceFalse); err != nil {
 		return err
 	}
 
@@ -329,9 +325,6 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 
 	case "containernameunique":
 		return fmt.Errorf("Container name %q is required to be unique at key %q", fieldErr.Value, formatted)
-
-	case "clusterinstancefalse":
-		return fmt.Errorf("Cluster must be set to false for container at key %q", formatted)
 
 	case "requiressubscription":
 		return fmt.Errorf("Failed to traverse subscription tree from key %q to container with name %q", formatted, fieldErr.Value)
@@ -1109,40 +1102,6 @@ func ContainerNameUnique(v *validator.Validate, topStruct reflect.Value, current
 	if container != nil {
 		return false
 	}
-	return true
-}
-
-func ClusterInstanceFalse(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
-	if fieldKind != reflect.String {
-		return true
-	}
-
-	valueStr := field.String()
-	if valueStr == "" {
-		return true
-	}
-
-	if hasReplTemplate(field) {
-		// all bets are off
-		return true
-	}
-
-	currentContainer := getCurrentContainer(currentStructOrField)
-	if currentContainer == nil {
-		// this is an issue with the code and really should be a panic
-		return true
-	}
-
-	cluster, err := currentContainer.Cluster.Parse()
-	if err != nil {
-		// don't worry about this here. cluster should have the "bool" validator.
-		return true
-	}
-
-	if cluster {
-		return false
-	}
-
 	return true
 }
 
