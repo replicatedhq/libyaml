@@ -282,9 +282,19 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 		return fmt.Errorf("Missing external registry integration %q at key %q", fieldErr.Value, formatted)
 
 	case "bytes":
-		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like M, MB, G, or GB", formatted)
+		// omit M and G
+		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like MB, or GB", formatted)
 
-	case "quantity", "bytes|quantity":
+	case "ram":
+		// omit M and G
+		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like MiB, or GiB", formatted)
+
+	case "bytes|ram":
+		// omit M and G
+		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like MB, MiB, GB, or GiB", formatted)
+
+	case "quantity", "bytes|quantity", "bytes|ram|quantity":
+		// omit bytes and ram, prefer quantity
 		return fmt.Errorf("Quantity at key %q must be expressed as a plain integer, a fixed-point integer, or the power-of-two equivalent (e.g. 128974848, 129e6, 129M, 123Mi)", formatted)
 
 	case "bool":
