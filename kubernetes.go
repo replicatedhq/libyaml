@@ -12,7 +12,7 @@ type K8sRequirements struct {
 	APIVersions   []string `yaml:"api_versions,omitempty" json:"api_versions,omitempty" validate:"dive,required"`
 	ClusterSize   string   `yaml:"cluster_size,omitempty" json:"cluster_size,omitempty" validate:"omitempty,number"` // uint
 	TotalCores    string   `yaml:"total_cores,omitempty" json:"total_cores,omitempty" validate:"omitempty,number"`   // uint
-	TotalMemory   string   `yaml:"total_memory,omitempty" json:"total_memory,omitempty" validate:"omitempty,bytes|quantity"`
+	TotalMemory   string   `yaml:"total_memory,omitempty" json:"total_memory,omitempty" validate:"omitempty,bytes|ram|quantity"`
 }
 
 type K8sPVClaim struct {

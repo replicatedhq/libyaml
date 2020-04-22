@@ -189,6 +189,10 @@ func TestIsBytesValidation(t *testing.T) {
 	if err != nil {
 		t.Errorf("got unexpected error %v", err)
 	}
+	err = v.Field("11.25GiB", "bytes")
+	if err == nil {
+		t.Error("error expected")
+	}
 	err = v.Field("11", "bytes")
 	if err == nil {
 		t.Error("error expected")
@@ -208,6 +212,30 @@ func TestIsBytesValidation(t *testing.T) {
 	err = v.Field("GB", "bytes")
 	if err == nil {
 		t.Error("error expected")
+	}
+}
+
+func TestIsBytesRAMValidation(t *testing.T) {
+	v := validator.New(&validator.Config{TagName: "validate"})
+	err := v.RegisterValidation("bytes", IsBytesValidation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.RegisterValidation("ram", IsRAMValidation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.Field("10GB", "bytes|ram")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11.25GB", "bytes|ram")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11.25GiB", "bytes|ram")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
 	}
 }
 
@@ -237,9 +265,53 @@ func TestIsK8sQuantityValidation(t *testing.T) {
 	if err == nil {
 		t.Error("error expected")
 	}
+	err = v.Field("11GiB", "quantity")
+	if err == nil {
+		t.Error("error expected")
+	}
 	err = v.Field("blah", "quantity")
 	if err == nil {
 		t.Error("error expected")
+	}
+}
+
+func TestIsBytesRAMK8sQuantityValidation(t *testing.T) {
+	v := validator.New(&validator.Config{TagName: "validate"})
+	err := v.RegisterValidation("bytes", IsBytesValidation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.RegisterValidation("ram", IsRAMValidation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.RegisterValidation("quantity", IsK8sQuantityValidation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = v.Field("10Gi", "bytes|ram|quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11G", "bytes|ram|quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11e6", "bytes|ram|quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11", "bytes|ram|quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11GB", "bytes|ram|quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
+	}
+	err = v.Field("11GiB", "bytes|ram|quantity")
+	if err != nil {
+		t.Errorf("got unexpected error %v", err)
 	}
 }
 

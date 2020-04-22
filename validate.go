@@ -15,6 +15,7 @@ import (
 var (
 	KeyRegExp             = regexp.MustCompile(`^([^\[]+)(?:\[(\d+)\])?$`)
 	BytesRegExp           = regexp.MustCompile(`(?i)^(\d+(?:\.\d{1,3})?)([KMGTPE]B?)$`)
+	RAMRegExp             = regexp.MustCompile(`(?i)^(\d+(?:\.\d{1,3})?)([KMGTPE]iB?)$`)
 	K8sQuantityRegExp     = regexp.MustCompile(`^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$`)
 	DockerVerLegacyRegExp = regexp.MustCompile(`^1\.([0-9]|(1[0-3]))\.[0-9]+$`)
 	DockerVerRegExp       = regexp.MustCompile(`^[0-9]{2}\.((0[1-9])|(1[0-2]))\.[0-9]+(-(ce|ee))?$`)
@@ -83,6 +84,10 @@ func RegisterValidations(v *validator.Validate) error {
 	}
 
 	if err := v.RegisterValidation("bytes", IsBytesValidation); err != nil {
+		return err
+	}
+
+	if err := v.RegisterValidation("ram", IsRAMValidation); err != nil {
 		return err
 	}
 
@@ -282,9 +287,19 @@ func FormatFieldError(key string, fieldErr *validator.FieldError, root *RootConf
 		return fmt.Errorf("Missing external registry integration %q at key %q", fieldErr.Value, formatted)
 
 	case "bytes":
-		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like M, MB, G, or GB", formatted)
+		// omit M and G
+		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like MB, or GB", formatted)
 
-	case "quantity", "bytes|quantity":
+	case "ram":
+		// omit M and G
+		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like MiB, or GiB", formatted)
+
+	case "bytes|ram":
+		// omit M and G
+		return fmt.Errorf("Byte quantity key %q must be a positive decimal with a unit of measurement like MB, MiB, GB, or GiB", formatted)
+
+	case "quantity", "bytes|quantity", "bytes|ram|quantity":
+		// omit bytes and ram, prefer quantity
 		return fmt.Errorf("Quantity at key %q must be expressed as a plain integer, a fixed-point integer, or the power-of-two equivalent (e.g. 128974848, 129e6, 129M, 123Mi)", formatted)
 
 	case "bool":
@@ -783,6 +798,31 @@ func IsBytesValidation(v *validator.Validate, topStruct reflect.Value, currentSt
 	}
 
 	parts := BytesRegExp.FindStringSubmatch(strings.TrimSpace(field.String()))
+	if len(parts) < 3 {
+		return false
+	}
+
+	value, err := strconv.ParseFloat(parts[1], 64)
+	if err != nil || value <= 0 {
+		return false
+	}
+
+	return true
+}
+
+// IsRAMValidation will return if a field is a parseable bytes value.
+func IsRAMValidation(v *validator.Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
+	if fieldKind != reflect.String {
+		// this is an issue with the code and really should be a panic
+		return true
+	}
+
+	if hasReplTemplate(field) {
+		// all bets are off
+		return true
+	}
+
+	parts := RAMRegExp.FindStringSubmatch(strings.TrimSpace(field.String()))
 	if len(parts) < 3 {
 		return false
 	}
