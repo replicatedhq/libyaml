@@ -32,6 +32,23 @@ swarm:
 		}
 	})
 
+	t.Run("template function", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  minimum_node_count: '{{repl printf "2"}}'
+`
+		var root RootConfig
+		err := yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
 	t.Run("non-number", func(t *testing.T) {
 		config := `---
 replicated_api_version: "2.7.0"
@@ -45,7 +62,7 @@ swarm:
 		}
 		err = v.Struct(&root)
 		if err := AssertValidationErrors(t, err, map[string]string{
-			"RootConfig.Swarm.MinNodeCount": "number",
+			"RootConfig.Swarm.MinNodeCount": "uint",
 		}); err != nil {
 			t.Error(err)
 		}
@@ -187,6 +204,24 @@ swarm:
 		}
 	})
 
+	t.Run("template function", func(t *testing.T) {
+		config := `---
+replicated_api_version: "2.7.0"
+swarm:
+  nodes:
+  - minimum_count: '{{repl printf "2"}}'
+`
+		var root RootConfig
+		err := yaml.Unmarshal([]byte(config), &root)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = v.Struct(&root)
+		if err != nil {
+			t.Error(err)
+		}
+	})
+
 	t.Run("non-number", func(t *testing.T) {
 		config := `---
 replicated_api_version: "2.7.0"
@@ -201,7 +236,7 @@ swarm:
 		}
 		err = v.Struct(&root)
 		if err := AssertValidationErrors(t, err, map[string]string{
-			"RootConfig.Swarm.Nodes[0].MinCount": "number",
+			"RootConfig.Swarm.Nodes[0].MinCount": "uint",
 		}); err != nil {
 			t.Error(err)
 		}
