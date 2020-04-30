@@ -62,6 +62,23 @@ kubernetes:
 replicated_api_version: "1.3.2"
 kubernetes:
   requirements:
+    server_version: ">=1.5.0"
+    api_versions:
+    - extensions/v1beta1
+    - ""
+    cluster_size: '{{repl printf "3"}}'
+    total_cores: '{{repl printf "6"}}'
+    total_memory: 10KiB
+`,
+			map[string]string{
+				"RootConfig.K8s.Requirements.APIVersions[1]": "required",
+			},
+		},
+		ValidateTestRun{
+			`---
+replicated_api_version: "1.3.2"
+kubernetes:
+  requirements:
     server_version: ">=1.5"
     cluster_size: -1
     total_cores: -1
@@ -69,8 +86,8 @@ kubernetes:
 `,
 			map[string]string{
 				"RootConfig.K8s.Requirements.ServerVersion": "semverrange",
-				"RootConfig.K8s.Requirements.ClusterSize":   "number",
-				"RootConfig.K8s.Requirements.TotalCores":    "number",
+				"RootConfig.K8s.Requirements.ClusterSize":   "uint",
+				"RootConfig.K8s.Requirements.TotalCores":    "uint",
 				"RootConfig.K8s.Requirements.TotalMemory":   "bytes|ram|quantity",
 			},
 		},
