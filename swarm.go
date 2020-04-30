@@ -21,7 +21,7 @@ var (
 type SwarmNodeRole string
 
 type Swarm struct {
-	MinNodeCount UintString    `yaml:"minimum_node_count,omitempty" json:"minimum_node_count,omitempty" validate:"omitempty,uint"`
+	MinNodeCount string        `yaml:"minimum_node_count,omitempty" json:"minimum_node_count,omitempty" validate:"omitempty,uint"`
 	Nodes        []SwarmNode   `yaml:"nodes,omitempty" json:"nodes,omitempty" validate:"dive"`
 	Secrets      []SwarmSecret `yaml:"secrets,omitempty" json:"secrets,omitempty" validate:"dive"`
 	Configs      []SwarmConfig `yaml:"configs,omitempty" json:"configs,omitempty" validate:"dive"`
@@ -30,7 +30,7 @@ type Swarm struct {
 type SwarmNode struct {
 	Role             SwarmNodeRole     `yaml:"role,omitempty" json:"role,omitempty" validate:"omitempty,swarmnoderole"`
 	Labels           map[string]string `yaml:"labels,omitempty" json:"labels,omitempty"`
-	MinCount         UintString        `yaml:"minimum_count,omitempty" json:"minimum_count,omitempty" validate:"omitempty,uint"`
+	MinCount         string            `yaml:"minimum_count,omitempty" json:"minimum_count,omitempty" validate:"omitempty,uint"`
 	HostRequirements HostRequirements  `yaml:"host_requirements,omitempty" json:"host_requirements,omitempty"`
 }
 
