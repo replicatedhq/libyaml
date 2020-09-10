@@ -1,49 +1,51 @@
 package libyaml
 
 type Container struct {
-	Source               string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
-	ImageName            string                        `yaml:"image_name" json:"image_name" validate:"required"`
-	Version              string                        `yaml:"version" json:"version" validate:"required"`
-	ImageKey             string                        `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
-	ImageDomain          string                        `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
-	DisplayName          string                        `yaml:"display_name" json:"display_name"`
-	Name                 string                        `yaml:"name" json:"name" validate:"containernameunique"`
-	Privileged           bool                          `yaml:"privileged" json:"privileged"`
-	NetworkMode          string                        `yaml:"network_mode" json:"network_mode"`
-	CPUShares            string                        `yaml:"cpu_shares" json:"cpu_shares"`
-	MemoryLimit          string                        `yaml:"memory_limit" json:"memory_limit"`
-	MemorySwapLimit      string                        `yaml:"memory_swap_limit" json:"memory_swap_limit"`
-	ULimits              []ULimit                      `yaml:"ulimits,omitempty" json:"ulimits,omitempty"`
-	AllocateTTY          string                        `yaml:"allocate_tty" json:"allocate_tty"`
-	SecurityCapAdd       []string                      `yaml:"security_cap_add" json:"security_cap_add"`
-	SecurityOptions      []string                      `yaml:"security_options" json:"security_options"`
-	Hostname             string                        `yaml:"hostname" json:"hostname"`
-	Cmd                  string                        `yaml:"cmd" json:"cmd"`
-	Entrypoint           *[]string                     `yaml:"entrypoint" json:"entrypoint"`
-	Ephemeral            bool                          `yaml:"ephemeral" json:"ephemeral"`
-	SuppressRestart      []string                      `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster              BoolString                    `yaml:"cluster" json:"cluster" validate:"omitempty,bool"`
-	Restart              *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
-	ClusterInstanceCount ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
-	PublishEvents        []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
-	SubscribedEvents     []map[string]interface{}      `yaml:"-" json:"-"`
-	ConfigFiles          []*ContainerConfigFile        `yaml:"config_files" json:"config_files" validate:"dive,exists"`
-	CustomerFiles        []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
-	EnvVars              []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
-	Ports                []*ContainerPort              `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
-	LogOptions           LogOptions                    `yaml:"logs" json:"logs"`
-	Volumes              []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
-	VolumesFrom          []string                      `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists,requiressubscription"`
-	ExtraHosts           []*ContainerExtraHost         `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
-	SupportFiles         []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
-	SupportCommands      []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
-	ContentTrust         ContentTrust                  `yaml:"content_trust" json:"content_trust"`
-	When                 string                        `yaml:"when" json:"when"`
-	Dynamic              string                        `yaml:"dynamic" json:"dynamic"`
-	PidMode              string                        `yaml:"pid_mode" json:"pid_mode"`
-	ShmSize              UintString                    `yaml:"shm_size,omitempty" json:"shm_size,omitempty" validate:"omitempty,uint"`
-	Labels               []string                      `yaml:"labels" json:"labels"`
-	StopTimeout          UintString                    `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
+	Source                 string                        `yaml:"source" json:"source" validate:"required,externalregistryexists"`
+	ImageName              string                        `yaml:"image_name" json:"image_name" validate:"required"`
+	Version                string                        `yaml:"version" json:"version" validate:"required"`
+	ImageKey               string                        `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
+	ImageDomain            string                        `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
+	DisplayName            string                        `yaml:"display_name" json:"display_name"`
+	Name                   string                        `yaml:"name" json:"name" validate:"containernameunique"`
+	Privileged             bool                          `yaml:"privileged" json:"privileged"`
+	NetworkMode            string                        `yaml:"network_mode" json:"network_mode"`
+	CPUShares              string                        `yaml:"cpu_shares" json:"cpu_shares"`
+	MemoryLimit            string                        `yaml:"memory_limit" json:"memory_limit"`
+	MemorySwapLimit        string                        `yaml:"memory_swap_limit" json:"memory_swap_limit"`
+	ULimits                []ULimit                      `yaml:"ulimits,omitempty" json:"ulimits,omitempty"`
+	AllocateTTY            string                        `yaml:"allocate_tty" json:"allocate_tty"`
+	SecurityCapAdd         []string                      `yaml:"security_cap_add" json:"security_cap_add"`
+	SecurityOptions        []string                      `yaml:"security_options" json:"security_options"`
+	Hostname               string                        `yaml:"hostname" json:"hostname"`
+	Cmd                    string                        `yaml:"cmd" json:"cmd"`
+	Entrypoint             *[]string                     `yaml:"entrypoint" json:"entrypoint"`
+	Ephemeral              bool                          `yaml:"ephemeral" json:"ephemeral"`
+	SuppressRestart        []string                      `yaml:"suppress_restart" json:"suppress_restart"`
+	Cluster                BoolString                    `yaml:"cluster" json:"cluster" validate:"omitempty,bool"`
+	Restart                *ContainerRestartPolicy       `yaml:"restart" json:"restart"`
+	ClusterInstanceCount   ContainerClusterInstanceCount `yaml:"cluster_instance_count" json:"cluster_instance_count"`
+	PublishEvents          []*ContainerEvent             `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
+	SubscribedEvents       []map[string]interface{}      `yaml:"-" json:"-"`
+	ConfigFiles            []*ContainerConfigFile        `yaml:"config_files" json:"config_files" validate:"dive,exists"`
+	CustomerFiles          []*ContainerCustomerFile      `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
+	EnvVars                []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
+	Ports                  []*ContainerPort              `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
+	DisablePublishAllPorts BoolString                    `yaml:"disable_publish_all_ports,omitempty" json:"disable_publish_all_ports,omitempty" validate:"omitempty,bool"`
+	LogOptions             LogOptions                    `yaml:"logs" json:"logs"`
+	Volumes                []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
+	VolumesFrom            []string                      `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists,requiressubscription"`
+	ExtraHosts             []*ContainerExtraHost         `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
+	SupportFiles           []*ContainerSupportFile       `yaml:"support_files" json:"support_files" validate:"dive,exists"`
+	SupportCommands        []*ContainerSupportCommand    `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
+	ContentTrust           ContentTrust                  `yaml:"content_trust" json:"content_trust"`
+	When                   string                        `yaml:"when" json:"when"`
+	Dynamic                string                        `yaml:"dynamic" json:"dynamic"`
+	PidMode                string                        `yaml:"pid_mode" json:"pid_mode"`
+	ShmSize                UintString                    `yaml:"shm_size,omitempty" json:"shm_size,omitempty" validate:"omitempty,uint"`
+	Labels                 []string                      `yaml:"labels" json:"labels"`
+	StopTimeout            UintString                    `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
+	OOMKillDisable         BoolString                    `yaml:"oom_kill_disable,omitempty" json:"oom_kill_disable,omitempty" validate:"omitempty,bool"`
 }
 
 type ContainerRestartPolicy struct {
@@ -138,6 +140,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.CustomerFiles = c.CustomerFiles
 	m.EnvVars = c.EnvVars
 	m.Ports = c.Ports
+	c.DisablePublishAllPorts = m.DisablePublishAllPorts
 	m.LogOptions = c.LogOptions
 	m.Volumes = c.Volumes
 	m.VolumesFrom = c.VolumesFrom
@@ -151,6 +154,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.ShmSize = c.ShmSize
 	m.Labels = c.Labels
 	m.StopTimeout = c.StopTimeout
+	m.OOMKillDisable = c.OOMKillDisable
 }
 
 func (m marshallerContainer) decode(c *Container) {
@@ -185,6 +189,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.CustomerFiles = m.CustomerFiles
 	c.EnvVars = m.EnvVars
 	c.Ports = m.Ports
+	c.DisablePublishAllPorts = m.DisablePublishAllPorts
 	c.LogOptions = m.LogOptions
 	c.Volumes = m.Volumes
 	c.VolumesFrom = m.VolumesFrom
@@ -198,51 +203,54 @@ func (m marshallerContainer) decode(c *Container) {
 	c.ShmSize = m.ShmSize
 	c.Labels = m.Labels
 	c.StopTimeout = m.StopTimeout
+	c.OOMKillDisable = m.OOMKillDisable
 }
 
 type nonclusterableContainer struct {
-	Source           string                     `yaml:"source" json:"source" validate:"required,externalregistryexists"`
-	ImageName        string                     `yaml:"image_name" json:"image_name" validate:"required"`
-	Version          string                     `yaml:"version" json:"version" validate:"required"`
-	ImageKey         string                     `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
-	ImageDomain      string                     `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
-	DisplayName      string                     `yaml:"display_name" json:"display_name"`
-	Name             string                     `yaml:"name" json:"name" validate:"containernameunique"`
-	Privileged       bool                       `yaml:"privileged" json:"privileged"`
-	NetworkMode      string                     `yaml:"network_mode" json:"network_mode"`
-	CPUShares        string                     `yaml:"cpu_shares" json:"cpu_shares"`
-	MemoryLimit      string                     `yaml:"memory_limit" json:"memory_limit"`
-	MemorySwapLimit  string                     `yaml:"memory_swap_limit" json:"memory_swap_limit"`
-	ULimits          []ULimit                   `yaml:"ulimits" json:"ulimits"`
-	AllocateTTY      string                     `yaml:"allocate_tty" json:"allocate_tty"`
-	SecurityCapAdd   []string                   `yaml:"security_cap_add" json:"security_cap_add"`
-	SecurityOptions  []string                   `yaml:"security_options" json:"security_options"`
-	Hostname         string                     `yaml:"hostname" json:"hostname"`
-	Cmd              string                     `yaml:"cmd" json:"cmd"`
-	Entrypoint       *[]string                  `yaml:"entrypoint" json:"entrypoint"`
-	Ephemeral        bool                       `yaml:"ephemeral" json:"ephemeral"`
-	SuppressRestart  []string                   `yaml:"suppress_restart" json:"suppress_restart"`
-	Cluster          BoolString                 `yaml:"cluster" json:"cluster" validate:"omitempty,bool"`
-	Restart          *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
-	PublishEvents    []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
-	SubscribedEvents []map[string]interface{}   `yaml:"-" json:"-"`
-	ConfigFiles      []*ContainerConfigFile     `yaml:"config_files" json:"config_files" validate:"dive,exists"`
-	CustomerFiles    []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
-	EnvVars          []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
-	Ports            []*ContainerPort           `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
-	LogOptions       LogOptions                 `yaml:"logs" json:"logs"`
-	Volumes          []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
-	VolumesFrom      []string                   `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists"`
-	ExtraHosts       []*ContainerExtraHost      `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
-	SupportFiles     []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive,exists"`
-	SupportCommands  []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
-	ContentTrust     ContentTrust               `yaml:"content_trust" json:"content_trust" validate:"dive"`
-	When             string                     `yaml:"when" json:"when"`
-	Dynamic          string                     `yaml:"dynamic" json:"dynamic"`
-	PidMode          string                     `yaml:"pid_mode" json:"pid_mode"`
-	ShmSize          UintString                 `yaml:"shm_size,omitempty" json:"shm_size,omitempty" validate:"omitempty,uint"`
-	Labels           []string                   `yaml:"labels" json:"labels"`
-	StopTimeout      UintString                 `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
+	Source                 string                     `yaml:"source" json:"source" validate:"required,externalregistryexists"`
+	ImageName              string                     `yaml:"image_name" json:"image_name" validate:"required"`
+	Version                string                     `yaml:"version" json:"version" validate:"required"`
+	ImageKey               string                     `yaml:"image_key,omitempty" json:"image_key,omitempty" validate:"isempty"`
+	ImageDomain            string                     `yaml:"image_domain,omitempty" json:"image_domain,omitempty" validate:"isempty"`
+	DisplayName            string                     `yaml:"display_name" json:"display_name"`
+	Name                   string                     `yaml:"name" json:"name" validate:"containernameunique"`
+	Privileged             bool                       `yaml:"privileged" json:"privileged"`
+	NetworkMode            string                     `yaml:"network_mode" json:"network_mode"`
+	CPUShares              string                     `yaml:"cpu_shares" json:"cpu_shares"`
+	MemoryLimit            string                     `yaml:"memory_limit" json:"memory_limit"`
+	MemorySwapLimit        string                     `yaml:"memory_swap_limit" json:"memory_swap_limit"`
+	ULimits                []ULimit                   `yaml:"ulimits" json:"ulimits"`
+	AllocateTTY            string                     `yaml:"allocate_tty" json:"allocate_tty"`
+	SecurityCapAdd         []string                   `yaml:"security_cap_add" json:"security_cap_add"`
+	SecurityOptions        []string                   `yaml:"security_options" json:"security_options"`
+	Hostname               string                     `yaml:"hostname" json:"hostname"`
+	Cmd                    string                     `yaml:"cmd" json:"cmd"`
+	Entrypoint             *[]string                  `yaml:"entrypoint" json:"entrypoint"`
+	Ephemeral              bool                       `yaml:"ephemeral" json:"ephemeral"`
+	SuppressRestart        []string                   `yaml:"suppress_restart" json:"suppress_restart"`
+	Cluster                BoolString                 `yaml:"cluster" json:"cluster" validate:"omitempty,bool"`
+	Restart                *ContainerRestartPolicy    `yaml:"restart" json:"restart"`
+	PublishEvents          []*ContainerEvent          `yaml:"publish_events" json:"publish_events" validate:"dive,exists"`
+	SubscribedEvents       []map[string]interface{}   `yaml:"-" json:"-"`
+	ConfigFiles            []*ContainerConfigFile     `yaml:"config_files" json:"config_files" validate:"dive,exists"`
+	CustomerFiles          []*ContainerCustomerFile   `yaml:"customer_files" json:"customer_files" validate:"dive,exists"`
+	EnvVars                []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
+	Ports                  []*ContainerPort           `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
+	DisablePublishAllPorts BoolString                 `yaml:"disable_publish_all_ports,omitempty" json:"disable_publish_all_ports,omitempty" validate:"omitempty,bool"`
+	LogOptions             LogOptions                 `yaml:"logs" json:"logs"`
+	Volumes                []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
+	VolumesFrom            []string                   `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists"`
+	ExtraHosts             []*ContainerExtraHost      `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
+	SupportFiles           []*ContainerSupportFile    `yaml:"support_files" json:"support_files" validate:"dive,exists"`
+	SupportCommands        []*ContainerSupportCommand `yaml:"support_commands" json:"support_commands" validate:"dive,exists"`
+	ContentTrust           ContentTrust               `yaml:"content_trust" json:"content_trust" validate:"dive"`
+	When                   string                     `yaml:"when" json:"when"`
+	Dynamic                string                     `yaml:"dynamic" json:"dynamic"`
+	PidMode                string                     `yaml:"pid_mode" json:"pid_mode"`
+	ShmSize                UintString                 `yaml:"shm_size,omitempty" json:"shm_size,omitempty" validate:"omitempty,uint"`
+	Labels                 []string                   `yaml:"labels" json:"labels"`
+	StopTimeout            UintString                 `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
+	OOMKillDisable         BoolString                 `yaml:"oom_kill_disable,omitempty" json:"oom_kill_disable,omitempty" validate:"omitempty,bool"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
@@ -276,6 +284,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.CustomerFiles = c.CustomerFiles
 	m.EnvVars = c.EnvVars
 	m.Ports = c.Ports
+	m.DisablePublishAllPorts = c.DisablePublishAllPorts
 	m.LogOptions = c.LogOptions
 	m.Volumes = c.Volumes
 	m.VolumesFrom = c.VolumesFrom
@@ -289,4 +298,5 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.ShmSize = c.ShmSize
 	m.Labels = c.Labels
 	m.StopTimeout = c.StopTimeout
+	m.OOMKillDisable = c.OOMKillDisable
 }
