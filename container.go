@@ -46,6 +46,11 @@ type Container struct {
 	Labels                 []string                      `yaml:"labels" json:"labels"`
 	StopTimeout            UintString                    `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
 	OOMKillDisable         BoolString                    `yaml:"oom_kill_disable,omitempty" json:"oom_kill_disable,omitempty" validate:"omitempty,bool"`
+	Network                string                        `yaml:"network,omitempty" json:"network,omitempty" validate:"omitempty"`
+	NetworkAliases         []string                      `yaml:"network_aliases,omitempty" json:"network_aliases,omitempty" validate:"omitempty"`
+	Links                  []string                      `yaml:"links,omitempty" json:"links,omitempty" validate:"omitempty"`
+	IPv4Address            string                        `yaml:"ipv4_address,omitempty" json:"ipv4_address,omitempty" validate:"omitempty"`
+	IPv6Address            string                        `yaml:"ipv6_address,omitempty" json:"ipv6_address,omitempty" validate:"omitempty"`
 }
 
 type ContainerRestartPolicy struct {
@@ -155,6 +160,11 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Labels = c.Labels
 	m.StopTimeout = c.StopTimeout
 	m.OOMKillDisable = c.OOMKillDisable
+	m.Network = c.Network
+	m.NetworkAliases = c.NetworkAliases
+	m.Links = c.Links
+	m.IPv4Address = c.IPv4Address
+	m.IPv6Address = c.IPv6Address
 }
 
 func (m marshallerContainer) decode(c *Container) {
@@ -204,6 +214,11 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Labels = m.Labels
 	c.StopTimeout = m.StopTimeout
 	c.OOMKillDisable = m.OOMKillDisable
+	c.Network = m.Network
+	c.NetworkAliases = m.NetworkAliases
+	c.Links = m.Links
+	c.IPv4Address = m.IPv4Address
+	c.IPv6Address = m.IPv6Address
 }
 
 type nonclusterableContainer struct {
@@ -251,6 +266,11 @@ type nonclusterableContainer struct {
 	Labels                 []string                   `yaml:"labels" json:"labels"`
 	StopTimeout            UintString                 `yaml:"stop_timeout,omitempty" json:"stop_timeout,omitempty" validate:"omitempty,uint"`
 	OOMKillDisable         BoolString                 `yaml:"oom_kill_disable,omitempty" json:"oom_kill_disable,omitempty" validate:"omitempty,bool"`
+	Network                string                     `yaml:"network,omitempty" json:"network,omitempty" validate:"omitempty"`
+	NetworkAliases         []string                   `yaml:"network_aliases,omitempty" json:"network_aliases,omitempty" validate:"omitempty"`
+	Links                  []string                   `yaml:"links,omitempty" json:"links,omitempty" validate:"omitempty"`
+	IPv4Address            string                     `yaml:"ipv4_address,omitempty" json:"ipv4_address,omitempty" validate:"omitempty"`
+	IPv6Address            string                     `yaml:"ipv6_address,omitempty" json:"ipv6_address,omitempty" validate:"omitempty"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
@@ -299,4 +319,9 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Labels = c.Labels
 	m.StopTimeout = c.StopTimeout
 	m.OOMKillDisable = c.OOMKillDisable
+	m.Network = c.Network
+	m.NetworkAliases = c.NetworkAliases
+	m.Links = c.Links
+	m.IPv4Address = c.IPv4Address
+	m.IPv6Address = c.IPv6Address
 }
