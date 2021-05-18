@@ -14,6 +14,10 @@ cluster: false
 logs:
   max_size: 100k
   max_files: 5
+log_config:
+  type: journald
+  config:
+    tag: my-service
 containers: []`
 
 	var c libyaml.Component
@@ -34,10 +38,18 @@ containers: []`
 		t.Errorf("expecting \"Component.ClusterHostCount.ThresholdHealthy\" == \"\", got \"%s\"", c.ClusterHostCount.ThresholdHealthy)
 	}
 	if c.LogOptions.MaxFiles != "5" {
-		t.Errorf("expecting \"Component.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
+		t.Errorf("expecting \"Component.LogOptions.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
 	}
 	if c.LogOptions.MaxSize != "100k" {
-		t.Errorf("expecting \"Component.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
+		t.Errorf("expecting \"Component.LogOptions.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
+	}
+	if c.LogConfig.Type != "journald" {
+		t.Errorf("expecting \"Component.LogConfig.Type\" == \"journald\", got \"%s\"", c.LogConfig.Type)
+	}
+	if c.LogConfig.Config == nil {
+		t.Errorf("\"Component.LogConfig.Config\" is nil")
+	} else if val, _ := c.LogConfig.Config["tag"]; val != "my-service" {
+		t.Errorf("expecting \"Component.LogConfig.Config[\"tag\"]\" == \"my-service\", got \"%s\"", val)
 	}
 }
 
@@ -68,9 +80,6 @@ containers: []`
 func TestComponentMarshalYAML(t *testing.T) {
 	s := `name: test
 cluster: false
-logs:
-  max_size: ""
-  max_files: ""
 containers: []
 `
 
@@ -95,17 +104,28 @@ cluster: true
 logs:
   max_size: 100k
   max_files: "5"
+log_config:
+  type: journald
+  config:
+    tag: my-service
 containers: []
 `
 
-	logReqs := libyaml.LogOptions{
+	logOptions := libyaml.LogOptions{
 		MaxSize:  "100k",
 		MaxFiles: "5",
+	}
+	logConfig := libyaml.LogConfig{
+		Type: "journald",
+		Config: map[string]string{
+			"tag": "my-service",
+		},
 	}
 	c := libyaml.Component{
 		Name:       "test",
 		Cluster:    "true",
-		LogOptions: logReqs,
+		LogOptions: logOptions,
+		LogConfig:  logConfig,
 	}
 
 	b, err := yaml.Marshal(c)
