@@ -32,7 +32,8 @@ type Container struct {
 	EnvVars                []*ContainerEnvVar            `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
 	Ports                  []*ContainerPort              `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
 	DisablePublishAllPorts BoolString                    `yaml:"disable_publish_all_ports,omitempty" json:"disable_publish_all_ports,omitempty" validate:"omitempty,bool"`
-	LogOptions             LogOptions                    `yaml:"logs" json:"logs"`
+	LogOptions             LogOptions                    `yaml:"logs,omitempty" json:"logs,omitempty"`
+	LogConfig              LogConfig                     `yaml:"log_config,omitempty" json:"log_config,omitempty"`
 	Volumes                []*ContainerVolume            `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	VolumesFrom            []string                      `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists,requiressubscription"`
 	ExtraHosts             []*ContainerExtraHost         `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
@@ -147,6 +148,7 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Ports = c.Ports
 	c.DisablePublishAllPorts = m.DisablePublishAllPorts
 	m.LogOptions = c.LogOptions
+	m.LogConfig = c.LogConfig
 	m.Volumes = c.Volumes
 	m.VolumesFrom = c.VolumesFrom
 	m.ExtraHosts = c.ExtraHosts
@@ -201,6 +203,7 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Ports = m.Ports
 	c.DisablePublishAllPorts = m.DisablePublishAllPorts
 	c.LogOptions = m.LogOptions
+	c.LogConfig = m.LogConfig
 	c.Volumes = m.Volumes
 	c.VolumesFrom = m.VolumesFrom
 	c.ExtraHosts = m.ExtraHosts
@@ -252,7 +255,8 @@ type nonclusterableContainer struct {
 	EnvVars                []*ContainerEnvVar         `yaml:"env_vars" json:"env_vars" validate:"dive,exists"`
 	Ports                  []*ContainerPort           `yaml:"ports,omitempty" json:"ports,omitempty" validate:"dive,exists"`
 	DisablePublishAllPorts BoolString                 `yaml:"disable_publish_all_ports,omitempty" json:"disable_publish_all_ports,omitempty" validate:"omitempty,bool"`
-	LogOptions             LogOptions                 `yaml:"logs" json:"logs"`
+	LogOptions             LogOptions                 `yaml:"logs,omitempty" json:"logs,omitempty"`
+	LogConfig              LogConfig                  `yaml:"log_config,omitempty" json:"log_config,omitempty"`
 	Volumes                []*ContainerVolume         `yaml:"volumes" json:"volumes" validate:"dive,exists"`
 	VolumesFrom            []string                   `yaml:"volumes_from" json:"volumes_from" validate:"dive,required,containernameexists"`
 	ExtraHosts             []*ContainerExtraHost      `yaml:"extra_hosts" json:"extra_hosts" validate:"dive,exists"`
@@ -306,6 +310,7 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Ports = c.Ports
 	m.DisablePublishAllPorts = c.DisablePublishAllPorts
 	m.LogOptions = c.LogOptions
+	m.LogConfig = c.LogConfig
 	m.Volumes = c.Volumes
 	m.VolumesFrom = c.VolumesFrom
 	m.ExtraHosts = c.ExtraHosts

@@ -24,6 +24,10 @@ env_vars: []
 logs:
   max_size: "100k"
   max_files: "5"
+log_config:
+  type: journald
+  config:
+    tag: my-service
 volumes: []
 support_files: []
 support_commands: []
@@ -53,10 +57,18 @@ shm_size: 100`
 		t.Errorf("expecting \"Container.ClusterInstanceCount.ThresholdHealthy\" == \"\", got \"%s\"", c.ClusterInstanceCount.ThresholdHealthy)
 	}
 	if c.LogOptions.MaxFiles != "5" {
-		t.Errorf("expecting \"Container.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
+		t.Errorf("expecting \"Container.LogOptions.MaxFiles\" == \"5\", got \"%s\"", c.LogOptions.MaxFiles)
 	}
 	if c.LogOptions.MaxSize != "100k" {
-		t.Errorf("expecting \"Container.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
+		t.Errorf("expecting \"Container.LogOptions.MaxSize\" == \"100k\", got \"%s\"", c.LogOptions.MaxSize)
+	}
+	if c.LogConfig.Type != "journald" {
+		t.Errorf("expecting \"Container.LogConfig.Type\" == \"journald\", got \"%s\"", c.LogConfig.Type)
+	}
+	if c.LogConfig.Config == nil {
+		t.Errorf("\"Container.LogConfig.Config\" is nil")
+	} else if val, _ := c.LogConfig.Config["tag"]; val != "my-service" {
+		t.Errorf("expecting \"Container.LogConfig.Config[\"tag\"]\" == \"my-service\", got \"%s\"", val)
 	}
 	if c.Entrypoint != nil {
 		t.Errorf("expecting \"Container.Entrypoint\" == \"nil\", got \"%v\"", c.Entrypoint)
@@ -83,6 +95,9 @@ env_vars: []
 logs:
   max_size: ""
   max_files: ""
+log_config:
+  type: ""
+  config: ~
 volumes: []
 support_files: []
 support_commands: []
@@ -148,6 +163,10 @@ env_vars: []
 logs:
   max_size: 100k
   max_files: "5"
+log_config:
+  type: journald
+  config:
+    tag: my-service
 volumes: []
 volumes_from: []
 extra_hosts: []
@@ -162,15 +181,22 @@ shm_size: 100
 labels: []
 `
 
-	logReqs := libyaml.LogOptions{
+	logOptions := libyaml.LogOptions{
 		MaxSize:  "100k",
 		MaxFiles: "5",
+	}
+	logConfig := libyaml.LogConfig{
+		Type: "journald",
+		Config: map[string]string{
+			"tag": "my-service",
+		},
 	}
 	c := libyaml.Container{
 		Source:     "public",
 		ImageName:  "test",
 		Cluster:    "false",
-		LogOptions: logReqs,
+		LogOptions: logOptions,
+		LogConfig:  logConfig,
 		ShmSize:    libyaml.UintString("100"),
 	}
 
@@ -214,6 +240,10 @@ env_vars: []
 logs:
   max_size: 100k
   max_files: "5"
+log_config:
+  type: journald
+  config:
+    tag: my-service
 volumes: []
 volumes_from: []
 extra_hosts: []
@@ -228,15 +258,22 @@ shm_size: '{{repl Blah}}'
 labels: []
 `
 
-	logReqs := libyaml.LogOptions{
+	logOptions := libyaml.LogOptions{
 		MaxSize:  "100k",
 		MaxFiles: "5",
+	}
+	logConfig := libyaml.LogConfig{
+		Type: "journald",
+		Config: map[string]string{
+			"tag": "my-service",
+		},
 	}
 	c := libyaml.Container{
 		Source:     "public",
 		ImageName:  "test",
 		Cluster:    "true",
-		LogOptions: logReqs,
+		LogOptions: logOptions,
+		LogConfig:  logConfig,
 		ShmSize:    libyaml.UintString("{{repl Blah}}"),
 	}
 

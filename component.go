@@ -7,7 +7,8 @@ type Component struct {
 	Cluster          BoolString                `yaml:"cluster" json:"cluster"`
 	ClusterHostCount ComponentClusterHostCount `yaml:"cluster_host_count,omitempty" json:"cluster_host_count,omitempty"`
 	HostRequirements HostRequirements          `yaml:"host_requirements,omitempty" json:"host_requirements,omitempty"`
-	LogOptions       LogOptions                `yaml:"logs" json:"logs"`
+	LogOptions       LogOptions                `yaml:"logs,omitempty" json:"logs,omitempty"`
+	LogConfig        LogConfig                 `yaml:"log_config,omitempty" json:"log_config,omitempty"`
 	HostVolumes      []*HostVolume             `yaml:"host_volumes,omitempty" json:"host_volumes,omitempty"`
 	Containers       []*Container              `yaml:"containers" json:"containers" validate:"dive,exists"` // TODO: validate:"min=1"
 }
