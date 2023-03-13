@@ -52,6 +52,8 @@ type Container struct {
 	Links                  []string                      `yaml:"links,omitempty" json:"links,omitempty" validate:"omitempty"`
 	IPv4Address            string                        `yaml:"ipv4_address,omitempty" json:"ipv4_address,omitempty" validate:"omitempty"`
 	IPv6Address            string                        `yaml:"ipv6_address,omitempty" json:"ipv6_address,omitempty" validate:"omitempty"`
+	User                   string                        `yaml:"user,omitempty" json:"user,omitempty"`
+	ReadonlyRootfs         BoolString                    `yaml:"readonly_rootfs,omitempty" json:"readonly_rootfs,omitempty"`
 }
 
 type ContainerRestartPolicy struct {
@@ -167,6 +169,8 @@ func (m *marshallerContainer) encode(c Container) {
 	m.Links = c.Links
 	m.IPv4Address = c.IPv4Address
 	m.IPv6Address = c.IPv6Address
+	m.User = c.User
+	m.ReadonlyRootfs = c.ReadonlyRootfs
 }
 
 func (m marshallerContainer) decode(c *Container) {
@@ -222,6 +226,8 @@ func (m marshallerContainer) decode(c *Container) {
 	c.Links = m.Links
 	c.IPv4Address = m.IPv4Address
 	c.IPv6Address = m.IPv6Address
+	c.User = m.User
+	c.ReadonlyRootfs = m.ReadonlyRootfs
 }
 
 type nonclusterableContainer struct {
@@ -275,6 +281,8 @@ type nonclusterableContainer struct {
 	Links                  []string                   `yaml:"links,omitempty" json:"links,omitempty" validate:"omitempty"`
 	IPv4Address            string                     `yaml:"ipv4_address,omitempty" json:"ipv4_address,omitempty" validate:"omitempty"`
 	IPv6Address            string                     `yaml:"ipv6_address,omitempty" json:"ipv6_address,omitempty" validate:"omitempty"`
+	User                   string                     `yaml:"user,omitempty" json:"user,omitempty" validate:"omitempty"`
+	ReadonlyRootfs         BoolString                 `yaml:"readonly_rootfs,omitempty" json:"readonly_rootfs,omitempty" validate:"omitempty,bool"`
 }
 
 func (m *nonclusterableContainer) encode(c Container) {
@@ -329,4 +337,6 @@ func (m *nonclusterableContainer) encode(c Container) {
 	m.Links = c.Links
 	m.IPv4Address = c.IPv4Address
 	m.IPv6Address = c.IPv6Address
+	m.User = c.User
+	m.ReadonlyRootfs = c.ReadonlyRootfs
 }
